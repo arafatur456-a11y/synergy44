@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --jade: 52 245 164;
+}
+
+@layer base {
+  html {
+    background: #060807;
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-ink font-sans text-stone-200 antialiased;
+    overflow-x: clip;
+  }
+  ::selection {
+    background: rgb(var(--jade) / 0.35);
+    color: #fff;
+  }
+  :focus-visible {
+    outline: 2px solid rgb(var(--jade));
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+}
+
+@layer components {
+  /* Frosted glass surface used across cards, nav and modals */
+  .glass {
+    @apply border border-white/10 bg-white/[0.04] backdrop-blur-xl;
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.08),
+      0 20px 60px -20px rgba(0, 0, 0, 0.7);
+  }
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(100deg, #8ff7cb 0%, #34f5a4 35%, #c4b5fd 70%, #f9c6dd 100%);
+  }
+  .eyebrow {
+    @apply text-[11px] font-semibold uppercase tracking-[0.32em] text-jade/80;
+  }
+  .section-title {
+    @apply font-display text-4xl font-light leading-[1.05] tracking-tight text-stone-50 sm:text-5xl lg:text-6xl;
+  }
+
+  /* Primary CTA with animated glowing border */
+  .btn-primary {
+    @apply relative inline-flex items-center gap-2 rounded-full bg-jade px-7 py-3.5 text-sm font-semibold text-ink transition-all duration-300 hover:shadow-glow-lg;
+  }
+  .btn-ghost {
+    @apply relative inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.03] px-7 py-3.5 text-sm font-semibold text-stone-100 backdrop-blur-md transition-all duration-300 hover:border-jade/50 hover:bg-white/[0.07];
+  }
+
+  /* Dichroic shimmer overlay for glass pendants */
+  .dichroic-sheen {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background:
+      radial-gradient(circle at var(--mx, 50%) var(--my, 30%), rgba(255, 255, 255, 0.55), transparent 35%),
+      linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.45) 45%, rgba(170, 255, 225, 0.3) 50%, transparent 62%);
+    background-size: 100% 100%, 250% 100%;
+    mix-blend-mode: screen;
+    animation: sheen 4.5s linear infinite;
+    pointer-events: none;
+  }
+  @keyframes sheen {
+    0% { background-position: 0 0, 200% 0; }
+    100% { background-position: 0 0, -200% 0; }
+  }
+
+  /* Subtle film-grain overlay for a premium editorial feel */
+  .grain::after {
+    content: '';
+    position: fixed;
+    inset: -50%;
+    z-index: 60;
+    pointer-events: none;
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { scrollbar-width: none; }
+  .mask-fade-x {
+    mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  }
+}
+
+/* Lenis smooth-scroll recommended styles */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
