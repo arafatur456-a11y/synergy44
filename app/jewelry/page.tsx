@@ -7,6 +7,7 @@ import SectionHeader from '@/components/ui/SectionHeader';
 import JewelryGallery from '@/components/jewelry/JewelryGallery';
 import PendantVisual from '@/components/jewelry/PendantVisual';
 import Reveal from '@/components/ui/Reveal';
+import { getPendants } from '@/lib/catalog';
 
 export const metadata: Metadata = {
   title: 'Dichroic Glass Jewelry',
@@ -19,7 +20,8 @@ const process = [
   { n: '03', title: 'Finish', body: 'Edges are polished and a bail is set by hand — ready to catch the light.' },
 ];
 
-export default function JewelryPage() {
+export default async function JewelryPage() {
+  const pendants = await getPendants();
   return (
     <>
       <PageHeader
@@ -43,7 +45,7 @@ export default function JewelryPage() {
       <section className="relative overflow-hidden bg-[#0D0C10] py-20 text-white sm:py-28">
         <div aria-hidden className="absolute left-1/4 top-0 h-[520px] w-[800px] rounded-full bg-[#5B4A7A]/25 blur-[130px]" />
         <div className="container-x relative">
-          <JewelryGallery />
+          <JewelryGallery pendants={pendants} />
         </div>
       </section>
 

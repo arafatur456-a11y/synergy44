@@ -64,8 +64,9 @@ export default function HairStylingPage() {
         </ol>
       </section>
 
-      <section id="menu" className="scroll-mt-28 border-y border-ink/10 bg-paper py-24 sm:py-32">
-        <div className="container-x">
+      <section id="menu" className="relative scroll-mt-28 overflow-hidden border-y border-ink/10 bg-cream-100 py-24 sm:py-32">
+        <div aria-hidden className="absolute left-1/2 top-1/3 h-[600px] w-[900px] -translate-x-1/2 rounded-full bg-champagne-pale/70 blur-[120px]" />
+        <div className="container-x relative">
           <SectionHeader
             index="01"
             label="The menu"

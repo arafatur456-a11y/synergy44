@@ -1,5 +1,5 @@
 import { useId } from 'react';
-import type { ProductShape } from '@/lib/data/products';
+import type { ProductShape } from '@/lib/data';
 
 type Props = {
   shape: ProductShape;

@@ -1,6 +1,6 @@
 import { HeartHandshake, Leaf, ShieldCheck, Sparkles } from 'lucide-react';
 import Reveal from '@/components/ui/Reveal';
-import { guarantee } from '@/lib/data/content';
+import { guarantee } from '@/lib/data';
 import { cn } from '@/lib/utils';
 
 const icons = { leaf: Leaf, shield: ShieldCheck, sparkle: Sparkles, heart: HeartHandshake };

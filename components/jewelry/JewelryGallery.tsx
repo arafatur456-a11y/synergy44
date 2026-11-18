@@ -4,10 +4,13 @@ import { useCallback, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import PendantCard from './PendantCard';
 import QuickViewModal from './QuickViewModal';
-import { collections, pendants, type Pendant } from '@/lib/data/jewelry';
+import { collectionsOf } from '@/lib/catalog-utils';
+import type { Pendant } from '@/lib/types';
+import { CARD_GRID } from '@/components/shop/CardParts';
 import { cn, ease } from '@/lib/utils';
 
-export default function JewelryGallery() {
+export default function JewelryGallery({ pendants }: { pendants: Pendant[] }) {
+  const collections = collectionsOf(pendants);
   const [active, setActive] = useState('All');
   const [selected, setSelected] = useState<Pendant | null>(null);
   const close = useCallback(() => setSelected(null), []);
@@ -36,7 +39,7 @@ export default function JewelryGallery() {
         </p>
       </div>
 
-      <motion.ul layout className="mt-12 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-3">
+      <motion.ul layout className={`mt-12 ${CARD_GRID} lg:grid-cols-3`}>
         <AnimatePresence mode="popLayout">
           {list.map((p, i) => (
             <motion.li
@@ -46,7 +49,6 @@ export default function JewelryGallery() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, transition: { duration: 0.2 } }}
               transition={{ duration: 0.8, delay: i * 0.05, ease }}
-              className={cn(i % 3 === 1 && 'lg:mt-20')}
             >
               <PendantCard pendant={p} onOpen={() => setSelected(p)} />
             </motion.li>

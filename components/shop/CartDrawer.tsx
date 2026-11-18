@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -17,7 +18,11 @@ function Thumb({ item }: { item: CartItem }) {
   const v = item.visual;
   return (
     <div className="grid h-24 w-20 shrink-0 place-items-center overflow-hidden rounded-[3px] bg-[#ECE6DC]">
-      {v.type === 'product' ? (
+      {v.type === 'image' ? (
+        <div className="relative h-full w-full">
+          <Image src={v.src} alt={v.alt} fill sizes="80px" className="object-cover" />
+        </div>
+      ) : v.type === 'product' ? (
         <ProductVisual shape={v.shape} colors={v.colors} cap={v.cap} label={v.label} className="h-20" />
       ) : (
         <PendantVisual colors={v.colors} shape={v.shape} chain={false} className="w-12" />

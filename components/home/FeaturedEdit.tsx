@@ -5,13 +5,16 @@ import StudioScene from '@/components/ui/StudioScene';
 import Reveal from '@/components/ui/Reveal';
 import ProductCard from '@/components/shop/ProductCard';
 import ProductVisual from '@/components/shop/ProductVisual';
-import { featuredProducts, products } from '@/lib/data/products';
+import { products } from '@/lib/data';
+import { getFeaturedProducts } from '@/lib/catalog';
+import { CARD_GRID } from '@/components/shop/CardParts';
 
 const o3 = products.find((p) => p.id === 'olaplex-3')!;
 const o7 = products.find((p) => p.id === 'olaplex-7')!;
 const o4 = products.find((p) => p.id === 'olaplex-4')!;
 
-export default function FeaturedEdit() {
+export default async function FeaturedEdit() {
+  const featured = await getFeaturedProducts(4);
   return (
     <section className="container-x py-24 sm:py-32">
       <SectionHeader
@@ -56,8 +59,8 @@ export default function FeaturedEdit() {
           </Link>
         </Reveal>
 
-        <ul className="grid grid-cols-2 gap-x-4 gap-y-12 sm:gap-x-5 lg:col-span-7">
-          {featuredProducts.slice(0, 4).map((p, i) => (
+        <ul className={`${CARD_GRID} lg:col-span-7`}>
+          {featured.map((p, i) => (
             <Reveal as="li" key={p.id} delay={i * 0.08}>
               <ProductCard product={p} />
             </Reveal>

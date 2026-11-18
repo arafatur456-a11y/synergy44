@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useInView, type PanInfo } from 'framer-motion';
 import { ArrowLeft, ArrowRight, Star } from 'lucide-react';
 import SectionHeader from '@/components/ui/SectionHeader';
-import { testimonials } from '@/lib/data/content';
+import { testimonials } from '@/lib/data';
 import { cn, ease } from '@/lib/utils';
 
 export default function Testimonials({ index = '05', label = 'Kind words', className }: { index?: string; label?: string; className?: string }) {

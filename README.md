@@ -29,23 +29,46 @@ Copy `.env.example` to `.env.local` to enable email delivery for the contact for
 | `/contact` | Validated inquiry & booking form (`?topic=salon|consultation|product|jewelry|other` pre-selects) |
 | `POST /api/contact` | Server validation, honeypot, per-IP throttle, email via Resend |
 
+## Data layer
+
+```
+lib/data.ts          Mock database — every product, price, brand, pendant, service, testimonial
+lib/types.ts         Domain types (Product, Pendant, Brand, ServiceGroup, …)
+lib/catalog.ts       Async getters pages use: getProducts, getProductsByBrand, getFeaturedProducts, getPendants
+lib/woocommerce.ts   Server-only WooCommerce REST adapter + field mapping
+```
+
+Pages call `lib/catalog.ts`; components receive plain arrays as props, so switching data sources never touches the UI.
+
+**Go live with WooCommerce**
+1. In WordPress: **WooCommerce → Settings → Advanced → REST API**, then add a key with **Read** access.
+2. Set these in `.env.local` and in your Vercel project settings:
+   ```
+   WC_STORE_URL=https://synergy44.com
+   WC_CONSUMER_KEY=ck_…
+   WC_CONSUMER_SECRET=cs_…
+   WC_JEWELRY_CATEGORY=dichroic-glass-jewelry
+   ```
+3. Redeploy. Products come from `GET /wp-json/wc/v3/products` and revalidate hourly (ISR). Brand matching uses the WooCommerce Brands taxonomy, a “Brand” attribute, or a category slug. Ritual matching uses `CATEGORY_MAP` in `lib/woocommerce.ts`. Size, Collection and Shape come from product attributes.
+4. If WooCommerce is unreachable, development falls back to the mock data. Production keeps serving the last good cached page, so it never shows placeholder prices.
+
+**Use real photos:** add `image: '/images/products/loma-leave-in.jpg'` (or a full URL) to any product or pendant in `lib/data.ts`. WooCommerce products use their first gallery image automatically. Use 4:5 portrait images, at least 1200×1500. Remote hosts are allowed in `next.config.mjs` (the WooCommerce host is added from `WC_STORE_URL`).
+
 ## Structure
 
 ```
 app/                     routes, layout (fonts, providers), template.tsx (page transitions), api/contact
 components/
   layout/                Navbar (mega menu + mobile sheet), Footer, SmoothScroll (Lenis)
-  ui/                    Reveal, Parallax, TiltCard, BotanicalSprig, PageHeader, SectionHeading
-  shop/                  ProductCard, ProductGrid (filters), ProductVisual (SVG packshots), CartDrawer
-  jewelry/               PendantVisual (CSS dichroic glass), JewelryGallery, QuickViewModal
-  home/                  Hero, BrandStrip, CraftsSplit, FeaturedProducts, JewelryTeaser, ServicesTeaser
-  services/, contact/    PricingMenu, ContactForm
-lib/
-  data/                  brands, products, jewelry, content (services, testimonials, guarantee, timeline)
-  cart.tsx               cart context (localStorage-persisted)
-  contact.ts             shared validation for form + API
-  lenis.ts, site.ts, utils.ts
+  ui/                    StudioScene, SectionHeader, PageHeader, Reveal, Parallax, TiltCard, BotanicalSprig
+  shop/                  CardParts (shared card anatomy), ProductCard, ProductGrid, ProductVisual, CartDrawer
+  jewelry/               PendantCard, PendantVisual, JewelryGallery, QuickViewModal
+  home/                  Hero, BrandMarquee, FeaturedEdit, CraftsSplit, GlassStudio, ServicesTeaser
+  services/, contact/    PricingMenu (luxury menu card), ContactForm
+lib/                     data, types, catalog, woocommerce, cart, contact, lenis, site, utils
 ```
+
+**Card system:** every product and pendant tile is built from `components/shop/CardParts.tsx`. They all share a 4:5 media frame, 4px radius, hairline ring, the same shadow depth and hover zoom, the same badge, a slide-up action bar and a matching meta row. They also share the grid spacing (`CARD_GRID`).
 
 ## Design system
 
@@ -66,9 +89,9 @@ lib/
 
 All of these are placeholders and are flagged in the data files:
 
-- **Products** (`lib/data/products.ts`) — names, sizes, prices. Sync with WooCommerce, or fetch from the WC Store API.
-- **Jewelry** (`lib/data/jewelry.ts`) — piece names, sizes, prices.
-- **Services** (`lib/data/content.ts`) — prices and durations.
+- **Products** (`lib/data.ts`) — names, sizes, prices. Or switch to live WooCommerce data (see *Data layer*).
+- **Jewelry** (`lib/data.ts`) — piece names, sizes, prices.
+- **Services** (`lib/data.ts` → `serviceGroups`) — prices and durations.
 - **Testimonials** — quotes are illustrative. Replace with clients’ verbatim reviews (with permission).
 - **Guarantee and biography wording** — confirm with Cynthia.
 - **Imagery** — scenes, packshots and pendants are drawn in code. Pass real photos to `StudioScene` via `src` (see above), and replace `ProductVisual` / `PendantVisual` with `next/image` once product photography exists.

@@ -1,71 +1,95 @@
-'use client';
+import Link from 'next/link';
+import { ArrowRight, Clock } from 'lucide-react';
+import Reveal from '@/components/ui/Reveal';
+import { serviceGroups } from '@/lib/data';
 
-import { useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { Clock } from 'lucide-react';
-import { serviceGroups } from '@/lib/data/content';
-import { cn, ease } from '@/lib/utils';
+const numerals = ['I', 'II', 'III', 'IV', 'V', 'VI'];
 
-/** Printed-menu style salon pricing: numbered category tabs, rows with dotted leaders. */
+/**
+ * Luxury salon menu card: double frame (paper card + inset gold rule), monogram header,
+ * roman-numeral sections in two columns, dotted price leaders and a booking footer.
+ * Content comes from `serviceGroups` in lib/data.ts.
+ */
 export default function PricingMenu() {
-  const [active, setActive] = useState(serviceGroups[0].id);
-  const group = serviceGroups.find((g) => g.id === active)!;
-
   return (
-    <div className="grid gap-10 lg:grid-cols-12 lg:gap-6">
-      <div role="tablist" aria-label="Service categories" aria-orientation="vertical" className="-mx-5 flex gap-2 overflow-x-auto px-5 no-scrollbar sm:mx-0 sm:px-0 lg:col-span-4 lg:flex-col lg:gap-0 lg:border-t lg:border-ink">
-        {serviceGroups.map((g, i) => (
-          <button
-            key={g.id}
-            role="tab"
-            id={`tab-${g.id}`}
-            aria-selected={active === g.id}
-            aria-controls={`panel-${g.id}`}
-            onClick={() => setActive(g.id)}
-            className={cn(
-              'group relative flex shrink-0 items-baseline gap-4 whitespace-nowrap rounded-[2px] border px-4 py-3 text-left transition-colors lg:rounded-none lg:border-0 lg:border-b lg:border-line lg:px-0 lg:py-6',
-              active === g.id ? 'border-ink bg-ink text-white lg:bg-transparent lg:text-ink' : 'border-line text-espresso-500 hover:text-ink',
-            )}
-          >
-            <span className="hidden font-display text-lg italic text-champagne lg:inline">0{i + 1}</span>
-            <span className="text-[12px] font-semibold uppercase tracking-[0.16em] lg:font-display lg:text-[1.7rem] lg:font-semibold lg:normal-case lg:tracking-normal">{g.title}</span>
-            {active === g.id && <motion.span layoutId="svc-bar" className="absolute bottom-[-1px] left-0 hidden h-[2px] w-full bg-ink lg:block" transition={{ duration: 0.5, ease }} />}
-          </button>
-        ))}
-      </div>
+    <Reveal>
+      <article className="relative mx-auto max-w-[1080px] rounded-[6px] bg-paper p-2.5 shadow-lift ring-1 ring-ink/[0.06] sm:p-3.5">
+        <div className="relative rounded-[3px] border border-champagne/45 px-5 py-12 sm:px-12 sm:py-16 lg:px-16">
+          {/* corner ornaments */}
+          {['left-3 top-3', 'right-3 top-3', 'bottom-3 left-3', 'bottom-3 right-3'].map((pos) => (
+            <span key={pos} aria-hidden className={`absolute ${pos} text-[10px] leading-none text-champagne`}>
+              ✦
+            </span>
+          ))}
 
-      <div className="lg:col-span-7 lg:col-start-6" id={`panel-${group.id}`} role="tabpanel" aria-labelledby={`tab-${group.id}`}>
-        <AnimatePresence mode="wait">
-          <motion.div key={group.id} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.5, ease }}>
-            <div className="card relative overflow-hidden p-7 shadow-soft sm:p-10">
-              <span aria-hidden className="absolute -right-4 -top-8 font-display text-[9rem] font-semibold italic leading-none text-ink/[0.04]">
-                {group.title.charAt(0)}
-              </span>
-              <h3 className="relative font-display text-[2.2rem] font-semibold leading-none">{group.title}</h3>
-              {group.note && <p className="relative mt-3 text-[14px] text-espresso-700">{group.note}</p>}
-              <ul className="relative mt-8 border-t border-ink">
-                {group.services.map((s) => (
-                  <li key={s.name} className="group border-b border-line py-5">
-                    <div className="flex items-baseline gap-4">
-                      <span className="font-display text-[1.4rem] font-semibold leading-tight transition-transform duration-500 ease-silk group-hover:translate-x-1">{s.name}</span>
-                      <span aria-hidden className="hidden flex-1 translate-y-[-4px] border-b border-dotted border-ink/30 sm:block" />
-                      <span className="ml-auto whitespace-nowrap text-[16px] font-semibold tabular-nums sm:ml-0">{s.price}</span>
-                    </div>
-                    <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[13.5px] text-espresso-500">
-                      <span>{s.detail}</span>
-                      {s.duration && (
-                        <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.14em]">
-                          <Clock className="h-3.5 w-3.5" /> {s.duration}
-                        </span>
-                      )}
-                    </div>
-                  </li>
-                ))}
-              </ul>
+          {/* Header */}
+          <header className="text-center">
+            <span className="mx-auto grid h-16 w-16 place-items-center rounded-full border border-champagne/60 font-display text-lg font-semibold italic text-champagne">
+              S44
+            </span>
+            <p className="mt-6 text-[10.5px] font-semibold uppercase tracking-[0.34em] text-espresso-500">Synergy 44 · Salon</p>
+            <h3 className="mt-3 font-display text-[2.4rem] font-semibold leading-none tracking-[-0.01em] sm:text-[3rem]">The Menu</h3>
+            <div aria-hidden className="mx-auto mt-6 flex max-w-[220px] items-center gap-3 text-champagne">
+              <span className="h-px flex-1 bg-champagne/50" />
+              <span className="text-[10px]">✦</span>
+              <span className="h-px flex-1 bg-champagne/50" />
             </div>
-          </motion.div>
-        </AnimatePresence>
-      </div>
-    </div>
+            <nav aria-label="Menu sections" className="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-2">
+              {serviceGroups.map((g, i) => (
+                <a key={g.id} href={`#svc-${g.id}`} className="group text-[11px] font-semibold uppercase tracking-[0.18em] text-espresso-700 transition-colors hover:text-ink">
+                  <span className="mr-1.5 font-display normal-case italic tracking-normal text-champagne">{numerals[i]}.</span>
+                  <span className="border-b border-transparent pb-0.5 transition-colors group-hover:border-ink">{g.title}</span>
+                </a>
+              ))}
+            </nav>
+          </header>
+
+          {/* Sections */}
+          <div className="mt-14 grid gap-x-16 gap-y-14 md:grid-cols-2">
+            {serviceGroups.map((g, i) => (
+              <section key={g.id} id={`svc-${g.id}`} className="scroll-mt-36" aria-labelledby={`svc-${g.id}-title`}>
+                <div className="flex items-baseline gap-3 border-b border-ink pb-3">
+                  <span className="font-display text-xl font-semibold italic text-champagne">{numerals[i]}.</span>
+                  <h4 id={`svc-${g.id}-title`} className="font-display text-[1.65rem] font-semibold leading-tight">
+                    {g.title}
+                  </h4>
+                </div>
+                {g.note && <p className="mt-3 font-display text-[15px] italic text-espresso-700">{g.note}</p>}
+                <ul>
+                  {g.services.map((s) => (
+                    <li key={s.name} className="group border-b border-line py-[1.15rem] last:border-b-0">
+                      <div className="flex items-baseline gap-3">
+                        <span className="font-display text-[1.18rem] font-semibold leading-snug transition-colors group-hover:text-sage-dark">{s.name}</span>
+                        <span aria-hidden className="mb-1 min-w-6 flex-1 border-b border-dotted border-ink/30" />
+                        <span className="whitespace-nowrap text-[15px] font-semibold tabular-nums">{s.price}</span>
+                      </div>
+                      <div className="mt-1.5 flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+                        <span className="text-[13.5px] leading-relaxed text-espresso-500">{s.detail}</span>
+                        {s.duration && (
+                          <span className="inline-flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-espresso-400">
+                            <Clock className="h-3 w-3" /> {s.duration}
+                          </span>
+                        )}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))}
+          </div>
+
+          {/* Footer */}
+          <footer className="mt-16 flex flex-col items-center gap-8 border-t border-line pt-10 text-center md:flex-row md:justify-between md:text-left">
+            <ul className="space-y-1.5 text-[13px] text-espresso-500">
+              <li>Prices are starting points and vary with hair length and density.</li>
+              <li>Your final price is confirmed at consultation, before we begin.</li>
+            </ul>
+            <Link href="/contact?topic=salon" className="btn-dark shrink-0">
+              Book an appointment <ArrowRight className="h-4 w-4" />
+            </Link>
+          </footer>
+        </div>
+      </article>
+    </Reveal>
   );
 }

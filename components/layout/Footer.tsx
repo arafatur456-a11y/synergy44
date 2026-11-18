@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { ArrowRight, Check } from 'lucide-react';
-import { brands } from '@/lib/data/brands';
+import { brands } from '@/lib/data';
 import { site } from '@/lib/site';
 
 const explore = [

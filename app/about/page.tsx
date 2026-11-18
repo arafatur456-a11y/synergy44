@@ -9,7 +9,7 @@ import Parallax from '@/components/ui/Parallax';
 import GuaranteeGrid from '@/components/GuaranteeGrid';
 import PendantVisual from '@/components/jewelry/PendantVisual';
 import ProductVisual from '@/components/shop/ProductVisual';
-import { milestones } from '@/lib/data/content';
+import { milestones } from '@/lib/data';
 
 export const metadata: Metadata = {
   title: 'About',

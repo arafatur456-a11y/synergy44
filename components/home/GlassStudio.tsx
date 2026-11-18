@@ -7,7 +7,8 @@ import SectionHeader from '@/components/ui/SectionHeader';
 import Reveal from '@/components/ui/Reveal';
 import PendantCard from '@/components/jewelry/PendantCard';
 import QuickViewModal from '@/components/jewelry/QuickViewModal';
-import { pendants, type Pendant } from '@/lib/data/jewelry';
+import type { Pendant } from '@/lib/types';
+import { CARD_GRID } from '@/components/shop/CardParts';
 
 const steps = [
   ['Cut', 'Glass is hand-cut and composed like a small painting.'],
@@ -15,7 +16,7 @@ const steps = [
   ['Finish', 'Polished and set by hand — ready to catch the light.'],
 ];
 
-export default function GlassStudio() {
+export default function GlassStudio({ pendants }: { pendants: Pendant[] }) {
   const [selected, setSelected] = useState<Pendant | null>(null);
   const close = useCallback(() => setSelected(null), []);
 
@@ -42,9 +43,9 @@ export default function GlassStudio() {
           }
         />
 
-        <ul className="mt-16 grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-4">
+        <ul className={`mt-16 ${CARD_GRID} lg:grid-cols-4`}>
           {pendants.slice(0, 4).map((p, i) => (
-            <Reveal as="li" key={p.id} delay={i * 0.08} className={i % 2 ? 'lg:mt-16' : ''}>
+            <Reveal as="li" key={p.id} delay={i * 0.08}>
               <PendantCard pendant={p} onOpen={() => setSelected(p)} />
             </Reveal>
           ))}

@@ -5,8 +5,9 @@ import PageHeader from '@/components/ui/PageHeader';
 import StudioScene, { type SceneTone } from '@/components/ui/StudioScene';
 import ProductGrid from '@/components/shop/ProductGrid';
 import ProductVisual from '@/components/shop/ProductVisual';
-import { brands, getBrand } from '@/lib/data/brands';
-import { productsByBrand } from '@/lib/data/products';
+import { brands, getBrand } from '@/lib/data';
+import { productsByBrand } from '@/lib/data';
+import { getProductsByBrand } from '@/lib/catalog';
 import { cn } from '@/lib/utils';
 
 type Params = { params: Promise<{ brand: string }> };
@@ -37,8 +38,9 @@ export default async function BrandPage({ params }: Params) {
   const { brand: slug } = await params;
   const brand = getBrand(slug);
   if (!brand) notFound();
-  const items = productsByBrand(slug);
-  const hero = items.slice(0, 3);
+  const items = await getProductsByBrand(slug);
+  // Header scene always uses the illustrated packshots for a consistent art direction
+  const hero = productsByBrand(slug).slice(0, 3);
 
   return (
     <>
@@ -70,7 +72,7 @@ export default async function BrandPage({ params }: Params) {
       </PageHeader>
 
       <section className="container-x py-14 sm:py-20">
-        <ProductGrid lockedBrand={slug} />
+        <ProductGrid products={items} lockedBrand={slug} />
       </section>
 
       <section className="container-x border-t border-ink/10 py-14">

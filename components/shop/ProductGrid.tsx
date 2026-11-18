@@ -4,8 +4,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Search, X } from 'lucide-react';
 import ProductCard from './ProductCard';
-import { categories, products, type Category } from '@/lib/data/products';
-import { brands } from '@/lib/data/brands';
+import { brands, categories } from '@/lib/data';
+import type { Category, Product } from '@/lib/types';
+import { CARD_GRID } from './CardParts';
 import { cn, ease } from '@/lib/utils';
 
 type Sort = 'featured' | 'price-asc' | 'price-desc' | 'name';
@@ -57,10 +58,13 @@ function FilterList({
  * search + sort toolbar. Filters sync to the URL on the main catalogue.
  */
 export default function ProductGrid({
+  products,
   lockedBrand,
   initialCategory,
   initialBrand,
 }: {
+  /** Supplied by the page from lib/catalog.ts (mock or WooCommerce) */
+  products: Product[];
   lockedBrand?: string;
   initialCategory?: string;
   initialBrand?: string;
@@ -73,7 +77,7 @@ export default function ProductGrid({
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState<Sort>('featured');
 
-  const scoped = useMemo(() => (lockedBrand ? products.filter((p) => p.brand === lockedBrand) : products), [lockedBrand]);
+  const scoped = useMemo(() => (lockedBrand ? products.filter((p) => p.brand === lockedBrand) : products), [lockedBrand, products]);
 
   useEffect(() => {
     if (lockedBrand) return;
@@ -85,7 +89,7 @@ export default function ProductGrid({
   }, [brand, category, lockedBrand]);
 
   const q = query.trim().toLowerCase();
-  const matchQ = (p: (typeof products)[number]) => !q || `${p.name} ${p.brand} ${p.description}`.toLowerCase().includes(q);
+  const matchQ = (p: Product) => !q || `${p.name} ${p.brand} ${p.description}`.toLowerCase().includes(q);
 
   const results = useMemo(() => {
     const list = scoped.filter((p) => (brand === 'all' || p.brand === brand) && (category === 'All' || p.category === category) && matchQ(p));
@@ -193,7 +197,7 @@ export default function ProductGrid({
             </button>
           </div>
         ) : (
-          <motion.ul layout className="mt-10 grid grid-cols-2 gap-x-4 gap-y-12 sm:gap-x-5 xl:grid-cols-3">
+          <motion.ul layout className={`mt-10 ${CARD_GRID} xl:grid-cols-3`}>
             <AnimatePresence mode="popLayout">
               {results.map((p, i) => (
                 <motion.li

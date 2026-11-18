@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { brands } from '@/lib/data/brands';
+import { brands } from '@/lib/data';
 
 /** Dark editorial band of brand names — a strong separator between hero and content. */
 export default function BrandMarquee() {

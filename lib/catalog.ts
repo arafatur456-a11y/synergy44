@@ -1,0 +1,46 @@
+/**
+ * Catalog access layer — the ONLY place pages get listing data from.
+ *
+ *   mock (default)  → lib/data.ts
+ *   live            → WooCommerce REST API via lib/woocommerce.ts
+ *                     (enabled automatically when WC_STORE_URL + keys are set)
+ *
+ * Components receive plain `Product` / `Pendant` arrays as props, so swapping the
+ * source never requires UI changes.
+ *
+ * Failure policy: in development a WooCommerce error falls back to mock data so you can
+ * keep working. In production it throws — Next.js then keeps serving the last good
+ * (ISR-cached) page instead of ever showing placeholder prices to customers.
+ */
+import { pendants as mockPendants, products as mockProducts } from './data';
+import { fetchWooPendants, fetchWooProducts, isWooConfigured } from './woocommerce';
+import type { Pendant, Product } from './types';
+
+export const catalogSource = () => (isWooConfigured() ? 'woocommerce' : 'mock');
+
+async function fromSource<T>(live: () => Promise<T>, mock: T): Promise<T> {
+  if (!isWooConfigured()) return mock;
+  try {
+    return await live();
+  } catch (err) {
+    if (process.env.NODE_ENV === 'production') throw err;
+    console.warn('[catalog] WooCommerce unavailable — using mock data:', err);
+    return mock;
+  }
+}
+
+export const getProducts = (): Promise<Product[]> => fromSource(fetchWooProducts, mockProducts);
+
+export async function getProductsByBrand(brandSlug: string): Promise<Product[]> {
+  return (await getProducts()).filter((p) => p.brand === brandSlug);
+}
+
+export async function getFeaturedProducts(limit = 4): Promise<Product[]> {
+  const all = await getProducts();
+  const featured = all.filter((p) => p.featured);
+  return (featured.length ? featured : all).slice(0, limit);
+}
+
+export const getPendants = (): Promise<Pendant[]> => fromSource(fetchWooPendants, mockPendants);
+
+export { collectionsOf } from './catalog-utils';

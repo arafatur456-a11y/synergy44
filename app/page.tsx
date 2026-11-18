@@ -7,15 +7,17 @@ import ServicesTeaser from '@/components/home/ServicesTeaser';
 import Testimonials from '@/components/Testimonials';
 import GuaranteeGrid from '@/components/GuaranteeGrid';
 import SectionHeader from '@/components/ui/SectionHeader';
+import { getPendants } from '@/lib/catalog';
 
-export default function HomePage() {
+export default async function HomePage() {
+  const pendants = await getPendants();
   return (
     <>
       <Hero />
       <BrandMarquee />
       <FeaturedEdit />
       <CraftsSplit />
-      <GlassStudio />
+      <GlassStudio pendants={pendants.slice(0, 4)} />
       <ServicesTeaser />
       <Testimonials />
       <section className="bg-paper py-24 sm:py-32">

@@ -8,7 +8,7 @@ import StudioScene from '@/components/ui/StudioScene';
 import ProductVisual from '@/components/shop/ProductVisual';
 import PendantVisual from '@/components/jewelry/PendantVisual';
 import { useCart } from '@/lib/cart';
-import { products } from '@/lib/data/products';
+import { products } from '@/lib/data';
 import { ease, formatPrice } from '@/lib/utils';
 
 const leaveIn = products.find((p) => p.id === 'loma-leave-in')!;

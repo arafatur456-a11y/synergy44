@@ -1,10 +1,10 @@
 'use client';
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import type { PendantShape } from './data/jewelry';
-import type { ProductShape } from './data/products';
+import type { PendantShape, ProductShape } from './types';
 
 export type CartVisual =
+  | { type: 'image'; src: string; alt: string }
   | { type: 'product'; shape: ProductShape; colors: [string, string]; cap: string; label: string }
   | { type: 'pendant'; shape: PendantShape; colors: [string, string, string, string] };
 

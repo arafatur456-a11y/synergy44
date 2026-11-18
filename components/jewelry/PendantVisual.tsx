@@ -1,4 +1,4 @@
-import type { PendantShape } from '@/lib/data/jewelry';
+import type { PendantShape } from '@/lib/data';
 import { cn } from '@/lib/utils';
 
 const RADIUS: Record<PendantShape, string> = {

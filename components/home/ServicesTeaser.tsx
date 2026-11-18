@@ -5,7 +5,7 @@ import StudioScene from '@/components/ui/StudioScene';
 import Reveal from '@/components/ui/Reveal';
 import Parallax from '@/components/ui/Parallax';
 import ProductVisual from '@/components/shop/ProductVisual';
-import { serviceGroups } from '@/lib/data/content';
+import { serviceGroups } from '@/lib/data';
 
 const highlights = serviceGroups
   .flatMap((g) => g.services.map((s) => ({ ...s, group: g.title })))

@@ -1,11 +1,12 @@
 'use client';
 
+import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, Check, Ruler, Sparkles, X } from 'lucide-react';
 import PendantVisual from './PendantVisual';
-import type { Pendant } from '@/lib/data/jewelry';
+import type { Pendant } from '@/lib/types';
 import { useCart } from '@/lib/cart';
 import { lockScroll } from '@/lib/lenis';
 import { ease, formatPrice } from '@/lib/utils';
@@ -66,7 +67,11 @@ export default function QuickViewModal({ item, onClose }: { item: Pendant | null
               }}
             >
               <div className="absolute left-1/2 top-[-10%] h-[70%] w-[70%] -translate-x-1/2 rounded-full bg-white/[0.07] blur-3xl" />
-              <PendantVisual colors={item.colors} shape={item.shape} className="relative w-44 animate-drift sm:w-56" />
+              {item.image ? (
+                <Image src={item.image} alt={item.name} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
+              ) : (
+                <PendantVisual colors={item.colors} shape={item.shape} className="relative w-44 animate-drift sm:w-56" />
+              )}
               <p className="absolute bottom-5 left-6 text-[10px] font-semibold uppercase tracking-[0.22em] text-white/50">Move to see the colors shift</p>
             </div>
 
@@ -89,7 +94,7 @@ export default function QuickViewModal({ item, onClose }: { item: Pendant | null
                   <dt className="flex items-center gap-2.5 text-espresso-500">
                     <Ruler className="h-4 w-4 text-champagne" strokeWidth={1.6} /> Size
                   </dt>
-                  <dd className="font-medium">Approx. {item.size}</dd>
+                  <dd className="font-medium">{item.size ? `Approx. ${item.size}` : 'One of a kind'}</dd>
                 </div>
               </dl>
 
@@ -103,7 +108,7 @@ export default function QuickViewModal({ item, onClose }: { item: Pendant | null
                       subtitle: `Dichroic glass · ${item.collection}`,
                       price: item.price,
                       unique: true,
-                      visual: { type: 'pendant', shape: item.shape, colors: item.colors },
+                      visual: item.image ? { type: 'image', src: item.image, alt: item.name } : { type: 'pendant', shape: item.shape, colors: item.colors },
                     });
                     onClose();
                   }}

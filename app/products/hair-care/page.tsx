@@ -3,17 +3,19 @@ import PageHeader from '@/components/ui/PageHeader';
 import StudioScene from '@/components/ui/StudioScene';
 import ProductGrid from '@/components/shop/ProductGrid';
 import ProductVisual from '@/components/shop/ProductVisual';
-import { products } from '@/lib/data/products';
+import { products as editorial } from '@/lib/data';
+import { getProducts } from '@/lib/catalog';
 
 export const metadata: Metadata = {
   title: 'Hair Care',
   description: 'Organic, vegan and bond-repair hair care from Loma, MKS Eco, Olaplex and Neuma, professional tools from Gama and Sutra, and Goomee.',
 };
 
-const pick = (id: string) => products.find((p) => p.id === id)!;
+// Decorative header scene uses editorial mock packshots; the grid below uses the live catalog.
+const pick = (id: string) => editorial.find((p) => p.id === id)!;
 
 export default async function HairCarePage({ searchParams }: { searchParams: Promise<{ category?: string; brand?: string }> }) {
-  const { category, brand } = await searchParams;
+  const [{ category, brand }, products] = await Promise.all([searchParams, getProducts()]);
   const [a, b, c] = [pick('neuma-moisture-conditioner'), pick('loma-leave-in'), pick('mks-bounce')];
 
   return (
@@ -36,7 +38,7 @@ export default async function HairCarePage({ searchParams }: { searchParams: Pro
         }
       />
       <section className="container-x py-14 sm:py-20">
-        <ProductGrid initialCategory={category} initialBrand={brand} />
+        <ProductGrid products={products} initialCategory={category} initialBrand={brand} />
       </section>
     </>
   );
