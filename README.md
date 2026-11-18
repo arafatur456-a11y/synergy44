@@ -116,4 +116,4 @@ All of these are placeholders and are flagged in the data files:
 
 ## Deploying
 
-Works on Vercel with zero config. Add the environment variables from `.env.example` in the project settings.
+Works on Vercel with zero config. Add the variables from `.env.local.example` under Project → Settings → Environment Variables (Production and Preview), then redeploy.
