@@ -2,99 +2,145 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --jade: 52 245 164;
-}
-
 @layer base {
   html {
-    background: #060807;
-    color-scheme: dark;
+    background: #faf8f5;
+    -webkit-tap-highlight-color: transparent;
   }
   body {
-    @apply bg-ink font-sans text-stone-200 antialiased;
+    @apply bg-cream font-sans text-espresso antialiased;
     overflow-x: clip;
   }
   ::selection {
-    background: rgb(var(--jade) / 0.35);
-    color: #fff;
+    background: #dce5df;
+    color: #1e1d1b;
   }
   :focus-visible {
-    outline: 2px solid rgb(var(--jade));
+    outline: 2px solid #4a6b5d;
     outline-offset: 3px;
     border-radius: 6px;
   }
 }
 
 @layer components {
-  /* Frosted glass surface used across cards, nav and modals */
-  .glass {
-    @apply border border-white/10 bg-white/[0.04] backdrop-blur-xl;
-    box-shadow:
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.08),
-      0 20px 60px -20px rgba(0, 0, 0, 0.7);
-  }
-  .text-gradient {
-    @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(100deg, #8ff7cb 0%, #34f5a4 35%, #c4b5fd 70%, #f9c6dd 100%);
+  .container-x {
+    @apply mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10;
   }
   .eyebrow {
-    @apply text-[11px] font-semibold uppercase tracking-[0.32em] text-jade/80;
+    @apply text-[11px] font-semibold uppercase tracking-[0.28em] text-sage;
   }
-  .section-title {
-    @apply font-display text-4xl font-light leading-[1.05] tracking-tight text-stone-50 sm:text-5xl lg:text-6xl;
+  .display-xl {
+    @apply font-display text-[clamp(3rem,6.6vw,6.25rem)] font-light leading-[0.98] tracking-[-0.015em];
   }
-
-  /* Primary CTA with animated glowing border */
-  .btn-primary {
-    @apply relative inline-flex items-center gap-2 rounded-full bg-jade px-7 py-3.5 text-sm font-semibold text-ink transition-all duration-300 hover:shadow-glow-lg;
+  .h-section {
+    @apply font-display text-[2.6rem] font-light leading-[1.04] tracking-[-0.01em] sm:text-5xl lg:text-[3.6rem];
   }
-  .btn-ghost {
-    @apply relative inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.03] px-7 py-3.5 text-sm font-semibold text-stone-100 backdrop-blur-md transition-all duration-300 hover:border-jade/50 hover:bg-white/[0.07];
+  .lead {
+    @apply text-base leading-relaxed text-espresso-500 sm:text-[1.075rem];
   }
 
-  /* Dichroic shimmer overlay for glass pendants */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-[13px] font-semibold tracking-[0.04em] transition-all duration-500 ease-silk disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-dark {
+    @apply btn bg-espresso text-cream hover:bg-sage-dark hover:shadow-lift;
+  }
+  .btn-sage {
+    @apply btn bg-sage text-cream hover:bg-sage-dark hover:shadow-lift;
+  }
+  .btn-outline {
+    @apply btn border border-espresso/20 text-espresso hover:border-espresso hover:bg-espresso hover:text-cream;
+  }
+  .link-underline {
+    @apply relative inline-flex items-center gap-1.5 text-[13px] font-semibold tracking-wide text-espresso;
+  }
+  .link-underline::after {
+    content: '';
+    @apply absolute -bottom-1 left-0 h-px w-full origin-right scale-x-0 bg-current transition-transform duration-500 ease-silk;
+  }
+  .link-underline:hover::after {
+    @apply origin-left scale-x-100;
+  }
+
+  .card {
+    @apply rounded-[28px] bg-white/75 shadow-soft ring-1 ring-espresso/[0.05];
+  }
+  /* Frosted glass with a warm tint — used for floating and jewelry cards */
+  .frost {
+    @apply bg-white/50 ring-1 ring-white/80 backdrop-blur-xl;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.9),
+      0 30px 60px -30px rgba(30, 29, 27, 0.22);
+  }
+  .iridescent {
+    background-image: linear-gradient(120deg, #efe2c6 0%, #f4dfe3 32%, #dfe9e3 64%, #e6def0 100%);
+  }
+  .text-iridescent {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(100deg, #4a6b5d 0%, #8c6e3f 48%, #7a6893 100%);
+  }
+
+  .input {
+    @apply w-full rounded-2xl border border-espresso/15 bg-white/80 px-4 py-3.5 text-[15px] text-espresso transition placeholder:text-espresso-400 focus:border-sage focus:outline-none focus:ring-4 focus:ring-sage/10;
+  }
+  .chip {
+    @apply whitespace-nowrap rounded-full border px-4 py-2 text-[13px] font-medium transition-all duration-300;
+  }
+  .chip-on {
+    @apply border-espresso bg-espresso text-cream;
+  }
+  .chip-off {
+    @apply border-espresso/15 bg-white/60 text-espresso-700 hover:border-espresso/40;
+  }
+
+  /* Dichroic shimmer: pointer-tracked highlight + slow sweeping sheen */
   .dichroic-sheen {
     position: absolute;
     inset: 0;
     border-radius: inherit;
     background:
-      radial-gradient(circle at var(--mx, 50%) var(--my, 30%), rgba(255, 255, 255, 0.55), transparent 35%),
-      linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.45) 45%, rgba(170, 255, 225, 0.3) 50%, transparent 62%);
+      radial-gradient(circle at var(--mx, 35%) var(--my, 25%), rgba(255, 255, 255, 0.6), transparent 38%),
+      linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.45) 45%, rgba(255, 240, 210, 0.3) 50%, transparent 62%);
     background-size: 100% 100%, 250% 100%;
     mix-blend-mode: screen;
-    animation: sheen 4.5s linear infinite;
+    animation: sheen 6s linear infinite;
     pointer-events: none;
-  }
-  @keyframes sheen {
-    0% { background-position: 0 0, 200% 0; }
-    100% { background-position: 0 0, -200% 0; }
   }
 
-  /* Subtle film-grain overlay for a premium editorial feel */
-  .grain::after {
+  /* Paper-like grain for an editorial print feel */
+  .paper::after {
     content: '';
     position: fixed;
-    inset: -50%;
-    z-index: 60;
+    inset: 0;
+    z-index: 100;
     pointer-events: none;
-    opacity: 0.05;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.045;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 }
 
 @layer utilities {
-  .no-scrollbar::-webkit-scrollbar { display: none; }
-  .no-scrollbar { scrollbar-width: none; }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
   .mask-fade-x {
-    mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
   }
 }
 
-/* Lenis smooth-scroll recommended styles */
+@keyframes sheen {
+  0% { background-position: 0 0, 200% 0; }
+  100% { background-position: 0 0, -200% 0; }
+}
+
+/* Lenis */
 html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto !important; }
-.lenis.lenis-stopped { overflow: hidden; }
+.lenis.lenis-stopped { overflow: clip; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

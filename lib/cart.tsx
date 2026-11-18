@@ -1,58 +1,102 @@
 'use client';
 
-import { createContext, useCallback, useContext, useEffect, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { Check } from 'lucide-react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import type { PendantShape } from './data/jewelry';
+import type { ProductShape } from './data/products';
 
-type CartContextValue = { count: number; add: (name: string) => void };
+export type CartVisual =
+  | { type: 'product'; shape: ProductShape; colors: [string, string]; cap: string; label: string }
+  | { type: 'pendant'; shape: PendantShape; colors: [string, string, string, string] };
+
+export type CartItem = {
+  id: string;
+  name: string;
+  subtitle: string;
+  price: number;
+  qty: number;
+  visual: CartVisual;
+  /** One-of-a-kind pieces can only be added once */
+  unique?: boolean;
+};
+
+type CartContextValue = {
+  items: CartItem[];
+  count: number;
+  subtotal: number;
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  add: (item: Omit<CartItem, 'qty'>) => void;
+  setQty: (id: string, qty: number) => void;
+  remove: (id: string) => void;
+};
 
 const CartContext = createContext<CartContextValue | null>(null);
+const STORAGE_KEY = 'synergy44.cart.v1';
 
 /**
- * Minimal client-side cart for the landing page.
- * Swap `add` for a WooCommerce Store API / Shopify Storefront call when wiring checkout.
+ * Client cart persisted to localStorage.
+ * Replace `add`/`setQty` internals with WooCommerce Store API (/wp-json/wc/store/v1/cart)
+ * or a Shopify Storefront cart when connecting checkout.
  */
 export function CartProvider({ children }: { children: React.ReactNode }) {
-  const [count, setCount] = useState(0);
-  const [toast, setToast] = useState<{ id: number; name: string } | null>(null);
+  const [items, setItems] = useState<CartItem[]>([]);
+  const [open, setOpen] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
 
-  const add = useCallback((name: string) => {
-    setCount((c) => c + 1);
-    setToast({ id: Date.now(), name });
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) setItems(JSON.parse(raw));
+    } catch {
+      /* storage unavailable — cart stays in memory */
+    }
+    setHydrated(true);
   }, []);
 
   useEffect(() => {
-    if (!toast) return;
-    const t = setTimeout(() => setToast(null), 2400);
-    return () => clearTimeout(t);
-  }, [toast]);
+    if (!hydrated) return;
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    } catch {
+      /* ignore */
+    }
+  }, [items, hydrated]);
 
-  return (
-    <CartContext.Provider value={{ count, add }}>
-      {children}
-      <div aria-live="polite" className="pointer-events-none fixed inset-x-0 bottom-6 z-[80] flex justify-center px-4">
-        <AnimatePresence>
-          {toast && (
-            <motion.div
-              key={toast.id}
-              initial={{ opacity: 0, y: 24, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 12, scale: 0.97 }}
-              transition={{ type: 'spring', stiffness: 380, damping: 28 }}
-              className="glass flex items-center gap-3 rounded-full px-5 py-3 text-sm text-stone-100"
-            >
-              <span className="grid h-6 w-6 place-items-center rounded-full bg-jade text-ink">
-                <Check className="h-3.5 w-3.5" strokeWidth={3} />
-              </span>
-              <span>
-                <strong className="font-semibold">{toast.name}</strong> added to your bag
-              </span>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </CartContext.Provider>
+  const add = useCallback((item: Omit<CartItem, 'qty'>) => {
+    setItems((prev) => {
+      const existing = prev.find((i) => i.id === item.id);
+      if (existing) {
+        if (existing.unique) return prev;
+        return prev.map((i) => (i.id === item.id ? { ...i, qty: i.qty + 1 } : i));
+      }
+      return [...prev, { ...item, qty: 1 }];
+    });
+    setOpen(true);
+  }, []);
+
+  const setQty = useCallback((id: string, qty: number) => {
+    setItems((prev) =>
+      qty <= 0 ? prev.filter((i) => i.id !== id) : prev.map((i) => (i.id === id ? { ...i, qty: i.unique ? 1 : qty } : i)),
+    );
+  }, []);
+
+  const remove = useCallback((id: string) => setItems((prev) => prev.filter((i) => i.id !== id)), []);
+
+  const value = useMemo<CartContextValue>(
+    () => ({
+      items,
+      count: items.reduce((n, i) => n + i.qty, 0),
+      subtotal: items.reduce((n, i) => n + i.qty * i.price, 0),
+      open,
+      setOpen,
+      add,
+      setQty,
+      remove,
+    }),
+    [items, open, add, setQty, remove],
   );
+
+  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
 
 export function useCart() {

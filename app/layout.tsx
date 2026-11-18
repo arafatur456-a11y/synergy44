@@ -1,37 +1,48 @@
 import type { Metadata, Viewport } from 'next';
-import { Fraunces, Manrope } from 'next/font/google';
+import localFont from 'next/font/local';
 import './globals.css';
-import SmoothScroll from '@/components/SmoothScroll';
 import { CartProvider } from '@/lib/cart';
+import SmoothScroll from '@/components/layout/SmoothScroll';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
+import CartDrawer from '@/components/shop/CartDrawer';
+import { site } from '@/lib/site';
 
-const display = Fraunces({
-  subsets: ['latin'],
+// Self-hosted variable fonts (Fontsource) — no build-time network fetch, fully cached on the CDN.
+const display = localFont({
+  src: [
+    { path: '../node_modules/@fontsource-variable/cormorant-garamond/files/cormorant-garamond-latin-wght-normal.woff2', weight: '300 700', style: 'normal' },
+    { path: '../node_modules/@fontsource-variable/cormorant-garamond/files/cormorant-garamond-latin-wght-italic.woff2', weight: '300 700', style: 'italic' },
+  ],
   variable: '--font-display',
-  style: ['normal', 'italic'],
   display: 'swap',
+  fallback: ['Georgia', 'serif'],
 });
 
-const sans = Manrope({
-  subsets: ['latin'],
+const sans = localFont({
+  src: '../node_modules/@fontsource-variable/manrope/files/manrope-latin-wght-normal.woff2',
+  weight: '200 800',
   variable: '--font-sans',
   display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: 'Synergy 44 — Organic Hair Care & Dichroic Glass Art',
+  metadataBase: new URL(site.url),
+  title: {
+    default: 'Synergy 44 — Organic Hair Care & Dichroic Glass Art',
+    template: '%s · Synergy 44',
+  },
   description:
-    'Premium organic, vegan hair care from Loma, MKS eco, Olaplex and Neuma, handmade dichroic glass jewelry by Cynthia Reedy, and professional salon services in Michigan & California.',
+    'Organic, vegan hair care from Loma, MKS Eco, Olaplex and Neuma, professional salon services in Michigan & California, and handmade dichroic glass jewelry by Cynthia Reedy.',
   openGraph: {
-    title: 'Synergy 44',
-    description: 'Healthy hair. Living light. Organic hair care & handmade dichroic glass art.',
-    url: 'https://synergy44.com',
     siteName: 'Synergy 44',
     type: 'website',
+    url: site.url,
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: '#060807',
+  themeColor: '#FAF8F5',
   width: 'device-width',
   initialScale: 1,
 };
@@ -39,10 +50,16 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${display.variable} ${sans.variable}`}>
-      <body className="grain">
+      <body className="paper">
+        <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:rounded-full focus:bg-espresso focus:px-5 focus:py-3 focus:text-cream">
+          Skip to content
+        </a>
         <CartProvider>
           <SmoothScroll />
-          {children}
+          <Navbar />
+          <main id="main">{children}</main>
+          <Footer />
+          <CartDrawer />
         </CartProvider>
       </body>
     </html>

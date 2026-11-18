@@ -1,58 +1,72 @@
-# Synergy 44 — Immersive Landing Page
+# Synergy 44 — Warm Editorial Redesign
 
-Next.js 15 (App Router) · React 19 · Tailwind CSS 3 · Framer Motion · GSAP + ScrollTrigger · React Three Fiber · Lenis
+A multi-page Next.js (App Router) storefront for Synergy 44: organic hair care, salon services and handmade dichroic glass jewelry by Cynthia Reedy.
+
+**Stack:** Next.js 15 · React 19 · TypeScript · Tailwind CSS 3 · Framer Motion · Lenis · lucide-react · self-hosted Cormorant Garamond + Manrope (Fontsource)
+
+![Home](preview/home.jpg)
 
 ## Quick start
 
 ```bash
 npm install
-npm run dev        # http://localhost:3000
+npm run dev          # http://localhost:3000
 npm run build && npm start
 ```
 
-### Starting from a fresh Next.js app instead
+Copy `.env.example` to `.env.local` to enable email delivery for the contact form and a direct checkout link (both optional).
 
-```bash
-npx create-next-app@latest synergy44 --typescript --tailwind --app --eslint
-cd synergy44
-npm install framer-motion gsap @gsap/react lenis three @react-three/fiber lucide-react
-npm install -D @types/three
-```
-Then copy `app/`, `components/`, `lib/` and `tailwind.config.ts` into the project.
-(If create-next-app scaffolds Tailwind v4, either pin `tailwindcss@3` or port the config's theme tokens to `@theme` in CSS.)
+## Routes
+
+| Route | What it is |
+| --- | --- |
+| `/` | Editorial hero with floating frosted cards (mouse parallax + tilt), brand strip, two-crafts split, featured products, glass teaser, salon teaser, testimonials, Guarantee |
+| `/products/hair-care` | Full catalogue — brand chips, ritual tabs, search, sort; filters sync to `?brand=` / `?category=` |
+| `/products/hair-care/[brand]` | Statically generated pages for Loma, MKS Eco, Olaplex, Neuma, Gama, Sutra, Goomee |
+| `/jewelry` | Dichroic glass gallery with collection filters, shimmering cards, quick-view modal, process + commissions |
+| `/about` | Cynthia’s story, timeline, the Synergy 44 Guarantee, sustainability |
+| `/hair-styling` | Tabbed salon menu (Women / Men / Hi-Lights & Color / Treatments), approach, testimonials |
+| `/contact` | Validated inquiry & booking form (`?topic=salon|consultation|product|jewelry|other` pre-selects) |
+| `POST /api/contact` | Server validation, honeypot, per-IP throttle, email via Resend |
 
 ## Structure
 
 ```
-app/
-  layout.tsx            fonts (Fraunces + Manrope), CartProvider, Lenis smooth scroll
-  page.tsx              section composition
-  globals.css           glass / gradient / dichroic-sheen utilities, grain overlay
+app/                     routes, layout (fonts, providers), template.tsx (page transitions), api/contact
 components/
-  Hero.tsx              split-word headline, scroll-depth parallax, mouse-reactive glass cards
-  ParticleField.tsx     R3F particle cosmos + wireframe gem (lazy-loaded, paused off-screen)
-  ProductShowcase.tsx   "Hair Care Elite" — animated filter tabs + 3D tilt cards
-  TiltCard.tsx          reusable spring-based 3D tilt with cursor glare
-  ProductVisual.tsx     SVG bottle illustrations (placeholder for product photos)
-  GlassGallery.tsx      GSAP pinned horizontal scroll, cards swing in from depth
-  PendantVisual.tsx     CSS dichroic pendant with pointer-tracked shimmer
-  QuickViewModal.tsx    portal modal (Esc / backdrop close, scroll lock)
-  Story.tsx             "The Hair Healers" alternating timeline with scroll-filled spine
-  Testimonials.tsx      swipeable auto-advancing carousel with glowing stars
-  BrandMarquee.tsx, Navbar.tsx, Footer.tsx
+  layout/                Navbar (mega menu + mobile sheet), Footer, SmoothScroll (Lenis)
+  ui/                    Reveal, Parallax, TiltCard, BotanicalSprig, PageHeader, SectionHeading
+  shop/                  ProductCard, ProductGrid (filters), ProductVisual (SVG packshots), CartDrawer
+  jewelry/               PendantVisual (CSS dichroic glass), JewelryGallery, QuickViewModal
+  home/                  Hero, BrandStrip, CraftsSplit, FeaturedProducts, JewelryTeaser, ServicesTeaser
+  services/, contact/    PricingMenu, ContactForm
 lib/
-  data.ts               ALL content (products, pendants, milestones, reviews)
-  cart.tsx              minimal cart context + toast
+  data/                  brands, products, jewelry, content (services, testimonials, guarantee, timeline)
+  cart.tsx               cart context (localStorage-persisted)
+  contact.ts             shared validation for form + API
+  lenis.ts, site.ts, utils.ts
 ```
 
-## Performance & accessibility notes
-- WebGL is loaded with `next/dynamic({ ssr:false })`, never blocks LCP, and its render loop stops when the hero leaves the viewport.
-- `prefers-reduced-motion` disables the particle field, Lenis, GSAP pinning (gallery falls back to native swipe) and tilt.
-- On < 768px the gallery uses native CSS scroll-snap instead of pinning.
-- Keyboard focus rings, aria labels on icon buttons, `role="dialog"` modal, `aria-live` carousel/toast.
+## Design system
 
-## Before launch
-- **Content in `lib/data.ts` is placeholder**: prices, sizes, pendant names, and testimonial quotes. Replace with real WooCommerce data and clients' verbatim reviews.
-- Verify the timeline copy (Eastern Michigan University, cosmetology journals) with Cynthia.
-- Swap `ProductVisual` / `PendantVisual` / Story gradient blocks for `next/image` photos.
-- Wire `useCart().add` to the WooCommerce Store API (or headless Shopify) and the newsletter form to your ESP.
+Tokens live in `tailwind.config.ts`: `cream #FAF8F5`, `espresso #1E1D1B`, `sage #4A6B5D`, `champagne #B8975E`, plus an `.iridescent` wash and `.text-iridescent` for the dichroic accent. Reusable classes (`.btn-dark`, `.btn-outline`, `.card`, `.frost`, `.chip`, `.input`, `.eyebrow`, `.h-section`, `.display-xl`) are in `app/globals.css`.
+
+Motion is deliberately calm: tilt ≤ 6°, long silk easing, scroll parallax ≤ 70px. Everything respects `prefers-reduced-motion` (Lenis, parallax, tilt and reveals switch off).
+
+## Before launch — content to confirm
+
+All of these are placeholders and are flagged in the data files:
+
+- **Products** (`lib/data/products.ts`) — names, sizes, prices. Sync with WooCommerce, or fetch from the WC Store API.
+- **Jewelry** (`lib/data/jewelry.ts`) — piece names, sizes, prices.
+- **Services** (`lib/data/content.ts`) — prices and durations.
+- **Testimonials** — quotes are illustrative. Replace with clients’ verbatim reviews (with permission).
+- **Guarantee and biography wording** — confirm with Cynthia.
+- **Imagery** — product packshots, pendants and portraits are drawn in code. Swap in real photography with `next/image`.
+- **Checkout** — the bag works locally. Set `NEXT_PUBLIC_CHECKOUT_URL` or wire `lib/cart.tsx` to the WooCommerce Store API / Stripe. Until then the bag offers “Request this order”, which sends the bag contents through the contact form.
+- **Newsletter** — footer form is UI only. Connect it to Mailchimp, Klaviyo or similar.
+- **Contact email** — `site.contactEmail` in `lib/site.ts` is shown on `/contact` only once set.
+
+## Deploying
+
+Works on Vercel with zero config. Add the environment variables from `.env.example` in the project settings.
