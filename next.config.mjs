@@ -1,16 +1,18 @@
 /**
- * Remote image hosts for next/image. The WooCommerce host (WC_STORE_URL) is added
+ * Remote image hosts for next/image. The WooCommerce host (NEXT_PUBLIC_WC_STORE_URL) is added
  * automatically so product photos from the store render without extra config.
- * Add other CDNs (e.g. Cloudinary) to EXTRA_IMAGE_HOSTS below.
+ * Add other CDNs (e.g. Cloudinary, Jetpack's i0.wp.com) to EXTRA_IMAGE_HOSTS.
  */
-const EXTRA_IMAGE_HOSTS = ['synergy44.com', 'www.synergy44.com'];
+const EXTRA_IMAGE_HOSTS = ['synergy44.com', 'www.synergy44.com', 'i0.wp.com'];
 
-const hosts = new Set(EXTRA_IMAGE_HOSTS);
-if (process.env.WC_STORE_URL) {
+const patterns = new Map(EXTRA_IMAGE_HOSTS.map((h) => [h, { protocol: 'https', hostname: h, pathname: '/**' }]));
+const storeUrl = process.env.NEXT_PUBLIC_WC_STORE_URL || process.env.WC_STORE_URL;
+if (storeUrl) {
   try {
-    hosts.add(new URL(process.env.WC_STORE_URL).hostname);
+    const u = new URL(storeUrl);
+    patterns.set(u.hostname, { protocol: u.protocol.replace(':', ''), hostname: u.hostname, port: u.port, pathname: '/**' });
   } catch {
-    console.warn('WC_STORE_URL is not a valid URL');
+    console.warn('NEXT_PUBLIC_WC_STORE_URL is not a valid URL');
   }
 }
 
@@ -22,7 +24,7 @@ const nextConfig = {
   },
   images: {
     formats: ['image/avif', 'image/webp'],
-    remotePatterns: [...hosts].map((hostname) => ({ protocol: 'https', hostname, pathname: '/**' })),
+    remotePatterns: [...patterns.values()],
   },
 };
 

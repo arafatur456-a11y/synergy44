@@ -3,7 +3,9 @@
  *
  *   mock (default)  → lib/data.ts
  *   live            → WooCommerce REST API via lib/woocommerce.ts
- *                     (enabled automatically when WC_STORE_URL + keys are set)
+ *                     (enabled when NEXT_PUBLIC_WC_STORE_URL + WC_CONSUMER_KEY/SECRET are set)
+ *   demo            → lib/data.ts, used only when WooCommerce isn't configured
+ *                     (local development, previews without keys)
  *
  * Components receive plain `Product` / `Pendant` arrays as props, so swapping the
  * source never requires UI changes.
@@ -18,8 +20,16 @@ import type { Pendant, Product } from './types';
 
 export const catalogSource = () => (isWooConfigured() ? 'woocommerce' : 'mock');
 
+let warned = false;
+
 async function fromSource<T>(live: () => Promise<T>, mock: T): Promise<T> {
-  if (!isWooConfigured()) return mock;
+  if (!isWooConfigured()) {
+    if (process.env.NODE_ENV === 'production' && !warned) {
+      warned = true;
+      console.warn('[catalog] WooCommerce is not configured — serving the DEMO catalog from lib/data.ts. Set NEXT_PUBLIC_WC_STORE_URL, WC_CONSUMER_KEY and WC_CONSUMER_SECRET.');
+    }
+    return mock;
+  }
   try {
     return await live();
   } catch (err) {

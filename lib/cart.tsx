@@ -17,6 +17,10 @@ export type CartItem = {
   visual: CartVisual;
   /** One-of-a-kind pieces can only be added once */
   unique?: boolean;
+  /** WooCommerce product ID — present for live catalog items; required for online checkout */
+  wcId?: number;
+  /** Max purchasable quantity reported by WooCommerce (null/undefined = no limit) */
+  maxQty?: number | null;
 };
 
 type CartContextValue = {
@@ -28,14 +32,18 @@ type CartContextValue = {
   add: (item: Omit<CartItem, 'qty'>) => void;
   setQty: (id: string, qty: number) => void;
   remove: (id: string) => void;
+  /** Patch an item (e.g. sync live price / stock limits from a checkout quote) */
+  update: (id: string, patch: Partial<Pick<CartItem, 'price' | 'qty' | 'maxQty' | 'name'>>) => void;
+  clear: () => void;
 };
 
 const CartContext = createContext<CartContextValue | null>(null);
 const STORAGE_KEY = 'synergy44.cart.v1';
 
 /**
- * Client cart persisted to localStorage.
- * Replace `add`/`setQty` internals with WooCommerce Store API (/wp-json/wc/store/v1/cart)
+ * Client cart persisted to localStorage. Items keep their WooCommerce product ID (`wcId`);
+ * at checkout only IDs + quantities are sent to /api/checkout, which re-prices everything
+ * against live WooCommerce data and creates the order server-side.
  * or a Shopify Storefront cart when connecting checkout.
  */
 export function CartProvider({ children }: { children: React.ReactNode }) {
@@ -67,7 +75,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       const existing = prev.find((i) => i.id === item.id);
       if (existing) {
         if (existing.unique) return prev;
-        return prev.map((i) => (i.id === item.id ? { ...i, qty: i.qty + 1 } : i));
+        const cap = Math.min(10, existing.maxQty ?? Infinity);
+        return prev.map((i) => (i.id === item.id ? { ...i, qty: Math.min(cap, i.qty + 1) } : i));
       }
       return [...prev, { ...item, qty: 1 }];
     });
@@ -76,9 +85,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const setQty = useCallback((id: string, qty: number) => {
     setItems((prev) =>
-      qty <= 0 ? prev.filter((i) => i.id !== id) : prev.map((i) => (i.id === id ? { ...i, qty: i.unique ? 1 : qty } : i)),
+      qty <= 0
+        ? prev.filter((i) => i.id !== id)
+        : prev.map((i) => (i.id === id ? { ...i, qty: i.unique ? 1 : Math.min(qty, 10, i.maxQty ?? Infinity) } : i)),
     );
   }, []);
+
+  const update = useCallback((id: string, patch: Partial<Pick<CartItem, 'price' | 'qty' | 'maxQty' | 'name'>>) => {
+    setItems((prev) => prev.map((i) => (i.id === id ? { ...i, ...patch } : i)));
+  }, []);
+
+  const clear = useCallback(() => setItems([]), []);
 
   const remove = useCallback((id: string) => setItems((prev) => prev.filter((i) => i.id !== id)), []);
 
@@ -92,8 +109,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       add,
       setQty,
       remove,
+      update,
+      clear,
     }),
-    [items, open, add, setQty, remove],
+    [items, open, add, setQty, remove, update, clear],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

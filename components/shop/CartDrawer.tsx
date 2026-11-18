@@ -1,38 +1,20 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Minus, Plus, ShoppingBag, X } from 'lucide-react';
-import { useCart, type CartItem } from '@/lib/cart';
+import { Lock, Minus, Plus, ShoppingBag, X } from 'lucide-react';
+import { useCart } from '@/lib/cart';
 import { lockScroll } from '@/lib/lenis';
 import { formatPrice, ease } from '@/lib/utils';
-import ProductVisual from './ProductVisual';
-import PendantVisual from '@/components/jewelry/PendantVisual';
+import CartThumb from './CartThumb';
 
-/** Set NEXT_PUBLIC_CHECKOUT_URL (e.g. WooCommerce /checkout) to enable direct checkout. */
-const CHECKOUT_URL = process.env.NEXT_PUBLIC_CHECKOUT_URL;
-
-function Thumb({ item }: { item: CartItem }) {
-  const v = item.visual;
-  return (
-    <div className="grid h-24 w-20 shrink-0 place-items-center overflow-hidden rounded-[3px] bg-[#ECE6DC]">
-      {v.type === 'image' ? (
-        <div className="relative h-full w-full">
-          <Image src={v.src} alt={v.alt} fill sizes="80px" className="object-cover" />
-        </div>
-      ) : v.type === 'product' ? (
-        <ProductVisual shape={v.shape} colors={v.colors} cap={v.cap} label={v.label} className="h-20" />
-      ) : (
-        <PendantVisual colors={v.colors} shape={v.shape} chain={false} className="w-12" />
-      )}
-    </div>
-  );
-}
 
 export default function CartDrawer() {
   const { items, open, setOpen, setQty, remove, subtotal, count } = useCart();
+  // Items from the live WooCommerce catalog carry a wcId and can be checked out online.
+  const onlineReady = items.length > 0 && items.some((i) => i.wcId);
+  const offlineItems = items.filter((i) => !i.wcId).length;
   const closeRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -104,7 +86,7 @@ export default function CartDrawer() {
                         transition={{ duration: 0.4, ease }}
                         className="flex gap-4 overflow-hidden py-5"
                       >
-                        <Thumb item={item} />
+                        <CartThumb item={item} />
                         <div className="flex min-w-0 flex-1 flex-col">
                           <div className="flex justify-between gap-3">
                             <div className="min-w-0">
@@ -122,7 +104,12 @@ export default function CartDrawer() {
                                   <Minus className="h-3 w-3" />
                                 </button>
                                 <span className="w-6 text-center text-sm tabular-nums">{item.qty}</span>
-                                <button onClick={() => setQty(item.id, item.qty + 1)} aria-label={`Increase ${item.name}`} className="grid h-8 w-8 place-items-center">
+                                <button
+                                  onClick={() => setQty(item.id, item.qty + 1)}
+                                  disabled={item.qty >= Math.min(10, item.maxQty ?? Infinity)}
+                                  aria-label={`Increase ${item.name}`}
+                                  className="grid h-8 w-8 place-items-center disabled:opacity-30"
+                                >
                                   <Plus className="h-3 w-3" />
                                 </button>
                               </div>
@@ -143,10 +130,17 @@ export default function CartDrawer() {
                     <span className="text-xl font-semibold tabular-nums">{formatPrice(subtotal)}</span>
                   </div>
                   <p className="mt-1 text-xs text-espresso-400">Shipping and taxes calculated at checkout.</p>
-                  {CHECKOUT_URL ? (
-                    <a href={CHECKOUT_URL} className="btn-dark mt-5 w-full">
-                      Checkout
-                    </a>
+                  {onlineReady ? (
+                    <>
+                      <Link href="/checkout" onClick={() => setOpen(false)} className="btn-dark mt-5 w-full">
+                        <Lock className="h-3.5 w-3.5" /> Secure checkout
+                      </Link>
+                      {offlineItems > 0 && (
+                        <p className="mt-2 text-center text-[11px] text-[#7A3322]">
+                          {offlineItems} item{offlineItems > 1 ? 's' : ''} can’t be ordered online and will be left out.
+                        </p>
+                      )}
+                    </>
                   ) : (
                     <>
                       <Link href="/contact?topic=product" onClick={() => setOpen(false)} className="btn-dark mt-5 w-full">

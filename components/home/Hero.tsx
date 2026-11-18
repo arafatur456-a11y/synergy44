@@ -8,7 +8,9 @@ import StudioScene from '@/components/ui/StudioScene';
 import ProductVisual from '@/components/shop/ProductVisual';
 import PendantVisual from '@/components/jewelry/PendantVisual';
 import { useCart } from '@/lib/cart';
-import { products } from '@/lib/data';
+import Image from 'next/image';
+import { getBrand, products } from '@/lib/data';
+import type { Product } from '@/lib/types';
 import { ease, formatPrice } from '@/lib/utils';
 
 const leaveIn = products.find((p) => p.id === 'loma-leave-in')!;
@@ -27,10 +29,61 @@ function Float({ mx, my, depth, className, delay, children }: { mx: MotionValue<
   );
 }
 
-export default function Hero() {
+/** Floating "quick add" card — uses a live catalog product passed from the page. */
+function SpotlightCard({ product: p }: { product: Product }) {
+  const { add } = useCart();
+  const brandName = getBrand(p.brand)?.name ?? p.brand;
+  const canAdd = p.inStock !== false && p.type !== 'variable';
+  return (
+    <div className="glass p-3">
+      <div className="flex gap-3">
+        <div className="relative grid h-[86px] w-[70px] shrink-0 place-items-center overflow-hidden rounded-[8px] bg-gradient-to-b from-white to-cream-100">
+          {p.image ? (
+            <Image src={p.image} alt={p.name} fill sizes="70px" className="object-cover" />
+          ) : (
+            <ProductVisual shape={p.shape} colors={p.colors} cap={p.cap} label={brandName} className="h-[74px]" />
+          )}
+        </div>
+        <div className="flex min-w-0 flex-1 flex-col py-0.5">
+          <p className="truncate text-[9.5px] font-semibold uppercase tracking-[0.18em] text-sage-dark">
+            {p.badge ?? 'Featured'} · {brandName}
+          </p>
+          <p className="mt-1 line-clamp-2 font-display text-[1.05rem] font-semibold leading-tight">{p.name}</p>
+          <div className="mt-auto flex items-center justify-between">
+            <span className="text-sm font-semibold tabular-nums">{formatPrice(p.price)}</span>
+            {canAdd ? (
+              <button
+                onClick={() =>
+                  add({
+                    id: p.id,
+                    name: p.name,
+                    subtitle: [brandName, p.size].filter(Boolean).join(' · '),
+                    price: p.price,
+                    wcId: p.wcId,
+                    maxQty: p.stockQuantity,
+                    visual: p.image ? { type: 'image', src: p.image, alt: p.name } : { type: 'product', shape: p.shape, colors: p.colors, cap: p.cap, label: brandName },
+                  })
+                }
+                aria-label={`Quick add ${brandName} ${p.name}`}
+                className="grid h-8 w-8 place-items-center rounded-full bg-ink text-white transition-transform duration-300 hover:scale-110 active:scale-95"
+              >
+                <Plus className="h-3.5 w-3.5" />
+              </button>
+            ) : (
+              <a href={p.permalink ?? '/products/hair-care'} className="text-[10px] font-semibold uppercase tracking-[0.16em] underline underline-offset-4">
+                View
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function Hero({ spotlight }: { spotlight?: Product }) {
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
-  const { add } = useCart();
 
   const rawX = useMotionValue(0);
   const rawY = useMotionValue(0);
@@ -131,35 +184,7 @@ export default function Hero() {
 
           {/* Floating glass cards */}
           <Float mx={mx} my={my} depth={-22} delay={1.0} className="bottom-8 left-4 w-[230px] sm:bottom-14 sm:left-8 lg:-left-16 lg:w-[270px]">
-            <div className="glass p-3">
-              <div className="flex gap-3">
-                <div className="grid h-[86px] w-[70px] shrink-0 place-items-center rounded-[8px] bg-gradient-to-b from-white to-cream-100">
-                  <ProductVisual {...leaveIn} label="Loma" className="h-[74px]" />
-                </div>
-                <div className="flex min-w-0 flex-1 flex-col py-0.5">
-                  <p className="text-[9.5px] font-semibold uppercase tracking-[0.18em] text-sage-dark">Bestseller · Loma</p>
-                  <p className="mt-1 font-display text-[1.05rem] font-semibold leading-tight">Leave-In Conditioner</p>
-                  <div className="mt-auto flex items-center justify-between">
-                    <span className="text-sm font-semibold tabular-nums">{formatPrice(leaveIn.price)}</span>
-                    <button
-                      onClick={() =>
-                        add({
-                          id: leaveIn.id,
-                          name: leaveIn.name,
-                          subtitle: `Loma · ${leaveIn.size}`,
-                          price: leaveIn.price,
-                          visual: { type: 'product', shape: leaveIn.shape, colors: leaveIn.colors, cap: leaveIn.cap, label: 'Loma' },
-                        })
-                      }
-                      aria-label="Quick add Loma Leave-In Conditioner"
-                      className="grid h-8 w-8 place-items-center rounded-full bg-ink text-white transition-transform duration-300 hover:scale-110 active:scale-95"
-                    >
-                      <Plus className="h-3.5 w-3.5" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+            {spotlight && <SpotlightCard product={spotlight} />}
           </Float>
 
           <Float mx={mx} my={my} depth={26} delay={1.2} className="right-4 top-8 w-[200px] sm:right-8 sm:top-auto sm:bottom-[42%] lg:w-[220px]">

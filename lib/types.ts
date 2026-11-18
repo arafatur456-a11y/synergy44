@@ -39,6 +39,16 @@ export type Product = {
   featured?: boolean;
   /** WooCommerce product URL / permalink, if sourced from the store */
   permalink?: string;
+  // ── Commerce fields (set when the product comes from WooCommerce) ──
+  /** Numeric WooCommerce product ID — required for checkout */
+  wcId?: number;
+  /** WooCommerce product type. Variable products need option selection on the product page. */
+  type?: 'simple' | 'variable' | 'grouped' | 'external';
+  /** Regular price when the product is on sale */
+  regularPrice?: number;
+  inStock?: boolean;
+  /** Remaining stock when WooCommerce manages stock for the product */
+  stockQuantity?: number | null;
 };
 
 export type Pendant = {
@@ -53,6 +63,8 @@ export type Pendant = {
   price: number;
   description: string;
   permalink?: string;
+  wcId?: number;
+  inStock?: boolean;
 };
 
 export type Service = { name: string; detail: string; price: string; duration?: string };

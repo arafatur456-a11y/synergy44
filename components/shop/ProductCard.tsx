@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { Check, Plus } from 'lucide-react';
+import { ArrowUpRight, Ban, Check, Plus } from 'lucide-react';
 import ProductVisual from './ProductVisual';
 import { CardAction, CardMeta, MediaFrame } from './CardParts';
 import { getBrand } from '@/lib/data';
@@ -27,6 +27,8 @@ export default function ProductCard({ product }: { product: Product }) {
       name: product.name,
       subtitle: [brandName, product.size].filter(Boolean).join(' · '),
       price: product.price,
+      wcId: product.wcId,
+      maxQty: product.stockQuantity,
       visual: product.image
         ? { type: 'image', src: product.image, alt: product.name }
         : { type: 'product', shape: product.shape, colors: product.colors, cap: product.cap, label: brandName },
@@ -40,6 +42,11 @@ export default function ProductCard({ product }: { product: Product }) {
         badge={product.badge}
         background={product.image ? undefined : `radial-gradient(90% 70% at 50% 38%, #FFFFFF 0%, ${brand?.tint ?? '#EEE8DE'} 55%, #DCD3C6 100%)`}
         action={
+          product.inStock === false ? (
+            <CardAction disabled ariaLabel={`${product.name} is sold out`} label="Sold out" icon={<Ban className="h-4 w-4" />} />
+          ) : product.type === 'variable' && product.permalink ? (
+            <CardAction href={product.permalink} ariaLabel={`Choose options for ${product.name}`} label="Choose options" icon={<ArrowUpRight className="h-4 w-4" />} price={product.price} />
+          ) : (
           <CardAction
             onClick={onAdd}
             ariaLabel={`Quick add ${brandName} ${product.name}`}
@@ -55,6 +62,7 @@ export default function ProductCard({ product }: { product: Product }) {
             icon={added ? <Check className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
             price={product.price}
           />
+          )
         }
       >
         {product.image ? (
@@ -72,6 +80,7 @@ export default function ProductCard({ product }: { product: Product }) {
         eyebrow={brandName}
         title={product.name}
         price={product.price}
+        compareAt={product.regularPrice}
         detail={
           <>
             {product.size}

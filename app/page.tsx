@@ -7,13 +7,14 @@ import ServicesTeaser from '@/components/home/ServicesTeaser';
 import Testimonials from '@/components/Testimonials';
 import GuaranteeGrid from '@/components/GuaranteeGrid';
 import SectionHeader from '@/components/ui/SectionHeader';
-import { getPendants } from '@/lib/catalog';
+import { getFeaturedProducts, getPendants } from '@/lib/catalog';
 
 export default async function HomePage() {
-  const pendants = await getPendants();
+  // Live WooCommerce data (or the demo catalog when the store isn't configured)
+  const [pendants, [spotlight]] = await Promise.all([getPendants(), getFeaturedProducts(1)]);
   return (
     <>
-      <Hero />
+      <Hero spotlight={spotlight} />
       <BrandMarquee />
       <FeaturedEdit />
       <CraftsSplit />

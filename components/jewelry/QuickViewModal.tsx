@@ -100,7 +100,7 @@ export default function QuickViewModal({ item, onClose }: { item: Pendant | null
 
               <div className="mt-auto pt-10">
                 <button
-                  disabled={inBag}
+                  disabled={inBag || item.inStock === false}
                   onClick={() => {
                     add({
                       id: `pendant-${item.id}`,
@@ -108,13 +108,17 @@ export default function QuickViewModal({ item, onClose }: { item: Pendant | null
                       subtitle: `Dichroic glass · ${item.collection}`,
                       price: item.price,
                       unique: true,
+                      wcId: item.wcId,
+                      maxQty: 1,
                       visual: item.image ? { type: 'image', src: item.image, alt: item.name } : { type: 'pendant', shape: item.shape, colors: item.colors },
                     });
                     onClose();
                   }}
                   className="btn-dark w-full"
                 >
-                  {inBag ? (
+                  {item.inStock === false ? (
+                    'Sold'
+                  ) : inBag ? (
                     <>
                       <Check className="h-4 w-4" /> In your bag
                     </>

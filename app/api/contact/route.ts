@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { topics, validateContact, type ContactPayload } from '@/lib/contact';
+import { clientIp, rateLimited } from '@/lib/rate-limit';
 
 /**
  * POST /api/contact
@@ -9,19 +10,6 @@ import { topics, validateContact, type ContactPayload } from '@/lib/contact';
  *   CONTACT_FROM_EMAIL  – verified sender, e.g. "Synergy 44 <hello@yourdomain.com>"
  * Without those variables it logs the inquiry server-side (useful in development).
  */
-
-// Basic per-IP throttle (per server instance). Use a shared store (e.g. Upstash) for multi-region limits.
-const hits = new Map<string, number[]>();
-const WINDOW_MS = 10 * 60 * 1000;
-const MAX_PER_WINDOW = 5;
-
-function throttled(ip: string) {
-  const now = Date.now();
-  const recent = (hits.get(ip) ?? []).filter((t) => now - t < WINDOW_MS);
-  recent.push(now);
-  hits.set(ip, recent);
-  return recent.length > MAX_PER_WINDOW;
-}
 
 const escape = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
 
@@ -36,8 +24,7 @@ export async function POST(req: Request) {
   // Honeypot: pretend success so bots learn nothing
   if (body.company) return NextResponse.json({ ok: true });
 
-  const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
-  if (throttled(ip)) {
+  if (rateLimited(`contact:${clientIp(req)}`, 5, 10 * 60_000)) {
     return NextResponse.json({ ok: false, error: 'Too many messages — please try again a little later.' }, { status: 429 });
   }
 

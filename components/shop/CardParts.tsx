@@ -63,33 +63,52 @@ export function CardBadge({ children }: { children: ReactNode }) {
 
 export function CardAction({
   onClick,
+  href,
+  disabled,
   label,
   icon,
   price,
   ariaLabel,
 }: {
-  onClick: () => void;
+  onClick?: () => void;
+  /** Renders a link instead of a button (e.g. "Choose options" on the store's product page) */
+  href?: string;
+  disabled?: boolean;
   label: ReactNode;
   icon: ReactNode;
   price?: number;
   ariaLabel: string;
 }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-label={ariaLabel}
-      className={cn(
-        'absolute bottom-3 right-3 z-[2] grid h-11 w-11 place-items-center rounded-full bg-ink text-white shadow-lift transition-transform duration-300 active:scale-95',
-        'md:left-3 md:flex md:h-12 md:w-auto md:items-center md:justify-between md:rounded-[2px] md:bg-ink/90 md:px-5 md:backdrop-blur-md',
-        'md:translate-y-[calc(100%+16px)] md:duration-500 md:ease-silk md:group-hover:translate-y-0 md:focus-visible:translate-y-0',
-      )}
-    >
+  const className = cn(
+    'absolute bottom-3 right-3 z-[2] grid h-11 w-11 place-items-center rounded-full bg-ink text-white shadow-lift transition-transform duration-300 active:scale-95 disabled:cursor-not-allowed disabled:bg-espresso-400',
+    'md:left-3 md:flex md:h-12 md:w-auto md:items-center md:justify-between md:rounded-[2px] md:bg-ink/90 md:px-5 md:backdrop-blur-md md:disabled:bg-espresso-500/90',
+    'md:translate-y-[calc(100%+16px)] md:duration-500 md:ease-silk md:group-hover:translate-y-0 md:focus-visible:translate-y-0',
+  );
+  const content = (
+    <>
       <span className="flex items-center gap-2">
         <span className="md:hidden">{icon}</span>
         <span className="hidden text-[11px] font-semibold uppercase tracking-[0.16em] md:inline">{label}</span>
       </span>
       {price !== undefined && <span className="hidden text-[12px] font-semibold tabular-nums md:inline">{formatPrice(price)}</span>}
+    </>
+  );
+  if (href) {
+    return (
+      <a href={href} aria-label={ariaLabel} className={className}>
+        {content}
+      </a>
+    );
+  }
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={ariaLabel}
+      className={className}
+    >
+      {content}
     </button>
   );
 }
@@ -100,12 +119,15 @@ export function CardMeta({
   title,
   detail,
   price,
+  compareAt,
 }: {
   tone?: 'light' | 'dark';
   eyebrow: string;
   title: string;
   detail?: ReactNode;
   price: number;
+  /** Original price, shown struck-through when on sale */
+  compareAt?: number;
 }) {
   const dark = tone === 'dark';
   return (
@@ -115,7 +137,16 @@ export function CardMeta({
         <h3 className={cn('mt-1 font-display text-[1.1rem] font-semibold leading-snug sm:text-[1.2rem]', dark ? 'text-white' : 'text-ink')}>{title}</h3>
         {detail && <p className={cn('mt-1 text-[12.5px]', dark ? 'text-white/55' : 'text-espresso-500')}>{detail}</p>}
       </div>
-      <p className={cn('shrink-0 pt-4 text-[15px] font-semibold tabular-nums', dark ? 'text-white' : 'text-ink')}>{formatPrice(price)}</p>
+      <p className={cn('shrink-0 pt-4 text-right text-[15px] font-semibold tabular-nums', dark ? 'text-white' : 'text-ink')}>
+        {compareAt && compareAt > price && (
+          <span className={cn('mr-2 text-[13px] font-medium line-through', dark ? 'text-white/45' : 'text-espresso-400')}>
+            <span className="sr-only">Was </span>
+            {formatPrice(compareAt)}
+          </span>
+        )}
+        {compareAt && compareAt > price && <span className="sr-only">Now </span>}
+        {formatPrice(price)}
+      </p>
     </div>
   );
 }
