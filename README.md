@@ -1,8 +1,8 @@
-# Synergy 44 — Warm Editorial Redesign
+# Synergy 44 — Boutique Storefront
 
 A multi-page Next.js (App Router) storefront for Synergy 44: organic hair care, salon services and handmade dichroic glass jewelry by Cynthia Reedy.
 
-**Stack:** Next.js 15 · React 19 · TypeScript · Tailwind CSS 3 · Framer Motion · Lenis · lucide-react · self-hosted Cormorant Garamond + Manrope (Fontsource)
+**Stack:** Next.js 15 · React 19 · TypeScript · Tailwind CSS 3 · Framer Motion · Lenis · lucide-react · self-hosted Playfair Display + Inter Tight (Fontsource)
 
 ![Home](preview/home.jpg)
 
@@ -49,9 +49,18 @@ lib/
 
 ## Design system
 
-Tokens live in `tailwind.config.ts`: `cream #FAF8F5`, `espresso #1E1D1B`, `sage #4A6B5D`, `champagne #B8975E`, plus an `.iridescent` wash and `.text-iridescent` for the dichroic accent. Reusable classes (`.btn-dark`, `.btn-outline`, `.card`, `.frost`, `.chip`, `.input`, `.eyebrow`, `.h-section`, `.display-xl`) are in `app/globals.css`.
+- **Type:** Playfair Display (600, high-contrast serif) for display, Inter Tight for UI and body. Headings are set in `#111` ink; italic champagne-gold accents (`.accent`).
+- **Palette** (`tailwind.config.ts`): `ink #111`, `cream #F5F1EA`, `paper #FBF9F5`, `line #E3DCD1`, `forest #131C18`, `sage #4A6B5D`, `champagne #A27D42`.
+- **Geometry:** sharp 2–6px radii, hairline rules, numbered editorial section headers (`SectionHeader`), asymmetric 12-column grids.
+- **Buttons:** rectangular, tracked caps, fill-wipe hover + arrow nudge (`.btn-dark`, `.btn-outline`, `.btn-light`, `.btn-ghost-light`).
+- **Glass:** `.glass` (milk glass, deep layered shadows) and `.glass-dark` for cards floating over imagery. The header is a frosted sticky bar (`backdrop-blur-md`).
+- **Imagery:** `components/ui/StudioScene.tsx` renders art-directed “studio photographs” in code — spotlight, arched niche, stone plinth, botanical shadow, grain, pointer-following light — in `forest`, `stone`, `velvet` and `espresso` tones. **Pass `src` to swap in real photography** with no layout changes:
 
-Motion is deliberately calm: tilt ≤ 6°, long silk easing, scroll parallax ≤ 70px. Everything respects `prefers-reduced-motion` (Lenis, parallax, tilt and reveals switch off).
+  ```tsx
+  <StudioScene src="/images/loma-leave-in.jpg" alt="Loma Leave-In Conditioner on stone" className="aspect-[4/5]" />
+  ```
+
+- **Motion:** calm and fluid — Lenis inertial scroll, slow image zoom on hover (1.4s), 5–6° tilt on glass cards, scroll parallax, clip-path reveals. Everything respects `prefers-reduced-motion`.
 
 ## Before launch — content to confirm
 
@@ -62,7 +71,7 @@ All of these are placeholders and are flagged in the data files:
 - **Services** (`lib/data/content.ts`) — prices and durations.
 - **Testimonials** — quotes are illustrative. Replace with clients’ verbatim reviews (with permission).
 - **Guarantee and biography wording** — confirm with Cynthia.
-- **Imagery** — product packshots, pendants and portraits are drawn in code. Swap in real photography with `next/image`.
+- **Imagery** — scenes, packshots and pendants are drawn in code. Pass real photos to `StudioScene` via `src` (see above), and replace `ProductVisual` / `PendantVisual` with `next/image` once product photography exists.
 - **Checkout** — the bag works locally. Set `NEXT_PUBLIC_CHECKOUT_URL` or wire `lib/cart.tsx` to the WooCommerce Store API / Stripe. Until then the bag offers “Request this order”, which sends the bag contents through the contact form.
 - **Newsletter** — footer form is UI only. Connect it to Mailchimp, Klaviyo or similar.
 - **Contact email** — `site.contactEmail` in `lib/site.ts` is shown on `/contact` only once set.

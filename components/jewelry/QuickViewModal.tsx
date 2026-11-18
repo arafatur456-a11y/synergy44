@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Check, Ruler, Sparkles, X } from 'lucide-react';
+import { ArrowRight, Check, Ruler, Sparkles, X } from 'lucide-react';
 import PendantVisual from './PendantVisual';
 import type { Pendant } from '@/lib/data/jewelry';
 import { useCart } from '@/lib/cart';
@@ -35,54 +35,63 @@ export default function QuickViewModal({ item, onClose }: { item: Pendant | null
     <AnimatePresence>
       {item && (
         <motion.div className="fixed inset-0 z-[95] flex items-end justify-center sm:items-center sm:p-6" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-          <div className="absolute inset-0 bg-espresso/35 backdrop-blur-[4px]" onClick={onClose} />
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={onClose} />
           <motion.div
             role="dialog"
             aria-modal="true"
             aria-labelledby="qv-title"
-            initial={{ y: 40, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
+            initial={{ y: 50, opacity: 0, scale: 0.98 }}
+            animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: 30, opacity: 0 }}
-            transition={{ duration: 0.6, ease }}
-            className="relative grid max-h-[92svh] w-full max-w-4xl overflow-y-auto rounded-t-[32px] bg-cream shadow-lift sm:rounded-[32px] md:grid-cols-2"
+            transition={{ duration: 0.7, ease }}
+            className="relative grid max-h-[94svh] w-full max-w-5xl overflow-y-auto bg-paper shadow-float sm:rounded-[6px] md:grid-cols-[1.1fr_1fr]"
             data-lenis-prevent
           >
             <button
               ref={closeRef}
               onClick={onClose}
               aria-label="Close quick view"
-              className="absolute right-4 top-4 z-10 grid h-10 w-10 place-items-center rounded-full bg-cream/80 backdrop-blur transition hover:bg-espresso hover:text-cream"
+              className="absolute right-4 top-4 z-10 grid h-11 w-11 place-items-center rounded-full border border-white/25 bg-black/30 text-white backdrop-blur-md transition hover:bg-white hover:text-ink md:border-ink/15 md:bg-paper md:text-ink md:hover:bg-ink md:hover:text-white"
             >
               <X className="h-4 w-4" />
             </button>
 
             <div
-              className="iridescent relative flex min-h-[340px] items-start justify-center overflow-hidden p-10"
+              className="relative flex min-h-[380px] items-start justify-center overflow-hidden md:min-h-[560px]"
+              style={{ background: `radial-gradient(70% 55% at 50% 42%, ${item.colors[0]}45 0%, #1A1620 55%, #0B0A0D 100%)` }}
               onPointerMove={(e) => {
                 const r = e.currentTarget.getBoundingClientRect();
                 e.currentTarget.style.setProperty('--mx', `${((e.clientX - r.left) / r.width) * 100}%`);
                 e.currentTarget.style.setProperty('--my', `${((e.clientY - r.top) / r.height) * 100}%`);
               }}
             >
-              <PendantVisual colors={item.colors} shape={item.shape} className="w-44 animate-drift sm:w-52" />
+              <div className="absolute left-1/2 top-[-10%] h-[70%] w-[70%] -translate-x-1/2 rounded-full bg-white/[0.07] blur-3xl" />
+              <PendantVisual colors={item.colors} shape={item.shape} className="relative w-44 animate-drift sm:w-56" />
+              <p className="absolute bottom-5 left-6 text-[10px] font-semibold uppercase tracking-[0.22em] text-white/50">Move to see the colors shift</p>
             </div>
 
-            <div className="flex flex-col p-8 sm:p-10">
-              <p className="eyebrow text-champagne">{item.collection}</p>
-              <h3 id="qv-title" className="mt-3 font-display text-4xl font-light sm:text-5xl">
+            <div className="flex flex-col p-8 sm:p-12">
+              <p className="eyebrow">{item.collection}</p>
+              <h3 id="qv-title" className="mt-5 font-display text-[2.8rem] font-semibold leading-none tracking-[-0.02em] sm:text-[3.4rem]">
                 {item.name}
               </h3>
-              <p className="mt-3 font-display text-2xl">{formatPrice(item.price)}</p>
-              <p className="mt-6 leading-relaxed text-espresso-500">{item.description}</p>
+              <p className="mt-4 text-xl font-semibold tabular-nums">{formatPrice(item.price)}</p>
+              <p className="mt-6 text-[15.5px] leading-relaxed text-espresso-700">{item.description}</p>
 
-              <ul className="mt-8 space-y-3 border-t border-espresso/[0.08] pt-6 text-sm text-espresso-700">
-                <li className="flex items-center gap-3">
-                  <Sparkles className="h-4 w-4 text-champagne" strokeWidth={1.6} /> Handmade, kiln-fused dichroic glass
-                </li>
-                <li className="flex items-center gap-3">
-                  <Ruler className="h-4 w-4 text-champagne" strokeWidth={1.6} /> Approx. {item.size}
-                </li>
-              </ul>
+              <dl className="mt-8 divide-y divide-line border-y border-line text-[14px]">
+                <div className="flex items-center justify-between py-3.5">
+                  <dt className="flex items-center gap-2.5 text-espresso-500">
+                    <Sparkles className="h-4 w-4 text-champagne" strokeWidth={1.6} /> Material
+                  </dt>
+                  <dd className="font-medium">Kiln-fused dichroic glass</dd>
+                </div>
+                <div className="flex items-center justify-between py-3.5">
+                  <dt className="flex items-center gap-2.5 text-espresso-500">
+                    <Ruler className="h-4 w-4 text-champagne" strokeWidth={1.6} /> Size
+                  </dt>
+                  <dd className="font-medium">Approx. {item.size}</dd>
+                </div>
+              </dl>
 
               <div className="mt-auto pt-10">
                 <button
@@ -105,10 +114,12 @@ export default function QuickViewModal({ item, onClose }: { item: Pendant | null
                       <Check className="h-4 w-4" /> In your bag
                     </>
                   ) : (
-                    'Add to bag'
+                    <>
+                      Add to bag — {formatPrice(item.price)} <ArrowRight className="h-4 w-4" />
+                    </>
                   )}
                 </button>
-                <p className="mt-3 text-center text-xs text-espresso-400">One of a kind — colors shift with the light.</p>
+                <p className="mt-3 text-center text-[11px] uppercase tracking-[0.16em] text-espresso-500">One of a kind · handmade by Cynthia Reedy</p>
               </div>
             </div>
           </motion.div>

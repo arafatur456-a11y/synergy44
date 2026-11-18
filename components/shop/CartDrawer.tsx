@@ -16,7 +16,7 @@ const CHECKOUT_URL = process.env.NEXT_PUBLIC_CHECKOUT_URL;
 function Thumb({ item }: { item: CartItem }) {
   const v = item.visual;
   return (
-    <div className="grid h-24 w-20 shrink-0 place-items-center overflow-hidden rounded-2xl bg-cream-100">
+    <div className="grid h-24 w-20 shrink-0 place-items-center overflow-hidden rounded-[3px] bg-[#ECE6DC]">
       {v.type === 'product' ? (
         <ProductVisual shape={v.shape} colors={v.colors} cap={v.cap} label={v.label} className="h-20" />
       ) : (
@@ -44,7 +44,7 @@ export default function CartDrawer() {
       {open && (
         <div className="fixed inset-0 z-[90]">
           <motion.div
-            className="absolute inset-0 bg-espresso/30 backdrop-blur-[3px]"
+            className="absolute inset-0 bg-black/45 backdrop-blur-md"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -58,10 +58,10 @@ export default function CartDrawer() {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ duration: 0.6, ease }}
-            className="absolute right-0 top-0 flex h-full w-full max-w-md flex-col bg-cream shadow-lift"
+            className="absolute right-0 top-0 flex h-full w-full max-w-[460px] flex-col bg-paper shadow-float"
           >
             <div className="flex items-center justify-between border-b border-espresso/[0.08] px-6 py-5">
-              <p className="font-display text-2xl">
+              <p className="font-display text-[1.9rem] font-semibold">
                 Your bag <span className="text-espresso-400">({count})</span>
               </p>
               <button ref={closeRef} onClick={() => setOpen(false)} aria-label="Close bag" className="grid h-10 w-10 place-items-center rounded-full hover:bg-espresso/5">
@@ -71,10 +71,10 @@ export default function CartDrawer() {
 
             {items.length === 0 ? (
               <div className="flex flex-1 flex-col items-center justify-center px-8 text-center">
-                <div className="grid h-16 w-16 place-items-center rounded-full bg-sage-pale">
-                  <ShoppingBag className="h-6 w-6 text-sage" strokeWidth={1.5} />
+                <div className="grid h-16 w-16 place-items-center rounded-full bg-ink">
+                  <ShoppingBag className="h-6 w-6 text-white" strokeWidth={1.5} />
                 </div>
-                <p className="mt-5 font-display text-2xl">Your bag is empty</p>
+                <p className="mt-5 font-display text-[1.9rem] font-semibold">Your bag is empty</p>
                 <p className="mt-2 text-sm text-espresso-500">Discover clean hair care and one-of-a-kind glass.</p>
                 <div className="mt-7 flex flex-col gap-3">
                   <Link href="/products/hair-care" onClick={() => setOpen(false)} className="btn-dark">
@@ -103,7 +103,7 @@ export default function CartDrawer() {
                         <div className="flex min-w-0 flex-1 flex-col">
                           <div className="flex justify-between gap-3">
                             <div className="min-w-0">
-                              <p className="font-display text-lg leading-tight">{item.name}</p>
+                              <p className="font-display text-[1.15rem] font-semibold leading-tight">{item.name}</p>
                               <p className="mt-0.5 truncate text-xs text-espresso-400">{item.subtitle}</p>
                             </div>
                             <p className="text-sm font-semibold">{formatPrice(item.price * item.qty)}</p>
@@ -112,7 +112,7 @@ export default function CartDrawer() {
                             {item.unique ? (
                               <span className="text-xs text-sage">One of a kind</span>
                             ) : (
-                              <div className="flex items-center rounded-full border border-espresso/15">
+                              <div className="flex items-center rounded-[2px] border border-line">
                                 <button onClick={() => setQty(item.id, item.qty - 1)} aria-label={`Decrease ${item.name}`} className="grid h-8 w-8 place-items-center">
                                   <Minus className="h-3 w-3" />
                                 </button>
@@ -132,10 +132,10 @@ export default function CartDrawer() {
                   </AnimatePresence>
                 </ul>
 
-                <div className="border-t border-espresso/[0.08] bg-cream-100/60 px-6 py-6">
+                <div className="border-t border-ink/10 bg-cream px-6 py-6">
                   <div className="flex items-baseline justify-between">
                     <span className="text-sm text-espresso-500">Subtotal</span>
-                    <span className="font-display text-2xl">{formatPrice(subtotal)}</span>
+                    <span className="text-xl font-semibold tabular-nums">{formatPrice(subtotal)}</span>
                   </div>
                   <p className="mt-1 text-xs text-espresso-400">Shipping and taxes calculated at checkout.</p>
                   {CHECKOUT_URL ? (

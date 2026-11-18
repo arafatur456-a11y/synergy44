@@ -36,10 +36,17 @@ export default function ProductVisual({ shape, colors, cap, label, className }: 
   return (
     <svg viewBox="0 0 120 210" className={className} role="img" aria-label={`${label} product illustration`}>
       <defs>
-        <linearGradient id={`b${uid}`} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor={colors[0]} />
-          <stop offset="1" stopColor={colors[1]} />
+        {/* Cylinder shading: darker edges, lit centre-left — reads as a studio-lit object */}
+        <linearGradient id={`b${uid}`} x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stopColor={colors[1]} />
+          <stop offset=".24" stopColor={colors[0]} />
+          <stop offset=".52" stopColor={colors[0]} />
+          <stop offset=".86" stopColor={colors[1]} />
+          <stop offset="1" stopColor={colors[1]} stopOpacity=".92" />
         </linearGradient>
+        <filter id={`f${uid}`} x="-20%" y="-200%" width="140%" height="500%">
+          <feGaussianBlur stdDeviation="3" />
+        </filter>
         <linearGradient id={`s${uid}`} x1="0" x2="1">
           <stop offset="0" stopColor="#fff" stopOpacity="0" />
           <stop offset=".5" stopColor="#fff" stopOpacity=".7" />
@@ -52,8 +59,9 @@ export default function ProductVisual({ shape, colors, cap, label, className }: 
         </linearGradient>
       </defs>
 
-      <ellipse cx="60" cy="203" rx="40" ry="4" fill="#1E1D1B" opacity=".1" />
-      <g stroke="#1E1D1B" strokeOpacity=".09" strokeWidth=".6">
+      <ellipse cx="60" cy="203" rx="44" ry="5" fill="#000" opacity=".28" filter={`url(#f${uid})`} />
+      <ellipse cx="60" cy="201.5" rx="30" ry="2" fill="#000" opacity=".35" filter={`url(#f${uid})`} />
+      <g stroke="#111" strokeOpacity=".12" strokeWidth=".6">
 
       {shape === 'pump' && (
         <g>

@@ -4,93 +4,163 @@
 
 @layer base {
   html {
-    background: #faf8f5;
+    background: #f5f1ea;
     -webkit-tap-highlight-color: transparent;
   }
   body {
-    @apply bg-cream font-sans text-espresso antialiased;
+    @apply bg-cream font-sans text-ink antialiased;
     overflow-x: clip;
+    font-feature-settings: 'ss01', 'cv11';
   }
   ::selection {
-    background: #dce5df;
-    color: #1e1d1b;
+    background: #111;
+    color: #f5f1ea;
   }
   :focus-visible {
-    outline: 2px solid #4a6b5d;
+    outline: 2px solid #111;
     outline-offset: 3px;
-    border-radius: 6px;
   }
 }
 
 @layer components {
   .container-x {
-    @apply mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10;
-  }
-  .eyebrow {
-    @apply text-[11px] font-semibold uppercase tracking-[0.28em] text-sage;
-  }
-  .display-xl {
-    @apply font-display text-[clamp(3rem,6.6vw,6.25rem)] font-light leading-[0.98] tracking-[-0.015em];
-  }
-  .h-section {
-    @apply font-display text-[2.6rem] font-light leading-[1.04] tracking-[-0.01em] sm:text-5xl lg:text-[3.6rem];
-  }
-  .lead {
-    @apply text-base leading-relaxed text-espresso-500 sm:text-[1.075rem];
+    @apply mx-auto w-full max-w-[1380px] px-5 sm:px-8 lg:px-12;
   }
 
+  /* —— Type —— */
+  .eyebrow {
+    @apply inline-flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.24em] text-ink;
+  }
+  .eyebrow::before {
+    content: '';
+    @apply h-px w-8 bg-champagne;
+  }
+  .eyebrow-plain {
+    @apply text-[11px] font-semibold uppercase tracking-[0.24em] text-ink;
+  }
+  .display-xl {
+    @apply font-display text-[clamp(3rem,6.4vw,6.4rem)] font-semibold leading-[0.98] tracking-[-0.025em] text-ink;
+  }
+  .h-section {
+    @apply font-display text-[2.5rem] font-semibold leading-[1.02] tracking-[-0.022em] text-ink sm:text-[3.3rem] lg:text-[4rem];
+  }
+  .lead {
+    @apply text-[1.05rem] leading-[1.7] text-espresso-700 sm:text-[1.1rem];
+  }
+  .accent {
+    @apply font-display font-medium italic text-champagne;
+  }
+
+  /* —— Buttons: rectangular, tracked caps, fill-wipe on hover —— */
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-[13px] font-semibold tracking-[0.04em] transition-all duration-500 ease-silk disabled:cursor-not-allowed disabled:opacity-50;
+    @apply relative isolate inline-flex h-[52px] items-center justify-center gap-3 overflow-hidden rounded-[2px] px-8 text-[12px] font-semibold uppercase tracking-[0.16em] transition-[color,border-color,transform,box-shadow] duration-500 ease-silk active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn::before {
+    content: '';
+    @apply absolute inset-0 -z-10 origin-right scale-x-0 transition-transform duration-[650ms] ease-silk;
+  }
+  .btn:hover::before {
+    @apply origin-left scale-x-100;
+  }
+  .btn svg {
+    @apply transition-transform duration-500 ease-silk;
+  }
+  .btn:hover svg {
+    @apply translate-x-1;
   }
   .btn-dark {
-    @apply btn bg-espresso text-cream hover:bg-sage-dark hover:shadow-lift;
+    @apply btn bg-ink text-white hover:shadow-lift;
+  }
+  .btn-dark::before {
+    @apply bg-sage-dark;
   }
   .btn-sage {
-    @apply btn bg-sage text-cream hover:bg-sage-dark hover:shadow-lift;
+    @apply btn bg-sage-dark text-white;
+  }
+  .btn-sage::before {
+    @apply bg-ink;
   }
   .btn-outline {
-    @apply btn border border-espresso/20 text-espresso hover:border-espresso hover:bg-espresso hover:text-cream;
+    @apply btn border border-ink text-ink hover:text-white;
   }
+  .btn-outline::before {
+    @apply bg-ink;
+  }
+  .btn-light {
+    @apply btn bg-white text-ink;
+  }
+  .btn-light::before {
+    @apply bg-champagne-light;
+  }
+  .btn-ghost-light {
+    @apply btn border border-white/40 text-white hover:border-white hover:text-ink;
+  }
+  .btn-ghost-light::before {
+    @apply bg-white;
+  }
+
   .link-underline {
-    @apply relative inline-flex items-center gap-1.5 text-[13px] font-semibold tracking-wide text-espresso;
+    @apply relative inline-flex items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.16em] text-ink;
   }
   .link-underline::after {
     content: '';
-    @apply absolute -bottom-1 left-0 h-px w-full origin-right scale-x-0 bg-current transition-transform duration-500 ease-silk;
+    @apply absolute -bottom-1.5 left-0 h-px w-full origin-left bg-current transition-transform duration-500 ease-silk;
   }
   .link-underline:hover::after {
-    @apply origin-left scale-x-100;
+    @apply origin-right scale-x-0;
+  }
+  .link-underline svg {
+    @apply transition-transform duration-500 ease-silk;
+  }
+  .link-underline:hover svg {
+    @apply translate-x-1;
   }
 
+  /* —— Surfaces —— */
   .card {
-    @apply rounded-[28px] bg-white/75 shadow-soft ring-1 ring-espresso/[0.05];
+    @apply rounded-[4px] border border-line bg-paper;
   }
-  /* Frosted glass with a warm tint — used for floating and jewelry cards */
-  .frost {
-    @apply bg-white/50 ring-1 ring-white/80 backdrop-blur-xl;
+  .glass {
+    @apply rounded-[14px] border border-white/80 bg-[rgba(251,249,245,0.82)] backdrop-blur-xl;
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.9),
-      0 30px 60px -30px rgba(30, 29, 27, 0.22);
+      0 50px 90px -30px rgba(8, 12, 10, 0.55),
+      0 18px 34px -16px rgba(8, 12, 10, 0.35),
+      inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  }
+  .glass-dark {
+    @apply rounded-[14px] border border-white/15 bg-white/[0.07] text-white backdrop-blur-xl;
+    box-shadow:
+      0 40px 80px -30px rgba(0, 0, 0, 0.7),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  }
+  .frost {
+    @apply glass;
   }
   .iridescent {
-    background-image: linear-gradient(120deg, #efe2c6 0%, #f4dfe3 32%, #dfe9e3 64%, #e6def0 100%);
+    background-image: linear-gradient(120deg, #efe2c6 0%, #f2dde2 32%, #dde8e1 64%, #e4dcef 100%);
   }
   .text-iridescent {
-    @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(100deg, #4a6b5d 0%, #8c6e3f 48%, #7a6893 100%);
+    @apply bg-clip-text font-display italic text-transparent;
+    background-image: linear-gradient(100deg, #2f4a3e 0%, #a27d42 50%, #6e5c8a 100%);
+  }
+  .hairline {
+    @apply h-px w-full bg-line;
   }
 
   .input {
-    @apply w-full rounded-2xl border border-espresso/15 bg-white/80 px-4 py-3.5 text-[15px] text-espresso transition placeholder:text-espresso-400 focus:border-sage focus:outline-none focus:ring-4 focus:ring-sage/10;
+    @apply h-[52px] w-full rounded-[2px] border border-line bg-paper px-4 text-[15px] text-ink transition placeholder:text-espresso-400 focus:border-ink focus:outline-none;
+  }
+  textarea.input {
+    @apply h-auto py-3.5;
   }
   .chip {
-    @apply whitespace-nowrap rounded-full border px-4 py-2 text-[13px] font-medium transition-all duration-300;
+    @apply inline-flex h-10 items-center whitespace-nowrap rounded-[2px] border px-4 text-[12px] font-semibold uppercase tracking-[0.12em] transition-all duration-300;
   }
   .chip-on {
-    @apply border-espresso bg-espresso text-cream;
+    @apply border-ink bg-ink text-white;
   }
   .chip-off {
-    @apply border-espresso/15 bg-white/60 text-espresso-700 hover:border-espresso/40;
+    @apply border-line bg-paper text-espresso-700 hover:border-ink hover:text-ink;
   }
 
   /* Dichroic shimmer: pointer-tracked highlight + slow sweeping sheen */
@@ -107,16 +177,18 @@
     pointer-events: none;
   }
 
-  /* Paper-like grain for an editorial print feel */
-  .paper::after {
+  .grain {
+    position: relative;
+  }
+  .grain::after {
     content: '';
-    position: fixed;
+    position: absolute;
     inset: 0;
-    z-index: 100;
     pointer-events: none;
-    opacity: 0.045;
-    mix-blend-mode: multiply;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.12;
+    mix-blend-mode: overlay;
+    border-radius: inherit;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 }
 
@@ -128,7 +200,10 @@
     scrollbar-width: none;
   }
   .mask-fade-x {
-    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  }
+  .text-balance {
+    text-wrap: balance;
   }
 }
 

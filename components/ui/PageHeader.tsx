@@ -1,66 +1,68 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import Reveal from './Reveal';
-import BotanicalSprig from './BotanicalSprig';
 
+/**
+ * Split editorial page header: bold title on the left, an art-directed scene on the right.
+ */
 export default function PageHeader({
   eyebrow,
   title,
   intro,
   crumbs = [],
   children,
-  tint,
+  scene,
 }: {
   eyebrow: string;
   title: ReactNode;
   intro?: ReactNode;
   crumbs?: { label: string; href?: string }[];
   children?: ReactNode;
+  scene?: ReactNode;
+  /** @deprecated kept for compatibility */
   tint?: string;
 }) {
   return (
-    <section className="relative overflow-hidden border-b border-espresso/[0.06]">
-      <div aria-hidden className="absolute inset-0">
-        <div
-          className="absolute -right-24 -top-32 h-[460px] w-[460px] rounded-full opacity-70 blur-3xl"
-          style={{ background: tint ?? '#DFE9E3' }}
-        />
-        <div className="absolute -bottom-40 left-1/4 h-[340px] w-[540px] rounded-full bg-champagne-pale opacity-80 blur-3xl" />
-        <BotanicalSprig className="absolute -right-6 bottom-0 hidden h-[340px] text-sage/25 md:block" />
-      </div>
-
-      <div className="container-x relative pb-16 pt-14 sm:pb-20 sm:pt-20">
-        {crumbs.length > 0 && (
-          <nav aria-label="Breadcrumb" className="mb-10 text-xs text-espresso-400">
-            <ol className="flex flex-wrap items-center gap-2">
-              <li>
-                <Link href="/" className="hover:text-espresso">
-                  Home
-                </Link>
-              </li>
-              {crumbs.map((c) => (
-                <li key={c.label} className="flex items-center gap-2">
-                  <span aria-hidden>/</span>
-                  {c.href ? (
-                    <Link href={c.href} className="hover:text-espresso">
-                      {c.label}
-                    </Link>
-                  ) : (
-                    <span aria-current="page" className="text-espresso-700">
-                      {c.label}
-                    </span>
-                  )}
+    <section className="border-b border-ink/10">
+      <div className="grid lg:min-h-[560px] lg:grid-cols-[1.1fr_1fr]">
+        <div className="flex flex-col justify-center px-5 py-14 sm:px-8 sm:py-20 lg:pl-[max(3rem,calc((100vw-1380px)/2+3rem))] lg:pr-16">
+          {crumbs.length > 0 && (
+            <nav aria-label="Breadcrumb" className="mb-12 text-[11px] font-semibold uppercase tracking-[0.18em] text-espresso-500">
+              <ol className="flex flex-wrap items-center gap-2.5">
+                <li>
+                  <Link href="/" className="transition-colors hover:text-ink">
+                    Home
+                  </Link>
                 </li>
-              ))}
-            </ol>
-          </nav>
+                {crumbs.map((c) => (
+                  <li key={c.label} className="flex items-center gap-2.5">
+                    <span aria-hidden className="h-px w-4 bg-espresso-400" />
+                    {c.href ? (
+                      <Link href={c.href} className="transition-colors hover:text-ink">
+                        {c.label}
+                      </Link>
+                    ) : (
+                      <span aria-current="page" className="text-ink">
+                        {c.label}
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          )}
+          <Reveal>
+            <p className="eyebrow">{eyebrow}</p>
+            <h1 className="display-xl mt-6 text-balance">{title}</h1>
+            {intro && <p className="lead mt-7 max-w-xl">{intro}</p>}
+          </Reveal>
+          {children && <Reveal delay={0.12}>{children}</Reveal>}
+        </div>
+        {scene && (
+          <Reveal y={0} className="relative min-h-[360px] overflow-hidden sm:min-h-[460px] lg:min-h-0">
+            <div className="absolute inset-0">{scene}</div>
+          </Reveal>
         )}
-        <Reveal className="max-w-3xl">
-          <p className="eyebrow">{eyebrow}</p>
-          <h1 className="display-xl mt-5">{title}</h1>
-          {intro && <p className="lead mt-7 max-w-xl">{intro}</p>}
-        </Reveal>
-        {children && <Reveal delay={0.15}>{children}</Reveal>}
       </div>
     </section>
   );

@@ -8,11 +8,11 @@ import Footer from '@/components/layout/Footer';
 import CartDrawer from '@/components/shop/CartDrawer';
 import { site } from '@/lib/site';
 
-// Self-hosted variable fonts (Fontsource) — no build-time network fetch, fully cached on the CDN.
+// Self-hosted variable fonts (Fontsource): Playfair Display (high-contrast serif) + Inter Tight (grotesque).
 const display = localFont({
   src: [
-    { path: '../node_modules/@fontsource-variable/cormorant-garamond/files/cormorant-garamond-latin-wght-normal.woff2', weight: '300 700', style: 'normal' },
-    { path: '../node_modules/@fontsource-variable/cormorant-garamond/files/cormorant-garamond-latin-wght-italic.woff2', weight: '300 700', style: 'italic' },
+    { path: '../node_modules/@fontsource-variable/playfair-display/files/playfair-display-latin-wght-normal.woff2', weight: '400 900', style: 'normal' },
+    { path: '../node_modules/@fontsource-variable/playfair-display/files/playfair-display-latin-wght-italic.woff2', weight: '400 900', style: 'italic' },
   ],
   variable: '--font-display',
   display: 'swap',
@@ -20,10 +20,13 @@ const display = localFont({
 });
 
 const sans = localFont({
-  src: '../node_modules/@fontsource-variable/manrope/files/manrope-latin-wght-normal.woff2',
-  weight: '200 800',
+  src: [
+    { path: '../node_modules/@fontsource-variable/inter-tight/files/inter-tight-latin-wght-normal.woff2', weight: '100 900', style: 'normal' },
+    { path: '../node_modules/@fontsource-variable/inter-tight/files/inter-tight-latin-wght-italic.woff2', weight: '100 900', style: 'italic' },
+  ],
   variable: '--font-sans',
   display: 'swap',
+  fallback: ['Helvetica Neue', 'Arial', 'sans-serif'],
 });
 
 export const metadata: Metadata = {
@@ -42,7 +45,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#FAF8F5',
+  themeColor: '#F5F1EA',
   width: 'device-width',
   initialScale: 1,
 };
@@ -50,7 +53,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${display.variable} ${sans.variable}`}>
-      <body className="paper">
+      <body>
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:rounded-full focus:bg-espresso focus:px-5 focus:py-3 focus:text-cream">
           Skip to content
         </a>

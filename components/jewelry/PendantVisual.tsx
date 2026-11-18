@@ -9,7 +9,7 @@ const RADIUS: Record<PendantShape, string> = {
 };
 
 /**
- * CSS-rendered dichroic glass pendant: layered colour field, fine striations and
+ * CSS-rendered dichroic glass pendant: layered color field, fine striations and
  * a slow sheen. The highlight follows the pointer via --mx / --my on any ancestor.
  */
 export default function PendantVisual({
