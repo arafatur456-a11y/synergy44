@@ -51,7 +51,8 @@ lib/data.ts            Editorial content (brands, salon menu, testimonials) + a 
 3. Organize products so they map onto the site (adjust the tables in `lib/woocommerce.ts` if needed):
    - **Brand:** WooCommerce Brands (9.6+), a “Brand” attribute, or a category whose slug matches a brand in `lib/data.ts` (`loma`, `mks-eco`, `olaplex`, `neuma`, `gama`, `sutra`, `goomee`).
    - **Ritual:** category slugs in `CATEGORY_MAP` (shampoo, conditioner, treatments, styling, tools…).
-   - **Pendants:** the `WC_JEWELRY_CATEGORY` category, with optional “Collection”, “Size” and “Shape” attributes.
+   - **Jewelry:** every product in the **Jewelry** category (slug `jewelry`, including sub-categories such as Jewelry › Pendants) **or** with an SKU starting `J-` (e.g. `J-10060`). These appear in the glass gallery and never in hair care. Optional “Collection”, “Size” and “Shape” attributes refine the cards; otherwise the sub-category name is used as the collection. Override with `WC_JEWELRY_CATEGORY` / `WC_JEWELRY_SKU_PREFIX`.
+   - **Pagination:** every listing requests `per_page=100` and follows `X-WP-TotalPages`, up to 5,000 items.
    - **Photos:** the first gallery image, ideally 4:5 portrait.
 4. (Recommended) Add webhooks for **Product created / updated / deleted** that point to `https://<site>/api/revalidate`, with the secret set to `WC_WEBHOOK_SECRET`. Price and stock edits then appear immediately. Without webhooks, pages refresh every 5 minutes.
 

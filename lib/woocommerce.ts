@@ -13,12 +13,15 @@
  *   NEXT_PUBLIC_WC_STORE_URL   https://synergy44.com   (public: also used for image hosts)
  *   WC_CONSUMER_KEY            ck_…   Read/Write key (write is needed to create orders)
  *   WC_CONSUMER_SECRET         cs_…
- *   WC_JEWELRY_CATEGORY        product category slug for pendants (default: dichroic-glass-jewelry)
+ *   WC_JEWELRY_CATEGORY        jewelry category slug (default: jewelry)
+ *   WC_JEWELRY_SKU_PREFIX      SKU prefix that marks jewelry (default: J-)
  *
  * Field mapping — adjust the tables below to match how the store is organized:
  *   brand     ← Brands taxonomy (`brands`, WooCommerce 9.6+) → "Brand" attribute → category slug
  *   ritual    ← category slug via CATEGORY_MAP → "Ritual" attribute → 'Treat'
- *   size      ← "Size" attribute · collection ← "Collection" attribute · shape ← "Shape" attribute
+ *   jewelry   ← category slug `jewelry` / name "Jewelry" (incl. its sub-categories) OR SKU prefix `J-`
+ *   size      ← "Size" attribute · collection ← "Collection" attribute → jewelry sub-category name
+ *   shape     ← "Shape" attribute
  *   image     ← first gallery image · badge ← on_sale → "Sale", featured → "Featured"
  */
 import { brands } from './data';
@@ -96,12 +99,21 @@ async function wcRequest<T>(path: string, { method = 'GET', query, body, cache }
   return { data: json as T, totalPages: Number(res.headers.get('x-wp-totalpages') ?? 1) };
 }
 
-/** Follows WooCommerce pagination (100 per page, capped at 20 pages = 2,000 products). */
+/** WooCommerce's maximum page size. Every list request uses it so no items are missed. */
+const PER_PAGE = 100;
+/** Safety cap: 50 pages × 100 = 5,000 items per listing. */
+const MAX_PAGES = 50;
+
+/**
+ * Fetches every page of a WooCommerce collection: page 1 reports `X-WP-TotalPages`, then the
+ * remaining pages are requested in parallel with `per_page=100`.
+ */
 async function wcGetAll<T>(path: string, query: RequestOptions['query'] = {}, cache?: false): Promise<T[]> {
-  const first = await wcRequest<T[]>(path, { query: { per_page: 100, page: 1, ...query }, cache });
-  const pages = Math.min(first.totalPages, 20);
+  const first = await wcRequest<T[]>(path, { query: { ...query, per_page: PER_PAGE, page: 1 }, cache });
+  const pages = Math.min(first.totalPages, MAX_PAGES);
+  if (first.totalPages > MAX_PAGES) console.warn(`[woocommerce] ${path} has ${first.totalPages} pages; only the first ${MAX_PAGES} were loaded.`);
   const rest = await Promise.all(
-    Array.from({ length: pages - 1 }, (_, i) => wcRequest<T[]>(path, { query: { per_page: 100, page: i + 2, ...query }, cache })),
+    Array.from({ length: pages - 1 }, (_, i) => wcRequest<T[]>(path, { query: { ...query, per_page: PER_PAGE, page: i + 2 }, cache })),
   );
   return [first.data, ...rest.map((r) => r.data)].flat();
 }
@@ -109,11 +121,13 @@ async function wcGetAll<T>(path: string, query: RequestOptions['query'] = {}, ca
 // ─── WooCommerce shapes (subset we use) ──────────────────────────────────────
 
 type WCTerm = { id: number; name: string; slug: string };
+type WCCategory = WCTerm & { parent: number };
 type WCAttribute = { name: string; options: string[] };
 export type WCProduct = {
   id: number;
   slug: string;
   name: string;
+  sku: string;
   type: Product['type'];
   status: string;
   permalink: string;
@@ -134,7 +148,7 @@ export type WCProduct = {
 
 /** Only request the fields we map — keeps responses small and fast. */
 const PRODUCT_FIELDS =
-  'id,slug,name,type,status,permalink,price,regular_price,on_sale,purchasable,featured,short_description,description,stock_status,stock_quantity,images,categories,attributes,brands';
+  'id,slug,name,sku,type,status,permalink,price,regular_price,on_sale,purchasable,featured,short_description,description,stock_status,stock_quantity,images,categories,attributes,brands';
 
 // ─── Mapping ─────────────────────────────────────────────────────────────────
 
@@ -177,7 +191,41 @@ const PENDANT_PALETTES: Pendant['colors'][] = [
   ['#4FAE8C', '#5BA3CF', '#58B4A7', '#7C83D1'],
 ];
 
-const jewelryCategory = () => process.env.WC_JEWELRY_CATEGORY || 'dichroic-glass-jewelry';
+const jewelrySlug = () => (process.env.WC_JEWELRY_CATEGORY || 'jewelry').toLowerCase();
+/** `ids` = jewelry category + all descendants; `rootIds` = the matched Jewelry category itself. */
+type JewelryIndex = { ids: Set<number>; rootIds: Set<number> };
+
+const jewelrySkuPrefix = () => (process.env.WC_JEWELRY_SKU_PREFIX ?? 'J-').toUpperCase();
+
+/**
+ * IDs of the jewelry category (matched by slug `jewelry` or name "Jewelry") plus all of its
+ * descendants, so pieces filed under e.g. Jewelry › Pendants are included too.
+ */
+async function fetchJewelryIndex(): Promise<JewelryIndex> {
+  const cats = await wcGetAll<WCCategory>('products/categories', { _fields: 'id,name,slug,parent', hide_empty: 'false' });
+  const roots = cats.filter((c) => c.slug.toLowerCase() === jewelrySlug() || decode(c.name).trim().toLowerCase() === 'jewelry');
+  const rootIds = new Set(roots.map((c) => c.id));
+  const ids = new Set(rootIds);
+  let grew = true;
+  while (grew) {
+    grew = false;
+    for (const c of cats) {
+      if (!ids.has(c.id) && ids.has(c.parent)) {
+        ids.add(c.id);
+        grew = true;
+      }
+    }
+  }
+  return { ids, rootIds };
+}
+
+function isJewelry(p: WCProduct, j: JewelryIndex): boolean {
+  const prefix = jewelrySkuPrefix();
+  if (prefix && (p.sku ?? '').toUpperCase().startsWith(prefix)) return true;
+  return p.categories.some(
+    (c) => j.ids.has(c.id) || c.slug.toLowerCase() === jewelrySlug() || decode(c.name).trim().toLowerCase() === 'jewelry',
+  );
+}
 
 export const decode = (s: string) =>
   s
@@ -206,11 +254,10 @@ function mapCategory(p: WCProduct): Category {
   return (attr(p, 'Ritual') as Category | undefined) ?? 'Treat';
 }
 
-const isJewelry = (p: WCProduct) => p.categories.some((c) => c.slug === jewelryCategory());
-
+/** Maps a hair-care product. Jewelry must be filtered out before calling this. */
 export function mapProduct(p: WCProduct): Product | null {
   const brand = mapBrand(p);
-  if (!brand || isJewelry(p)) return null; // only list products that belong to a site brand
+  if (!brand) return null; // only list products that belong to a site brand
   const category = mapCategory(p);
   const tint = brands.find((b) => b.slug === brand)?.tint ?? '#EEE8DE';
   const price = money(p.price);
@@ -238,14 +285,16 @@ export function mapProduct(p: WCProduct): Product | null {
   };
 }
 
-export function mapPendant(p: WCProduct, index: number): Pendant {
+export function mapPendant(p: WCProduct, index: number, j?: JewelryIndex): Pendant {
+  // Collection: "Collection" attribute, else the jewelry sub-category (e.g. Pendants), else a default.
+  const subCategory = j ? p.categories.find((c) => j.ids.has(c.id) && !j.rootIds.has(c.id)) : undefined;
   const shapes: PendantShape[] = ['oval', 'teardrop', 'square', 'cabochon'];
   const shapeAttr = attr(p, 'Shape')?.toLowerCase() as PendantShape | undefined;
   return {
     id: `wc-${p.id}`,
     wcId: p.id,
     name: decode(p.name),
-    collection: attr(p, 'Collection') ?? 'Dichroic glass',
+    collection: attr(p, 'Collection') ?? (subCategory ? decode(subCategory.name) : 'Dichroic glass'),
     image: p.images[0]?.src,
     colors: PENDANT_PALETTES[index % PENDANT_PALETTES.length],
     shape: shapeAttr && shapes.includes(shapeAttr) ? shapeAttr : shapes[index % shapes.length],
@@ -259,17 +308,31 @@ export function mapPendant(p: WCProduct, index: number): Pendant {
 
 // ─── Catalog reads (cached, tagged 'catalog') ────────────────────────────────
 
+/**
+ * One paginated pass over every published product (per_page=100), partitioned into jewelry and
+ * hair care. Both pages read the same cached responses, so the store is hit once per revalidation
+ * and an item can never appear in — or be missing from — both listings.
+ */
+async function fetchCatalog(): Promise<{ products: WCProduct[]; jewelry: WCProduct[]; index: JewelryIndex }> {
+  const [items, index] = await Promise.all([
+    wcGetAll<WCProduct>('products', { status: 'publish', _fields: PRODUCT_FIELDS, orderby: 'menu_order', order: 'asc' }),
+    fetchJewelryIndex(),
+  ]);
+  const jewelry: WCProduct[] = [];
+  const products: WCProduct[] = [];
+  for (const p of items) (isJewelry(p, index) ? jewelry : products).push(p);
+  return { products, jewelry, index };
+}
+
 export async function fetchWooProducts(): Promise<Product[]> {
-  const items = await wcGetAll<WCProduct>('products', { status: 'publish', _fields: PRODUCT_FIELDS });
-  return items.map(mapProduct).filter((p): p is Product => p !== null);
+  const { products } = await fetchCatalog();
+  return products.map(mapProduct).filter((p): p is Product => p !== null);
 }
 
 export async function fetchWooPendants(): Promise<Pendant[]> {
-  const { data: terms } = await wcRequest<WCTerm[]>('products/categories', { query: { slug: jewelryCategory(), _fields: 'id,slug' } });
-  if (!terms[0]) return [];
-  const items = await wcGetAll<WCProduct>('products', { status: 'publish', category: terms[0].id, _fields: PRODUCT_FIELDS });
+  const { jewelry, index } = await fetchCatalog();
   // Sold pieces are one-of-a-kind and won't come back — hide them from the gallery.
-  return items.filter((p) => p.stock_status !== 'outofstock').map(mapPendant);
+  return jewelry.filter((p) => p.stock_status !== 'outofstock').map((p, i) => mapPendant(p, i, index));
 }
 
 // ─── Checkout (never cached) ─────────────────────────────────────────────────
