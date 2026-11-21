@@ -69,7 +69,7 @@ export default function ProductCard({ product }: { product: Product }) {
           <Image src={product.image} alt={product.name} fill sizes="(min-width: 1280px) 25vw, (min-width: 640px) 33vw, 50vw" className="object-cover" />
         ) : (
           <>
-            <div className="absolute inset-x-[18%] bottom-[14%] h-[10%] rounded-[50%] bg-ink/15 blur-xl" />
+            <div className="absolute inset-x-[18%] bottom-[14%] h-[10%] bg-[radial-gradient(closest-side,rgba(17,17,17,0.2),transparent)]" />
             <div className="absolute inset-0 flex items-center justify-center pb-[6%]">
               <ProductVisual shape={product.shape} colors={product.colors} cap={product.cap} label={brandName} className="h-[70%]" />
             </div>

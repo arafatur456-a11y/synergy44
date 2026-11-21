@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useRef } from 'react';
-import { motion, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform, type MotionValue } from 'framer-motion';
+import { motion, useMotionValue, useReducedMotion, useSpring, useTransform, type MotionValue } from 'framer-motion';
 import { ArrowRight, Plus, Star } from 'lucide-react';
 import StudioScene from '@/components/ui/StudioScene';
 import ProductVisual from '@/components/shop/ProductVisual';
@@ -90,9 +90,6 @@ export default function Hero({ spotlight }: { spotlight?: Product }) {
   const mx = useSpring(rawX, { stiffness: 50, damping: 18 });
   const my = useSpring(rawY, { stiffness: 50, damping: 18 });
 
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
-  const sceneScale = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
-  const textY = useTransform(scrollYProgress, [0, 1], [0, -60]);
 
   const onMove = (e: React.PointerEvent) => {
     if (reduce || e.pointerType !== 'mouse') return;
@@ -106,7 +103,7 @@ export default function Hero({ spotlight }: { spotlight?: Product }) {
     <section ref={ref} onPointerMove={onMove} className="relative overflow-hidden border-b border-ink/10">
       <div className="grid lg:min-h-[calc(100svh-120px)] lg:grid-cols-[1.02fr_1fr]">
         {/* Copy */}
-        <motion.div style={reduce ? undefined : { y: textY }} className="relative z-10 flex flex-col justify-center px-5 pb-16 pt-12 sm:px-8 lg:py-14 lg:pl-[max(3rem,calc((100vw-1380px)/2+3rem))] lg:pr-16">
+        <div className="hero-drift-text relative z-10 flex flex-col justify-center px-5 pb-16 pt-12 sm:px-8 lg:py-14 lg:pl-[max(3rem,calc((100vw-1380px)/2+3rem))] lg:pr-16">
           <motion.p initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 1, ease }} className="eyebrow">
             Organic hair care · Artisan glass
           </motion.p>
@@ -154,7 +151,7 @@ export default function Hero({ spotlight }: { spotlight?: Product }) {
               ))}
             </dl>
           </motion.div>
-        </motion.div>
+        </div>
 
         {/* Editorial scene */}
         <div className="relative min-h-[560px] sm:min-h-[680px] lg:min-h-0">
@@ -164,16 +161,16 @@ export default function Hero({ spotlight }: { spotlight?: Product }) {
             transition={{ duration: 1.6, ease, delay: 0.05 }}
             className="absolute inset-0 overflow-hidden"
           >
-            <motion.div style={reduce ? undefined : { scale: sceneScale }} className="absolute inset-0">
+            <div className="hero-drift-scene absolute inset-0">
               <StudioScene tone="forest" priority plinthWidth="56%" className="h-full w-full" objectsClassName="gap-2 sm:gap-4">
                 <ProductVisual {...bounce} label="MKS Eco" className="h-[170px] -rotate-2 sm:h-[230px] lg:h-[250px]" />
                 <ProductVisual {...leaveIn} label="Loma" className="h-[220px] sm:h-[300px] lg:h-[330px]" />
                 <ProductVisual {...bond} label="Olaplex" className="h-[150px] rotate-2 sm:h-[200px] lg:h-[215px]" />
               </StudioScene>
-            </motion.div>
+            </div>
             {/* hanging pendant with glow */}
             <div className="absolute right-[12%] top-0 z-10 hidden w-24 flex-col items-center sm:flex lg:w-28">
-              <div className="absolute -inset-10 top-24 rounded-full bg-[#7CC9D6]/30 blur-3xl" />
+              <div className="absolute -inset-10 top-24 bg-[radial-gradient(closest-side,rgba(124,201,214,0.35),transparent)]" />
               <div className="h-24 w-px bg-gradient-to-b from-transparent to-champagne-light/80" />
               <div className="-mt-1 h-4 w-3 rounded-full border-[1.5px] border-champagne-light" />
               <div className="-mt-1 w-full animate-drift">

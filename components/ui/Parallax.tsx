@@ -1,17 +1,18 @@
-'use client';
+import type { CSSProperties, ReactNode } from 'react';
+import { cn } from '@/lib/utils';
 
-import { useRef, type ReactNode } from 'react';
-import { motion, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion';
-
-/** Subtle scroll-linked depth. `speed` is the travel in px across the element's pass through the viewport. */
+/**
+ * Subtle scroll-linked depth. `speed` is the travel in px across the element's pass through
+ * the viewport.
+ *
+ * Performance: implemented with a CSS scroll-driven animation (`animation-timeline: view()`),
+ * which runs off the main thread — zero JavaScript per scroll frame. Browsers without
+ * scroll-timeline support simply render the element static. Disabled for reduced motion.
+ */
 export default function Parallax({ children, speed = 60, className }: { children: ReactNode; speed?: number; className?: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const reduce = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
-  const y = useSpring(useTransform(scrollYProgress, [0, 1], [speed, -speed]), { stiffness: 80, damping: 24, mass: 0.4 });
   return (
-    <motion.div ref={ref} style={reduce ? undefined : { y }} className={className}>
+    <div className={cn('parallax', className)} style={{ '--parallax': `${speed}px` } as CSSProperties}>
       {children}
-    </motion.div>
+    </div>
   );
 }

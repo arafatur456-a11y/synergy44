@@ -54,7 +54,7 @@ function Plinth({ width }: { width: string }) {
         className="absolute -top-[13px] left-0 h-[26px] w-full rounded-[50%]"
         style={{ background: 'radial-gradient(ellipse at 45% 40%, #FAF6EF 0%, #DCD3C5 60%, #BFB4A4 100%)' }}
       />
-      <div className="absolute -bottom-5 left-[-8%] h-6 w-[116%] rounded-[50%] bg-black/45 blur-md" />
+      <div className="absolute -bottom-5 left-[-8%] h-6 w-[116%] bg-[radial-gradient(closest-side,rgba(0,0,0,0.5),transparent)]" />
     </div>
   );
 }
@@ -108,7 +108,7 @@ export default function StudioScene({
 
   return (
     <div className={cn('grain relative isolate overflow-hidden', className)} style={{ background: t.bg }} onPointerMove={onMove}>
-      <div aria-hidden className="absolute left-1/2 top-[-22%] h-[85%] w-[78%] -translate-x-1/2 animate-glow rounded-full blur-2xl" style={{ background: t.spot }} />
+      <div aria-hidden className="absolute left-1/2 top-[-22%] h-[85%] w-[78%] -translate-x-1/2" style={{ background: t.spot }} />
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
@@ -121,7 +121,7 @@ export default function StudioScene({
           style={{ background: t.arch, boxShadow: 'inset 0 40px 80px rgba(0,0,0,.28)' }}
         />
       )}
-      {sprig && <BotanicalSprig className={cn('absolute bottom-[12%] left-[6%] h-[62%]', t.sprig)} leaves={8} />}
+      {sprig && <BotanicalSprig draw={false} className={cn('absolute bottom-[12%] left-[6%] h-[62%]', t.sprig)} leaves={8} />}
       <div aria-hidden className="absolute inset-x-0 bottom-0 h-[18%]" style={{ background: t.floor }} />
       {plinth && <Plinth width={plinthWidth} />}
       {children && (

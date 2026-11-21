@@ -65,7 +65,7 @@ export default function HairStylingPage() {
       </section>
 
       <section id="menu" className="relative scroll-mt-28 overflow-hidden border-y border-ink/10 bg-cream-100 py-24 sm:py-32">
-        <div aria-hidden className="absolute left-1/2 top-1/3 h-[600px] w-[900px] -translate-x-1/2 rounded-full bg-champagne-pale/70 blur-[120px]" />
+        <div aria-hidden className="absolute left-1/2 top-1/3 h-[600px] w-[900px] -translate-x-1/2 bg-[radial-gradient(closest-side,rgba(241,230,207,0.75),transparent)]" />
         <div className="container-x relative">
           <SectionHeader
             index="01"
@@ -87,7 +87,7 @@ export default function HairStylingPage() {
       <section className="container-x">
         <Reveal>
           <div className="relative overflow-hidden rounded-[4px] bg-forest px-8 py-20 text-center text-white sm:px-16">
-            <div aria-hidden className="absolute -top-24 left-1/2 h-72 w-[700px] -translate-x-1/2 rounded-full bg-sage/40 blur-3xl" />
+            <div aria-hidden className="absolute -top-24 left-1/2 h-72 w-[700px] -translate-x-1/2 bg-[radial-gradient(closest-side,rgba(74,107,93,0.45),transparent)]" />
             <h2 className="relative font-display text-[2.6rem] font-semibold leading-[1.02] sm:text-[3.8rem]">
               Ready for <em className="font-medium text-champagne-light">healthier</em> hair?
             </h2>

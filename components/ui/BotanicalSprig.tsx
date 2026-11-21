@@ -1,10 +1,35 @@
 'use client';
 
-import { motion, useReducedMotion } from 'framer-motion';
+import { useEffect, useRef } from 'react';
+import { cn } from '@/lib/utils';
 
-/** Fine-line botanical illustration that draws itself in when it enters view. */
-export default function BotanicalSprig({ className, leaves = 7 }: { className?: string; leaves?: number }) {
-  const reduce = useReducedMotion();
+/**
+ * Fine-line botanical illustration.
+ *
+ * `draw` (default true): the lines draw themselves in once when the sprig enters view, using a
+ * CSS stroke-dashoffset animation triggered by an IntersectionObserver (no per-frame JS).
+ * Pass `draw={false}` for purely decorative backdrops (e.g. inside StudioScene) so scrolling past
+ * them costs nothing.
+ */
+export default function BotanicalSprig({ className, leaves = 7, draw = true }: { className?: string; leaves?: number; draw?: boolean }) {
+  const ref = useRef<SVGSVGElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!draw || !el) return;
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          el.classList.add('is-visible');
+          io.disconnect();
+        }
+      },
+      { rootMargin: '0px 0px -40px 0px' },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [draw]);
+
   const leafPaths: string[] = [];
   for (let i = 0; i < leaves; i++) {
     const y = 360 - i * 46;
@@ -17,21 +42,20 @@ export default function BotanicalSprig({ className, leaves = 7 }: { className?: 
     leafPaths.push(`M${x} ${y} C ${x + side * 22 * s} ${y - 18 * s}, ${x + side * 42 * s} ${y - 40 * s}, ${x + side * 56 * s} ${y - 58 * s}`);
   }
 
-  const draw = (delay: number) =>
-    reduce
-      ? {}
-      : {
-          initial: { pathLength: 0, opacity: 0 },
-          whileInView: { pathLength: 1, opacity: 1 },
-          viewport: { once: true },
-          transition: { duration: 2.4, delay, ease: [0.22, 1, 0.36, 1] as const },
-        };
-
   return (
-    <svg viewBox="0 0 200 400" fill="none" stroke="currentColor" strokeWidth={1.1} strokeLinecap="round" className={className} aria-hidden>
-      <motion.path d="M100 398 C 96 300, 108 190, 98 40 C 96 28, 100 18, 104 10" {...draw(0)} />
+    <svg
+      ref={ref}
+      viewBox="0 0 200 400"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.1}
+      strokeLinecap="round"
+      className={cn(draw && 'sprig-draw', className)}
+      aria-hidden
+    >
+      <path pathLength={1} d="M100 398 C 96 300, 108 190, 98 40 C 96 28, 100 18, 104 10" />
       {leafPaths.map((d, i) => (
-        <motion.path key={i} d={d} {...draw(0.35 + i * 0.08)} strokeWidth={i % 2 ? 0.7 : 1.1} />
+        <path key={i} pathLength={1} d={d} strokeWidth={i % 2 ? 0.7 : 1.1} style={draw ? { animationDelay: `${0.35 + i * 0.06}s` } : undefined} />
       ))}
     </svg>
   );

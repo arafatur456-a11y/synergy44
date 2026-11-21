@@ -28,7 +28,7 @@ export default function PendantCard({ pendant: p, onOpen }: { pendant: Pendant; 
           <Image src={p.image} alt={p.name} fill sizes="(min-width: 1024px) 25vw, 50vw" className="object-cover" />
         ) : (
           <>
-            <div className="absolute left-1/2 top-[-10%] h-[70%] w-[70%] -translate-x-1/2 rounded-full bg-white/[0.06] blur-2xl" />
+            <div className="absolute left-1/2 top-[-10%] h-[70%] w-[70%] -translate-x-1/2 bg-[radial-gradient(closest-side,rgba(255,255,255,0.08),transparent)]" />
             {/* Longer chain so the glass hangs at the optical centre of the 4:5 frame */}
             <div className="absolute inset-0 flex flex-col items-center">
               <div className="h-[22%] w-px bg-gradient-to-b from-transparent via-champagne/60 to-champagne" />

@@ -73,9 +73,9 @@ export default function Testimonials({ index = '05', label = 'Kind words', class
             <AnimatePresence mode="wait" initial={false} custom={dir}>
               <motion.figure
                 key={active}
-                initial={{ opacity: 0, y: dir * 24, filter: 'blur(6px)' }}
-                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                exit={{ opacity: 0, y: dir * -24, filter: 'blur(6px)' }}
+                initial={{ opacity: 0, y: dir * 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: dir * -24 }}
                 transition={{ duration: 0.45, ease }}
                 drag="x"
                 dragConstraints={{ left: 0, right: 0 }}

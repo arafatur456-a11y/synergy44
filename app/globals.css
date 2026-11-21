@@ -6,6 +6,8 @@
   html {
     background: #f5f1ea;
     -webkit-tap-highlight-color: transparent;
+    /* In-page anchors (#menu, skip link) land below the sticky header. Native scrolling — no JS smoothing. */
+    scroll-padding-top: 8rem;
   }
   body {
     @apply bg-cream font-sans text-ink antialiased;
@@ -121,14 +123,14 @@
     @apply rounded-[4px] border border-line bg-paper;
   }
   .glass {
-    @apply rounded-[14px] border border-white/80 bg-[rgba(251,249,245,0.82)] backdrop-blur-xl;
+    @apply rounded-[14px] border border-white/80 bg-[rgba(251,249,245,0.86)] backdrop-blur-md;
     box-shadow:
       0 50px 90px -30px rgba(8, 12, 10, 0.55),
       0 18px 34px -16px rgba(8, 12, 10, 0.35),
       inset 0 1px 0 rgba(255, 255, 255, 0.85);
   }
   .glass-dark {
-    @apply rounded-[14px] border border-white/15 bg-white/[0.07] text-white backdrop-blur-xl;
+    @apply rounded-[14px] border border-white/15 bg-[rgba(30,34,32,0.55)] text-white backdrop-blur-md;
     box-shadow:
       0 40px 80px -30px rgba(0, 0, 0, 0.7),
       inset 0 1px 0 rgba(255, 255, 255, 0.12);
@@ -163,18 +165,33 @@
     @apply border-line bg-paper text-espresso-700 hover:border-ink hover:text-ink;
   }
 
-  /* Dichroic shimmer: pointer-tracked highlight + slow sweeping sheen */
+  /*
+   * Dichroic shimmer.
+   * • Static pointer-tracked highlight (repaints only when --mx/--my change on hover).
+   * • Sweeping light band on ::after, animated with `transform` (GPU-composited) and only while
+   *   the card is hovered or inside `.sheen-live` (quick view) — so idle pages paint nothing.
+   * No blend modes: they force extra compositing work on every frame.
+   */
   .dichroic-sheen {
     position: absolute;
     inset: 0;
+    overflow: hidden;
     border-radius: inherit;
-    background:
-      radial-gradient(circle at var(--mx, 35%) var(--my, 25%), rgba(255, 255, 255, 0.6), transparent 38%),
-      linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.45) 45%, rgba(255, 240, 210, 0.3) 50%, transparent 62%);
-    background-size: 100% 100%, 250% 100%;
-    mix-blend-mode: screen;
-    animation: sheen 6s linear infinite;
     pointer-events: none;
+    background: radial-gradient(circle at var(--mx, 35%) var(--my, 25%), rgba(255, 255, 255, 0.55), transparent 40%);
+  }
+  .dichroic-sheen::after {
+    content: '';
+    position: absolute;
+    inset: 0 -60%;
+    background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, 0.42) 47%, rgba(255, 240, 210, 0.26) 51%, transparent 60%);
+    transform: translate3d(-32%, 0, 0);
+    animation: sheen-sweep 3.4s cubic-bezier(0.45, 0, 0.25, 1) infinite;
+    animation-play-state: paused;
+  }
+  .group:hover .dichroic-sheen::after,
+  .sheen-live .dichroic-sheen::after {
+    animation-play-state: running;
   }
 
   .grain {
@@ -185,10 +202,10 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
-    opacity: 0.12;
-    mix-blend-mode: overlay;
+    /* Desaturated noise at low opacity — same texture as before without a costly blend mode */
+    opacity: 0.07;
     border-radius: inherit;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 }
 
@@ -207,17 +224,70 @@
   }
 }
 
-@keyframes sheen {
-  0% { background-position: 0 0, 200% 0; }
-  100% { background-position: 0 0, -200% 0; }
+/* ─── Scroll performance: compositor-only motion ───────────────────────────────
+   Everything below animates only `opacity` / `transform` (GPU) or uses CSS scroll timelines,
+   so scrolling never waits on JavaScript. */
+
+/* Reveal-on-scroll (components/ui/Reveal.tsx). Hidden state only when JS is running. */
+.reveal {
+  transition:
+    opacity 1.1s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0s),
+    transform 1.1s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0s);
+}
+.js .reveal:not(.is-visible) {
+  opacity: 0;
+  transform: translate3d(0, var(--reveal-y, 28px), 0);
 }
 
-/* Lenis */
-html.lenis, html.lenis body { height: auto; }
-.lenis.lenis-smooth { scroll-behavior: auto !important; }
-.lenis.lenis-stopped { overflow: clip; }
+/* Botanical line drawing (components/ui/BotanicalSprig.tsx) */
+.js .sprig-draw path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.js .sprig-draw.is-visible path {
+  animation: sprig-draw 2.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@keyframes sprig-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+/* Scroll-driven parallax & hero drift — run on the compositor, no scroll listeners. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .parallax {
+      animation: parallax-shift linear both;
+      animation-timeline: view();
+    }
+    .hero-drift-text,
+    .hero-drift-scene {
+      animation: linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 100vh;
+    }
+    .hero-drift-text { animation-name: hero-drift-text; }
+    .hero-drift-scene { animation-name: hero-drift-scene; }
+  }
+}
+@keyframes parallax-shift {
+  from { transform: translate3d(0, var(--parallax, 60px), 0); }
+  to { transform: translate3d(0, calc(var(--parallax, 60px) * -1), 0); }
+}
+@keyframes hero-drift-text {
+  to { transform: translate3d(0, -60px, 0); }
+}
+@keyframes hero-drift-scene {
+  to { transform: translate3d(0, 80px, 0); }
+}
+
+@keyframes sheen-sweep {
+  from { transform: translate3d(-32%, 0, 0); }
+  to { transform: translate3d(32%, 0, 0); }
+}
+
 
 @media (prefers-reduced-motion: reduce) {
+  .js .reveal:not(.is-visible) { opacity: 1; transform: none; }
+  .js .sprig-draw path { stroke-dashoffset: 0; }
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;

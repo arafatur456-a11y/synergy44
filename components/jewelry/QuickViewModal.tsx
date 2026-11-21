@@ -8,7 +8,7 @@ import { ArrowRight, Check, Ruler, Sparkles, X } from 'lucide-react';
 import PendantVisual from './PendantVisual';
 import type { Pendant } from '@/lib/types';
 import { useCart } from '@/lib/cart';
-import { lockScroll } from '@/lib/lenis';
+import { lockScroll } from '@/lib/scroll-lock';
 import { ease, formatPrice } from '@/lib/utils';
 
 export default function QuickViewModal({ item, onClose }: { item: Pendant | null; onClose: () => void }) {
@@ -46,19 +46,18 @@ export default function QuickViewModal({ item, onClose }: { item: Pendant | null
             exit={{ y: 30, opacity: 0 }}
             transition={{ duration: 0.7, ease }}
             className="relative grid max-h-[94svh] w-full max-w-5xl overflow-y-auto bg-paper shadow-float sm:rounded-[6px] md:grid-cols-[1.1fr_1fr]"
-            data-lenis-prevent
           >
             <button
               ref={closeRef}
               onClick={onClose}
               aria-label="Close quick view"
-              className="absolute right-4 top-4 z-10 grid h-11 w-11 place-items-center rounded-full border border-white/25 bg-black/30 text-white backdrop-blur-md transition hover:bg-white hover:text-ink md:border-ink/15 md:bg-paper md:text-ink md:hover:bg-ink md:hover:text-white"
+              className="absolute right-4 top-4 z-10 grid h-11 w-11 place-items-center rounded-full border border-white/25 bg-black/50 text-white transition hover:bg-white hover:text-ink md:border-ink/15 md:bg-paper md:text-ink md:hover:bg-ink md:hover:text-white"
             >
               <X className="h-4 w-4" />
             </button>
 
             <div
-              className="relative flex min-h-[380px] items-start justify-center overflow-hidden md:min-h-[560px]"
+              className="sheen-live relative flex min-h-[380px] items-start justify-center overflow-hidden md:min-h-[560px]"
               style={{ background: `radial-gradient(70% 55% at 50% 42%, ${item.colors[0]}45 0%, #1A1620 55%, #0B0A0D 100%)` }}
               onPointerMove={(e) => {
                 const r = e.currentTarget.getBoundingClientRect();
@@ -66,7 +65,7 @@ export default function QuickViewModal({ item, onClose }: { item: Pendant | null
                 e.currentTarget.style.setProperty('--my', `${((e.clientY - r.top) / r.height) * 100}%`);
               }}
             >
-              <div className="absolute left-1/2 top-[-10%] h-[70%] w-[70%] -translate-x-1/2 rounded-full bg-white/[0.07] blur-3xl" />
+              <div className="absolute left-1/2 top-[-10%] h-[70%] w-[70%] -translate-x-1/2 bg-[radial-gradient(closest-side,rgba(255,255,255,0.09),transparent)]" />
               {item.image ? (
                 <Image src={item.image} alt={item.name} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
               ) : (

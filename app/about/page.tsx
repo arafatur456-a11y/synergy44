@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, Leaf, Rabbit, Recycle } from 'lucide-react';
 import PageHeader from '@/components/ui/PageHeader';
@@ -10,6 +11,7 @@ import GuaranteeGrid from '@/components/GuaranteeGrid';
 import PendantVisual from '@/components/jewelry/PendantVisual';
 import ProductVisual from '@/components/shop/ProductVisual';
 import { milestones } from '@/lib/data';
+import cynthiaPortrait from '@/public/images/cynthia-reedy.jpg';
 
 export const metadata: Metadata = {
   title: 'About',
@@ -44,15 +46,25 @@ export default function AboutPage() {
 
       {/* Portrait + story */}
       <section className="container-x grid gap-16 py-24 sm:py-32 lg:grid-cols-12 lg:gap-6">
-        <div className="relative lg:col-span-5">
-          <Parallax speed={30}>
-            {/* Replace with <StudioScene src="/images/cynthia.jpg" alt="Cynthia Reedy in the studio" /> */}
-            <StudioScene tone="stone" plinthWidth="56%" className="aspect-[4/5] w-full rounded-[3px]" objectsClassName="items-end gap-6">
-              <ProductVisual shape="jar" colors={['#F2E6D0', '#CDB28A']} cap="#E7DCC8" label="Loma" className="h-[150px] sm:h-[190px]" />
-              <PendantVisual colors={['#E3955A', '#E8C468', '#B85A6A', '#EBA977']} shape="teardrop" chain={false} className="mb-3 w-20 sm:w-24" />
-            </StudioScene>
+        <div className="relative mx-auto w-full max-w-[460px] lg:col-span-5 lg:max-w-none">
+          <Parallax speed={24}>
+            <figure className="rounded-[6px] bg-paper p-2.5 shadow-lift ring-1 ring-ink/[0.06] sm:p-3">
+              <div className="relative aspect-[4/5] overflow-hidden rounded-[3px] ring-1 ring-inset ring-champagne/40">
+                <Image
+                  src={cynthiaPortrait}
+                  alt="Portrait of Cynthia Reedy, cosmetologist and glass artist, smiling outdoors"
+                  fill
+                  placeholder="blur"
+                  sizes="(min-width: 1024px) 38vw, (min-width: 640px) 460px, 92vw"
+                  className="object-cover object-top"
+                />
+              </div>
+              <figcaption className="flex flex-col gap-1 px-2 pb-1 pt-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+                <span className="font-display text-[1.15rem] font-semibold">Cynthia Reedy</span>
+                <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-espresso-500">Cosmetologist · Glass artist</span>
+              </figcaption>
+            </figure>
           </Parallax>
-          <span className="absolute -bottom-6 left-6 bg-ink px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-white">Cynthia Reedy</span>
         </div>
         <Reveal className="lg:col-span-6 lg:col-start-7 lg:pt-12">
           <p className="eyebrow">Meet Cynthia</p>
@@ -96,7 +108,7 @@ export default function AboutPage() {
 
       {/* Guarantee — dark */}
       <section className="relative overflow-hidden bg-forest py-24 text-white sm:py-32">
-        <div aria-hidden className="absolute -left-40 top-0 h-[480px] w-[640px] rounded-full bg-sage/30 blur-[130px]" />
+        <div aria-hidden className="absolute -left-40 top-0 h-[480px] w-[640px] bg-[radial-gradient(closest-side,rgba(74,107,93,0.35),transparent)]" />
         <div className="container-x relative">
           <SectionHeader
             dark

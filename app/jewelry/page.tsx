@@ -43,7 +43,7 @@ export default async function JewelryPage() {
       />
 
       <section className="relative overflow-hidden bg-[#0D0C10] py-20 text-white sm:py-28">
-        <div aria-hidden className="absolute left-1/4 top-0 h-[520px] w-[800px] rounded-full bg-[#5B4A7A]/25 blur-[130px]" />
+        <div aria-hidden className="absolute left-1/4 top-0 h-[520px] w-[800px] bg-[radial-gradient(closest-side,rgba(91,74,122,0.3),transparent)]" />
         <div className="container-x relative">
           <JewelryGallery pendants={pendants} />
         </div>
@@ -65,7 +65,7 @@ export default async function JewelryPage() {
       <section className="container-x">
         <Reveal>
           <div className="relative overflow-hidden rounded-[4px] bg-ink px-8 py-16 text-white sm:px-16 sm:py-20">
-            <div aria-hidden className="absolute -right-20 -top-20 h-80 w-80 rounded-full bg-[#7CC9D6]/20 blur-3xl" />
+            <div aria-hidden className="absolute -right-20 -top-20 h-80 w-80 bg-[radial-gradient(closest-side,rgba(124,201,214,0.22),transparent)]" />
             <div className="relative grid gap-10 lg:grid-cols-12 lg:items-end">
               <div className="lg:col-span-8">
                 <p className="eyebrow !text-white">Commissions</p>

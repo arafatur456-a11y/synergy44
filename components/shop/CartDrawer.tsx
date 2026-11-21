@@ -5,7 +5,7 @@ import { useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Lock, Minus, Plus, ShoppingBag, X } from 'lucide-react';
 import { useCart } from '@/lib/cart';
-import { lockScroll } from '@/lib/lenis';
+import { lockScroll } from '@/lib/scroll-lock';
 import { formatPrice, ease } from '@/lib/utils';
 import CartThumb from './CartThumb';
 
@@ -74,7 +74,7 @@ export default function CartDrawer() {
               </div>
             ) : (
               <>
-                <ul className="flex-1 divide-y divide-espresso/[0.07] overflow-y-auto px-6" data-lenis-prevent>
+                <ul className="flex-1 divide-y divide-espresso/[0.07] overflow-y-auto px-6">
                   <AnimatePresence initial={false}>
                     {items.map((item) => (
                       <motion.li

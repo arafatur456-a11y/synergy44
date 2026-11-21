@@ -100,7 +100,15 @@ lib/                     data, types, catalog, woocommerce, cart, contact, lenis
   <StudioScene src="/images/loma-leave-in.jpg" alt="Loma Leave-In Conditioner on stone" className="aspect-[4/5]" />
   ```
 
-- **Motion:** calm and fluid — Lenis inertial scroll, slow image zoom on hover (1.4s), 5–6° tilt on glass cards, scroll parallax, clip-path reveals. Everything respects `prefers-reduced-motion`.
+- **Motion & scroll performance:** native scrolling (no JS smooth-scroll library). Everything that moves while scrolling is compositor-only:
+  - Reveals: `Reveal` uses one shared IntersectionObserver plus CSS `opacity`/`transform` transitions, and plays once.
+  - Parallax and hero drift: CSS scroll-driven animations (`animation-timeline`), with no scroll listeners. Browsers without support show a static layout.
+  - The navbar state comes from an IntersectionObserver.
+  - The pendant sheen animates `transform` only while hovered.
+  - No animated `filter`, no blend modes, and soft glows are radial gradients rather than `filter: blur()`. Backdrop blur is limited to the sticky header and a few glass cards.
+  - Everything respects `prefers-reduced-motion`.
+
+  Keep new effects to `transform`/`opacity` so the site stays at 60fps.
 
 ## Before launch — content to confirm
 

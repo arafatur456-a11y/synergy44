@@ -22,8 +22,8 @@ export default function GlassStudio({ pendants }: { pendants: Pendant[] }) {
 
   return (
     <section className="relative overflow-hidden bg-[#0D0C10] py-24 text-white sm:py-32">
-      <div aria-hidden className="absolute left-1/2 top-0 h-[520px] w-[900px] -translate-x-1/2 rounded-full bg-[#5B4A7A]/25 blur-[120px]" />
-      <div aria-hidden className="absolute -right-40 bottom-0 h-[420px] w-[520px] rounded-full bg-[#2E6B5A]/20 blur-[120px]" />
+      <div aria-hidden className="absolute left-1/2 top-0 h-[520px] w-[900px] -translate-x-1/2 bg-[radial-gradient(closest-side,rgba(91,74,122,0.3),transparent)]" />
+      <div aria-hidden className="absolute -right-40 bottom-0 h-[420px] w-[520px] bg-[radial-gradient(closest-side,rgba(46,107,90,0.25),transparent)]" />
 
       <div className="container-x relative">
         <SectionHeader

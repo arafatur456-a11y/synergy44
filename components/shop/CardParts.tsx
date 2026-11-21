@@ -81,7 +81,7 @@ export function CardAction({
 }) {
   const className = cn(
     'absolute bottom-3 right-3 z-[2] grid h-11 w-11 place-items-center rounded-full bg-ink text-white shadow-lift transition-transform duration-300 active:scale-95 disabled:cursor-not-allowed disabled:bg-espresso-400',
-    'md:left-3 md:flex md:h-12 md:w-auto md:items-center md:justify-between md:rounded-[2px] md:bg-ink/90 md:px-5 md:backdrop-blur-md md:disabled:bg-espresso-500/90',
+    'md:left-3 md:flex md:h-12 md:w-auto md:items-center md:justify-between md:rounded-[2px] md:bg-ink/95 md:px-5 md:disabled:bg-espresso-500/90',
     'md:translate-y-[calc(100%+16px)] md:duration-500 md:ease-silk md:group-hover:translate-y-0 md:focus-visible:translate-y-0',
   );
   const content = (

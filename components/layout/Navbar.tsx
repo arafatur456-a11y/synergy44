@@ -3,12 +3,12 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, ChevronDown, Menu, ShoppingBag, X } from 'lucide-react';
 import { brands } from '@/lib/data';
 import { categories, products } from '@/lib/data';
 import { useCart } from '@/lib/cart';
-import { lockScroll } from '@/lib/lenis';
+import { lockScroll } from '@/lib/scroll-lock';
 import { cn, ease } from '@/lib/utils';
 import ProductVisual from '@/components/shop/ProductVisual';
 import PendantVisual from '@/components/jewelry/PendantVisual';
@@ -124,14 +124,22 @@ function MegaMenu({ onNavigate }: { onNavigate: () => void }) {
 export default function Navbar() {
   const pathname = usePathname();
   const { count, setOpen: openCart } = useCart();
-  const { scrollY } = useScroll();
   const [scrolled, setScrolled] = useState(false);
   const [mega, setMega] = useState(false);
   const [mobile, setMobile] = useState(false);
   const [mobileBrands, setMobileBrands] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  useMotionValueEvent(scrollY, 'change', (y) => setScrolled(y > 24));
+  // "Scrolled" state from an IntersectionObserver on a sentinel near the top of the page —
+  // no scroll listener, so the navbar does zero work while the page scrolls.
+  const sentinel = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = sentinel.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setScrolled(!e.isIntersecting));
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   useEffect(() => {
     setMega(false);
@@ -165,6 +173,7 @@ export default function Navbar() {
 
   return (
     <>
+      <div ref={sentinel} aria-hidden className="pointer-events-none absolute left-0 top-[60px] h-px w-px" />
       <div className="bg-ink text-white">
         <div className="container-x flex h-9 items-center justify-center text-[10px] font-medium uppercase tracking-[0.22em] sm:justify-between">
           <span className="hidden text-white/60 sm:inline">Michigan · California</span>
@@ -254,7 +263,6 @@ export default function Navbar() {
             animate={{ clipPath: 'inset(0 0 0% 0)' }}
             exit={{ clipPath: 'inset(0 0 100% 0)' }}
             transition={{ duration: 0.7, ease }}
-            data-lenis-prevent
           >
             <div className="container-x flex h-[84px] shrink-0 items-center justify-between">
               <Wordmark light />

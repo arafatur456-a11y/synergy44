@@ -61,15 +61,10 @@ const config: Config = {
           '0%': { transform: 'translateX(0)' },
           '100%': { transform: 'translateX(-50%)' },
         },
-        glow: {
-          '0%, 100%': { opacity: '0.55' },
-          '50%': { opacity: '0.9' },
-        },
       },
       animation: {
         drift: 'drift 8s ease-in-out infinite',
         marquee: 'marquee 40s linear infinite',
-        glow: 'glow 7s ease-in-out infinite',
       },
     },
   },
