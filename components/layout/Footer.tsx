@@ -2,7 +2,9 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { ArrowRight, Check } from 'lucide-react';
+import { ArrowRight, Check, Loader2 } from 'lucide-react';
+import InstagramLink from '@/components/ui/InstagramLink';
+import { subscribe } from '@/lib/newsletter';
 import { brands } from '@/lib/data';
 import { site } from '@/lib/site';
 
@@ -15,7 +17,10 @@ const explore = [
 
 export default function Footer() {
   const [email, setEmail] = useState('');
-  const [joined, setJoined] = useState(false);
+  const [website, setWebsite] = useState('');
+  const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
+  const [error, setError] = useState('');
+  const joined = status === 'done';
 
   return (
     <footer className="relative overflow-hidden bg-ink text-white">
@@ -29,10 +34,18 @@ export default function Footer() {
           </div>
           <form
             className="lg:col-span-5 lg:col-start-8"
-            onSubmit={(e) => {
+            noValidate
+            onSubmit={async (e) => {
               e.preventDefault();
-              // TODO: connect to Mailchimp / Klaviyo / WordPress newsletter endpoint
-              setJoined(true);
+              if (status === 'sending' || joined) return;
+              setStatus('sending');
+              setError('');
+              const res = await subscribe({ email, website, source: 'footer' });
+              if (res.ok) setStatus('done');
+              else {
+                setError(res.error);
+                setStatus('error');
+              }
             }}
           >
             <label htmlFor="footer-email" className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/60">
@@ -44,12 +57,22 @@ export default function Footer() {
                 type="email"
                 required
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                readOnly={joined}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  if (error) setError('');
+                }}
+                aria-invalid={!!error}
+                aria-describedby={error ? 'footer-email-error' : undefined}
                 placeholder="Your email address"
                 className="h-full flex-1 bg-transparent text-[16px] text-white placeholder:text-white/40 focus:outline-none"
               />
-              <button type="submit" disabled={joined} className="group flex h-full items-center gap-2 pl-4 text-[12px] font-semibold uppercase tracking-[0.16em]">
-                {joined ? (
+              <button type="submit" disabled={joined || status === 'sending'} className="group flex h-full items-center gap-2 pl-4 text-[12px] font-semibold uppercase tracking-[0.16em]">
+                {status === 'sending' ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" /> Joining
+                  </>
+                ) : joined ? (
                   <>
                     <Check className="h-4 w-4 text-champagne-light" /> Welcome
                   </>
@@ -60,6 +83,10 @@ export default function Footer() {
                 )}
               </button>
             </div>
+            <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden className="hidden" value={website} onChange={(e) => setWebsite(e.target.value)} />
+            <p id="footer-email-error" role={error ? 'alert' : undefined} aria-live="polite" className={error ? 'mt-3 text-[13px] text-[#F0B4A2]' : 'mt-3 text-[13px] text-white/55'}>
+              {error || (joined ? 'You’re on the list. Watch for the next letter.' : '\u00a0')}
+            </p>
           </form>
         </div>
 
@@ -102,6 +129,7 @@ export default function Footer() {
               ))}
               <li className="text-white/50">{site.hours}</li>
             </ul>
+            <InstagramLink tone="dark" className="mt-6" />
           </div>
         </div>
       </div>

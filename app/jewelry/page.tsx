@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import InstagramLink from '@/components/ui/InstagramLink';
 import { ArrowRight } from 'lucide-react';
 import PageHeader from '@/components/ui/PageHeader';
 import StudioScene from '@/components/ui/StudioScene';
@@ -81,10 +82,11 @@ export default async function JewelryPage() {
                 </h2>
                 <p className="mt-5 max-w-lg text-white/70">Cynthia creates custom pendants for gifts, milestones and special occasions.</p>
               </div>
-              <div className="lg:col-span-4 lg:text-right">
+              <div className="flex flex-col items-start gap-6 lg:col-span-4 lg:items-end">
                 <Link href="/contact?topic=jewelry" className="btn-light">
                   Start a commission <ArrowRight className="h-4 w-4" />
                 </Link>
+                <InstagramLink tone="dark" label="New glass on Instagram · @synergy44llc" />
               </div>
             </div>
           </div>

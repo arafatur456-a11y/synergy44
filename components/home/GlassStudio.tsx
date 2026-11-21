@@ -9,6 +9,7 @@ import PendantCard from '@/components/jewelry/PendantCard';
 import QuickViewModal from '@/components/jewelry/QuickViewModal';
 import type { Pendant } from '@/lib/types';
 import { CARD_GRID } from '@/components/shop/CardParts';
+import InstagramLink from '@/components/ui/InstagramLink';
 
 const steps = [
   ['Cut', 'Glass is hand-cut and composed like a small painting.'],
@@ -60,6 +61,13 @@ export default function GlassStudio({ pendants }: { pendants: Pendant[] }) {
             </Reveal>
           ))}
         </ol>
+
+        <Reveal className="mt-12 flex flex-col gap-5 border-t border-white/15 pt-10 sm:flex-row sm:items-center sm:justify-between">
+          <p className="max-w-md text-[15px] leading-relaxed text-white/65">
+            New pieces appear in the studio feed first, along with kiln days and works in progress.
+          </p>
+          <InstagramLink tone="dark" variant="pill" label="Follow @synergy44llc" className="self-start sm:self-auto" />
+        </Reveal>
       </div>
 
       <QuickViewModal item={selected} onClose={close} />

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import BookPackageButton from '@/components/concierge/BookPackageButton';
 import { ArrowRight, CalendarHeart, MessageCircle, Sparkles } from 'lucide-react';
 import PageHeader from '@/components/ui/PageHeader';
 import StudioScene from '@/components/ui/StudioScene';
@@ -43,6 +44,7 @@ export default function HairStylingPage() {
           <Link href="/contact?topic=salon" className="btn-dark">
             Book an appointment <ArrowRight className="h-4 w-4" />
           </Link>
+          <BookPackageButton />
           <a href="#menu" className="btn-outline">
             View the menu
           </a>

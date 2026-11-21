@@ -77,6 +77,28 @@ Card data never touches this app, and the consumer secret never reaches the brow
 - **Unpaid orders** stay *Pending payment*. WooCommerce cancels them after the *Hold stock* window (Settings → Products → Inventory).
 - **Without credentials** (local dev, previews), the site serves the demo catalog from `lib/data.ts` and checkout shows *Request this order*. The build log warns when this happens.
 
+## Concierge, booking & newsletter
+
+**AI Beauty & Jewelry Concierge.** A floating *Concierge* button (in `app/layout.tsx`) opens a drawer with two tabs. The drawer's code loads only on first open.
+
+- **Ask** chats about hair routines across the store's brands, dichroic glass picks and gift or styling ideas, and Cynthia's story.
+  - `POST /api/concierge` streams the reply from Claude, grounded in the live catalog and the editorial facts in `lib/data.ts`. The catalog section of the prompt is prompt-cached.
+  - Replies reference items with `[[product:slug]]` markers, which render as cards linking to `/product/[slug]`. `[[book]]` opens booking and `[[newsletter]]` opens the sign-up.
+  - Without `ANTHROPIC_API_KEY`, or if the API errors, a rule-based guide in `lib/concierge-server.ts` answers instead, so the widget never breaks.
+  - The endpoint is rate-limited per IP, and the history and message length are capped.
+- **Book a cut** is a three-step haircut package request: package, preferred day and time window (plus studio), then contact details and notes. It ends with a confirmation and reference number.
+  - Packages are built from `serviceGroups` in `lib/booking.ts`, so prices match `/hair-styling`.
+  - `POST /api/booking` validates the request (with a honeypot and rate limit). It then sends it to `BOOKING_WEBHOOK_URL` and/or emails the studio through Resend, and logs it when neither is configured.
+- Open the concierge from anywhere with `openConcierge({ tab: 'book' })` from `lib/concierge.ts`. `BookPackageButton` on `/hair-styling` does this.
+
+**Newsletter popup** (`components/newsletter/NewsletterPopup.tsx`).
+
+- Opens automatically once per session, after 25 seconds, at 45% scroll depth, or on exit intent on desktop. Nothing triggers it in the first 4 seconds, on `/checkout`, or while another overlay is open.
+- Dismissing it is remembered for the session, and subscribing is remembered on the device. `openNewsletter()` from `lib/newsletter.ts` opens it any time.
+- The popup and the footer form both post to `POST /api/newsletter`, which adds the contact to a Resend audience (`RESEND_AUDIENCE_ID`) and/or forwards it to `NEWSLETTER_WEBHOOK_URL`.
+
+**Instagram.** `components/ui/InstagramLink.tsx` links to `site.instagram` (`@synergy44llc`), always with `target="_blank"` and `rel="noopener noreferrer"`. It appears on Home (glass studio), About (Meet Cynthia), `/jewelry` (commissions) and in the footer.
+
 ## Structure
 
 ```
@@ -126,7 +148,9 @@ All of these are placeholders and are flagged in the data files:
 - **Guarantee and biography wording** — confirm with Cynthia.
 - **Imagery** — scenes, packshots and pendants are drawn in code. Pass real photos to `StudioScene` via `src` (see above), and replace `ProductVisual` / `PendantVisual` with `next/image` once product photography exists.
 - **Checkout** — test a full order on a staging store or with a 100%-off coupon before launch. Confirm the shipping line and the payment gateways on the Pay for order page.
-- **Newsletter** — footer form is UI only. Connect it to Mailchimp, Klaviyo or similar.
+- **Newsletter** — set `RESEND_AUDIENCE_ID` or `NEWSLETTER_WEBHOOK_URL` so sign-ups reach your list (they are only logged until then).
+- **Booking** — set `BOOKING_WEBHOOK_URL` and/or the Resend variables so booking requests reach the studio. Confirm the package names and prices in `lib/booking.ts`.
+- **Concierge** — add `ANTHROPIC_API_KEY` in Vercel to switch from guided suggestions to AI answers.
 - **Contact email** — `site.contactEmail` in `lib/site.ts` is shown on `/contact` only once set.
 
 ## Deploying

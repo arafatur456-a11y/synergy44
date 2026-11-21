@@ -6,6 +6,7 @@ export const site = {
   /** Set a real inbox to show it on /contact. Left empty so nothing unverified is published. */
   contactEmail: '',
   hours: 'Salon visits by appointment',
+  instagram: { handle: 'synergy44llc', url: 'https://www.instagram.com/synergy44llc/' },
 };
 
 export type NavItem = { label: string; href: string; mega?: boolean };

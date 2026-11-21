@@ -5,6 +5,8 @@ import { CartProvider } from '@/lib/cart';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import CartDrawer from '@/components/shop/CartDrawer';
+import ConciergeLauncher from '@/components/concierge/ConciergeLauncher';
+import NewsletterPopup from '@/components/newsletter/NewsletterPopup';
 import { site } from '@/lib/site';
 
 // Self-hosted variable fonts (Fontsource): Playfair Display (high-contrast serif) + Inter Tight (grotesque).
@@ -65,6 +67,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main id="main">{children}</main>
           <Footer />
           <CartDrawer />
+          <ConciergeLauncher />
+          <NewsletterPopup />
         </CartProvider>
       </body>
     </html>

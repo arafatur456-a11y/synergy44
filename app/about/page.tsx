@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+import InstagramLink from '@/components/ui/InstagramLink';
 import { ArrowRight, Leaf, Rabbit, Recycle } from 'lucide-react';
 import PageHeader from '@/components/ui/PageHeader';
 import StudioScene from '@/components/ui/StudioScene';
@@ -81,9 +82,12 @@ export default function AboutPage() {
               professional cosmetology journals document years of technique, care and client stories.
             </p>
           </div>
-          <Link href="/contact?topic=consultation" className="btn-dark mt-10">
-            Book a consultation <ArrowRight className="h-4 w-4" />
-          </Link>
+          <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-5">
+            <Link href="/contact?topic=consultation" className="btn-dark">
+              Book a consultation <ArrowRight className="h-4 w-4" />
+            </Link>
+            <InstagramLink label="Follow Cynthia’s studio · @synergy44llc" />
+          </div>
         </Reveal>
       </section>
 
