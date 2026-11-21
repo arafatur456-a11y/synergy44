@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { cn, formatPrice } from '@/lib/utils';
 
@@ -18,6 +19,7 @@ export function MediaFrame({
   action,
   onSelect,
   selectLabel,
+  href,
   children,
 }: {
   tone?: 'light' | 'dark';
@@ -27,6 +29,8 @@ export function MediaFrame({
   /** Makes the whole image clickable (e.g. open quick view) */
   onSelect?: () => void;
   selectLabel?: string;
+  /** Makes the whole image a link (e.g. to the product page). Takes precedence over onSelect. */
+  href?: string;
   children: ReactNode;
 }) {
   return (
@@ -46,7 +50,11 @@ export function MediaFrame({
           tone === 'light' ? 'bg-[radial-gradient(60%_50%_at_50%_0%,rgba(255,255,255,.55),transparent)]' : 'bg-[radial-gradient(60%_50%_at_50%_0%,rgba(255,255,255,.12),transparent)]',
         )}
       />
-      {onSelect && <button type="button" onClick={onSelect} aria-label={selectLabel} className="absolute inset-0 z-[1] cursor-pointer" />}
+      {href ? (
+        <Link href={href} aria-label={selectLabel} className="absolute inset-0 z-[1]" />
+      ) : (
+        onSelect && <button type="button" onClick={onSelect} aria-label={selectLabel} className="absolute inset-0 z-[1] cursor-pointer" />
+      )}
       {badge && <CardBadge>{badge}</CardBadge>}
       {action}
     </div>
@@ -120,6 +128,7 @@ export function CardMeta({
   detail,
   price,
   compareAt,
+  href,
 }: {
   tone?: 'light' | 'dark';
   eyebrow: string;
@@ -128,13 +137,22 @@ export function CardMeta({
   price: number;
   /** Original price, shown struck-through when on sale */
   compareAt?: number;
+  href?: string;
 }) {
   const dark = tone === 'dark';
   return (
     <div className="mt-4 flex items-start justify-between gap-4">
       <div className="min-w-0">
         <p className={cn('text-[10px] font-semibold uppercase tracking-[0.2em]', dark ? 'text-champagne-light' : 'text-espresso-500')}>{eyebrow}</p>
-        <h3 className={cn('mt-1 font-display text-[1.1rem] font-semibold leading-snug sm:text-[1.2rem]', dark ? 'text-white' : 'text-ink')}>{title}</h3>
+        <h3 className={cn('mt-1 font-display text-[1.1rem] font-semibold leading-snug sm:text-[1.2rem]', dark ? 'text-white' : 'text-ink')}>
+          {href ? (
+            <Link href={href} className="bg-[linear-gradient(currentColor,currentColor)] bg-[length:0%_1px] bg-left-bottom bg-no-repeat transition-[background-size] duration-500 ease-silk hover:bg-[length:100%_1px]">
+              {title}
+            </Link>
+          ) : (
+            title
+          )}
+        </h3>
         {detail && <p className={cn('mt-1 text-[12.5px]', dark ? 'text-white/55' : 'text-espresso-500')}>{detail}</p>}
       </div>
       <p className={cn('shrink-0 pt-4 text-right text-[15px] font-semibold tabular-nums', dark ? 'text-white' : 'text-ink')}>

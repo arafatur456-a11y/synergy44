@@ -70,7 +70,7 @@ export default function CheckoutForm() {
 
   const online = items.filter((i) => i.wcId);
   const offline = items.filter((i) => !i.wcId);
-  const lines = useMemo(() => online.map((i) => ({ wcId: i.wcId!, qty: i.qty })), [online]);
+  const lines = useMemo(() => online.map((i) => ({ wcId: i.wcId!, ...(i.variationId ? { variationId: i.variationId } : {}), qty: i.qty })), [online]);
   const linesKey = JSON.stringify(lines);
 
   // Live quote: WooCommerce prices + stock for exactly what's in the bag.
@@ -90,7 +90,7 @@ export default function CheckoutForm() {
         setQuoteState('ready');
         // Keep the bag in sync with the store's current prices and stock limits.
         (json as Quote).lines.forEach((l) => {
-          const item = items.find((i) => i.wcId === l.wcId);
+          const item = items.find((i) => i.wcId === l.wcId && (i.variationId ?? 0) === (l.variationId ?? 0));
           if (!item) return;
           if (l.unitPrice > 0 && l.unitPrice !== item.price) update(item.id, { price: l.unitPrice });
           if ((l.maxQty ?? null) !== (item.maxQty ?? null)) update(item.id, { maxQty: l.maxQty });
@@ -180,7 +180,7 @@ export default function CheckoutForm() {
     );
   }
 
-  const quoteLine = (wcId?: number) => quote?.lines.find((l) => l.wcId === wcId);
+  const quoteLine = (wcId?: number, variationId?: number) => quote?.lines.find((l) => l.wcId === wcId && (l.variationId ?? 0) === (variationId ?? 0));
   const busy = submit !== 'idle';
   const canPay = quoteState === 'ready' && !!quote?.ok && lines.length > 0 && !busy;
 
@@ -283,7 +283,7 @@ export default function CheckoutForm() {
 
               <ul className="divide-y divide-line">
                 {online.map((item) => {
-                  const ql = quoteLine(item.wcId);
+                  const ql = quoteLine(item.wcId, item.variationId);
                   const issue = ql && !ql.available ? ql : null;
                   return (
                     <li key={item.id} className="flex gap-4 py-5">

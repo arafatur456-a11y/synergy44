@@ -6,6 +6,7 @@ import { ArrowUpRight, Ban, Check, Plus } from 'lucide-react';
 import ProductVisual from './ProductVisual';
 import { CardAction, CardMeta, MediaFrame } from './CardParts';
 import { getBrand } from '@/lib/data';
+import { productHref } from '@/lib/catalog-utils';
 import type { Product } from '@/lib/types';
 import { useCart } from '@/lib/cart';
 
@@ -36,16 +37,20 @@ export default function ProductCard({ product }: { product: Product }) {
     setAdded(true);
   };
 
+  const href = productHref(product);
+
   return (
     <article className="group relative">
       <MediaFrame
+        href={href}
+        selectLabel={`View ${brandName} ${product.name}`}
         badge={product.badge}
         background={product.image ? undefined : `radial-gradient(90% 70% at 50% 38%, #FFFFFF 0%, ${brand?.tint ?? '#EEE8DE'} 55%, #DCD3C6 100%)`}
         action={
           product.inStock === false ? (
             <CardAction disabled ariaLabel={`${product.name} is sold out`} label="Sold out" icon={<Ban className="h-4 w-4" />} />
-          ) : product.type === 'variable' && product.permalink ? (
-            <CardAction href={product.permalink} ariaLabel={`Choose options for ${product.name}`} label="Choose options" icon={<ArrowUpRight className="h-4 w-4" />} price={product.price} />
+          ) : product.type === 'variable' ? (
+            <CardAction href={href} ariaLabel={`Choose options for ${product.name}`} label="Choose options" icon={<ArrowUpRight className="h-4 w-4" />} price={product.price} />
           ) : (
           <CardAction
             onClick={onAdd}
@@ -77,6 +82,7 @@ export default function ProductCard({ product }: { product: Product }) {
         )}
       </MediaFrame>
       <CardMeta
+        href={href}
         eyebrow={brandName}
         title={product.name}
         price={product.price}

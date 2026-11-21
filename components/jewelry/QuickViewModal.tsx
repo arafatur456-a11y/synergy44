@@ -1,12 +1,14 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, Check, Ruler, Sparkles, X } from 'lucide-react';
 import PendantVisual from './PendantVisual';
 import type { Pendant } from '@/lib/types';
+import { productHref } from '@/lib/catalog-utils';
 import { useCart } from '@/lib/cart';
 import { lockScroll } from '@/lib/scroll-lock';
 import { ease, formatPrice } from '@/lib/utils';
@@ -127,6 +129,9 @@ export default function QuickViewModal({ item, onClose }: { item: Pendant | null
                     </>
                   )}
                 </button>
+                <Link href={productHref(item)} onClick={onClose} className="link-underline mx-auto mt-5 flex w-max">
+                  View full details <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
                 <p className="mt-3 text-center text-[11px] uppercase tracking-[0.16em] text-espresso-500">One of a kind · handmade by Cynthia Reedy</p>
               </div>
             </div>

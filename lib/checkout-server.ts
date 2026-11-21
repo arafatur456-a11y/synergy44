@@ -11,7 +11,7 @@
  * Leave them unset to create orders without a shipping line (e.g. local pickup only).
  * Taxes are calculated by WooCommerce from its own tax settings when the order is created.
  */
-import { createWooOrder, decode, fetchWooProductsByIds, type WooOrder } from './woocommerce';
+import { createWooOrder, decode, fetchWooProductsByIds, fetchWooVariationsByIds, type WooOrder } from './woocommerce';
 import type { CheckoutCustomer, CheckoutLine, Quote, QuoteLine } from './checkout';
 
 const round = (n: number) => Math.round(n * 100) / 100;
@@ -26,24 +26,38 @@ function shippingFor(subtotal: number): Quote['shipping'] {
 }
 
 export async function buildQuote(lines: CheckoutLine[]): Promise<Quote> {
-  const products = await fetchWooProductsByIds(lines.map((l) => l.wcId));
+  const products = await fetchWooProductsByIds([...new Set(lines.map((l) => l.wcId))]);
   const byId = new Map(products.map((p) => [p.id, p]));
 
-  const quoteLines: QuoteLine[] = lines.map(({ wcId, qty }) => {
+  // Fresh variation data for every variable line, grouped per parent product
+  const variationIdsByParent = new Map<number, number[]>();
+  for (const l of lines) if (l.variationId) variationIdsByParent.set(l.wcId, [...(variationIdsByParent.get(l.wcId) ?? []), l.variationId]);
+  const variations = new Map<number, Awaited<ReturnType<typeof fetchWooVariationsByIds>>[number]>();
+  await Promise.all(
+    [...variationIdsByParent].map(async ([parent, ids]) => (await fetchWooVariationsByIds(parent, ids)).forEach((v) => variations.set(v.id, v))),
+  );
+
+  const quoteLines: QuoteLine[] = lines.map(({ wcId, variationId, qty }) => {
     const p = byId.get(wcId);
     if (!p || p.status !== 'publish') {
-      return { wcId, name: 'Unavailable item', qty, unitPrice: 0, lineTotal: 0, available: false, maxQty: 0, issue: 'No longer available' };
+      return { wcId, variationId, name: 'Unavailable item', qty, unitPrice: 0, lineTotal: 0, available: false, maxQty: 0, issue: 'No longer available' };
     }
-    const unitPrice = Number(p.price) || 0;
-    const base = { wcId, name: decode(p.name), qty, unitPrice, lineTotal: round(unitPrice * qty), permalink: p.permalink };
+    const v = variationId ? variations.get(variationId) : undefined;
+    // A variation stands in for its parent's price / stock / purchasability
+    const src = v ?? p;
+    const unitPrice = Number(src.price) || 0;
+    const name = v ? `${decode(p.name)} — ${v.attributes.map((a) => a.option).filter(Boolean).join(' / ')}` : decode(p.name);
+    const base = { wcId, variationId, name, qty, unitPrice, lineTotal: round(unitPrice * qty), permalink: p.permalink };
 
-    if (p.type === 'variable') return { ...base, available: false, maxQty: null, issue: 'Choose options on the product page' };
-    if (!p.purchasable || unitPrice <= 0) return { ...base, available: false, maxQty: 0, issue: 'Not available for online purchase' };
-    if (p.stock_status === 'outofstock') return { ...base, available: false, maxQty: 0, issue: 'Sold out' };
-    if (typeof p.stock_quantity === 'number' && p.stock_quantity >= 0 && p.stock_quantity < qty && p.stock_status !== 'onbackorder') {
-      return { ...base, available: false, maxQty: p.stock_quantity, issue: p.stock_quantity === 0 ? 'Sold out' : `Only ${p.stock_quantity} left` };
+    if (p.type === 'variable' && !v) {
+      return { ...base, available: false, maxQty: null, issue: variationId ? 'This option is no longer available' : 'Choose options on the product page' };
     }
-    return { ...base, available: true, maxQty: typeof p.stock_quantity === 'number' ? p.stock_quantity : null };
+    if (!src.purchasable || unitPrice <= 0) return { ...base, available: false, maxQty: 0, issue: 'Not available for online purchase' };
+    if (src.stock_status === 'outofstock') return { ...base, available: false, maxQty: 0, issue: 'Sold out' };
+    if (typeof src.stock_quantity === 'number' && src.stock_quantity >= 0 && src.stock_quantity < qty && src.stock_status !== 'onbackorder') {
+      return { ...base, available: false, maxQty: src.stock_quantity, issue: src.stock_quantity === 0 ? 'Sold out' : `Only ${src.stock_quantity} left` };
+    }
+    return { ...base, available: true, maxQty: typeof src.stock_quantity === 'number' ? src.stock_quantity : null };
   });
 
   const subtotal = round(quoteLines.filter((l) => l.available).reduce((n, l) => n + l.lineTotal, 0));
@@ -75,7 +89,7 @@ export async function placeOrder(lines: CheckoutLine[], c: CheckoutCustomer, quo
   return createWooOrder({
     billing: { ...address, email: c.email.trim(), phone: c.phone?.trim() ?? '' },
     shipping: address,
-    line_items: lines.map((l) => ({ product_id: l.wcId, quantity: l.qty })),
+    line_items: lines.map((l) => ({ product_id: l.wcId, ...(l.variationId ? { variation_id: l.variationId } : {}), quantity: l.qty })),
     shipping_lines: shipping ? [{ method_id: process.env.WC_SHIPPING_METHOD_ID!, method_title: shipping.title, total: shipping.total.toFixed(2) }] : undefined,
     customer_note: c.note?.trim() || undefined,
   });

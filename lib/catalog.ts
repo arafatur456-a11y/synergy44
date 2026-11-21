@@ -14,9 +14,9 @@
  * keep working. In production it throws — Next.js then keeps serving the last good
  * (ISR-cached) page instead of ever showing placeholder prices to customers.
  */
-import { pendants as mockPendants, products as mockProducts } from './data';
-import { fetchWooPendants, fetchWooProducts, isWooConfigured } from './woocommerce';
-import type { Pendant, Product } from './types';
+import { getBrand, pendants as mockPendants, products as mockProducts } from './data';
+import { fetchWooPendants, fetchWooProductDetail, fetchWooProducts, isWooConfigured } from './woocommerce';
+import type { Pendant, Product, ProductDetail } from './types';
 
 export const catalogSource = () => (isWooConfigured() ? 'woocommerce' : 'mock');
 
@@ -54,3 +54,48 @@ export async function getFeaturedProducts(limit = 4): Promise<Product[]> {
 export const getPendants = (): Promise<Pendant[]> => fromSource(fetchWooPendants, mockPendants);
 
 export { collectionsOf } from './catalog-utils';
+
+// ─── Single product ──────────────────────────────────────────────────────────
+
+/** Demo-mode detail built from lib/data.ts (no photos → the page shows the illustration). */
+function mockDetail(slug: string): ProductDetail | null {
+  const product = mockProducts.find((p) => (p.slug ?? p.id) === slug);
+  if (product) {
+    const brand = getBrand(product.brand);
+    return {
+      kind: 'product', item: product, slug, sku: product.sku, label: brand?.name ?? 'Hair care',
+      labelHref: brand ? `/products/hair-care/${brand.slug}` : '/products/hair-care', images: [],
+      shortDescriptionHtml: `<p>${product.description}</p>`, descriptionHtml: '',
+      attributes: product.size ? [{ name: 'Size', options: [product.size], variation: false }] : [], variations: [],
+    };
+  }
+  const pendant = mockPendants.find((p) => (p.slug ?? p.id) === slug);
+  if (pendant) {
+    return {
+      kind: 'pendant', item: pendant, slug, sku: pendant.sku, label: pendant.collection, labelHref: '/jewelry', images: [],
+      shortDescriptionHtml: `<p>${pendant.description}</p>`, descriptionHtml: '',
+      attributes: pendant.size ? [{ name: 'Size', options: [pendant.size], variation: false }] : [], variations: [],
+    };
+  }
+  return null;
+}
+
+export const getProductDetail = (slug: string): Promise<ProductDetail | null> => fromSource(() => fetchWooProductDetail(slug), mockDetail(slug));
+
+/** Same brand first (hair care) or same collection (jewelry), then fill from the rest of the range. */
+export async function getRelatedProducts(detail: ProductDetail, limit = 4): Promise<(Product | Pendant)[]> {
+  if (detail.kind === 'pendant') {
+    const all = (await getPendants()).filter((p) => p.id !== detail.item.id);
+    const col = (detail.item as Pendant).collection;
+    return [...all.filter((p) => p.collection === col), ...all.filter((p) => p.collection !== col)].slice(0, limit);
+  }
+  const item = detail.item as Product;
+  const all = (await getProducts()).filter((p) => p.id !== item.id && p.inStock !== false);
+  const ranked = [
+    ...all.filter((p) => p.brand === item.brand && p.category === item.category),
+    ...all.filter((p) => p.brand === item.brand && p.category !== item.category),
+    ...all.filter((p) => p.brand !== item.brand && p.category === item.category),
+  ];
+  return Array.from(new Map(ranked.map((p) => [p.id, p])).values()).slice(0, limit);
+}
+

@@ -18,6 +18,9 @@ export type Brand = {
 
 export type Product = {
   id: string;
+  /** URL slug for /product/[slug] (WooCommerce slug; demo items fall back to `id`) */
+  slug?: string;
+  sku?: string;
   /** Brand slug — must match a `Brand.slug` */
   brand: string;
   name: string;
@@ -53,6 +56,8 @@ export type Product = {
 
 export type Pendant = {
   id: string;
+  slug?: string;
+  sku?: string;
   name: string;
   collection: string;
   /** Real photo — replaces the illustrated pendant when set */
@@ -65,6 +70,44 @@ export type Pendant = {
   permalink?: string;
   wcId?: number;
   inStock?: boolean;
+  stockQuantity?: number | null;
+};
+
+// ── Single product page ──────────────────────────────────────────────────────
+
+export type ProductImage = { src: string; alt: string };
+
+/** A product attribute shown on the page; `variation` = used to choose a variant */
+export type ProductAttribute = { name: string; options: string[]; variation: boolean };
+
+export type ProductVariation = {
+  id: number;
+  price: number;
+  regularPrice?: number;
+  inStock: boolean;
+  stockQuantity: number | null;
+  sku?: string;
+  image?: string;
+  /** attribute name → option; '' means "any" */
+  attributes: Record<string, string>;
+};
+
+export type ProductDetail = {
+  kind: 'product' | 'pendant';
+  /** Listing shape (used for cart, cards, related items) */
+  item: Product | Pendant;
+  slug: string;
+  sku?: string;
+  /** Brand name (hair care) or collection (jewelry) */
+  label: string;
+  /** Link for the label (brand page or /jewelry) */
+  labelHref: string;
+  images: ProductImage[];
+  /** Sanitized HTML from WooCommerce */
+  shortDescriptionHtml: string;
+  descriptionHtml: string;
+  attributes: ProductAttribute[];
+  variations: ProductVariation[];
 };
 
 export type Service = { name: string; detail: string; price: string; duration?: string };

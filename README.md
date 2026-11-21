@@ -56,6 +56,12 @@ lib/data.ts            Editorial content (brands, salon menu, testimonials) + a 
    - **Photos:** the first gallery image, ideally 4:5 portrait.
 4. (Recommended) Add webhooks for **Product created / updated / deleted** that point to `https://<site>/api/revalidate`, with the secret set to `WC_WEBHOOK_SECRET`. Price and stock edits then appear immediately. Without webhooks, pages refresh every 5 minutes.
 
+### Product pages & collection heroes
+- **`/product/[slug]`** (WooCommerce slug) renders the full product. It shows the gallery, brand or collection, SKU, price (with sale and stock state), the sanitized WooCommerce description, details, a quantity stepper, Add to Bag and related items. It also includes Product JSON-LD for search engines. Every product and pendant card links here, and Quick add / Quick view remain as shortcuts.
+- **Variable products** are bought on the product page. Shoppers pick options (unavailable combinations are struck through), and the chosen variation's price, stock and image are used. Checkout sends `variation_id` to WooCommerce.
+- Pages render on first request and are cached with the catalog: 5-minute ISR, refreshed immediately by the product webhook.
+- **Collection heroes** on brand pages, `/products/hair-care` and `/jewelry` are mosaics of that collection's real WooCommerce photos (in-stock and featured first). The illustrated scene is only a fallback when no product has a photo. For the best result, give each product a high-resolution, preferably 4:5, first image.
+
 ### How checkout works
 1. The bag (client-side, persisted) stores WooCommerce product IDs.
 2. `/checkout` asks `/api/checkout/quote` for **live** prices and stock. Changed prices sync into the bag, and sold-out or low-stock lines can be fixed in place.

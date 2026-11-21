@@ -19,6 +19,8 @@ export type CartItem = {
   unique?: boolean;
   /** WooCommerce product ID — present for live catalog items; required for online checkout */
   wcId?: number;
+  /** WooCommerce variation ID for variable products */
+  variationId?: number;
   /** Max purchasable quantity reported by WooCommerce (null/undefined = no limit) */
   maxQty?: number | null;
 };
@@ -29,7 +31,7 @@ type CartContextValue = {
   subtotal: number;
   open: boolean;
   setOpen: (open: boolean) => void;
-  add: (item: Omit<CartItem, 'qty'>) => void;
+  add: (item: Omit<CartItem, 'qty'>, qty?: number) => void;
   setQty: (id: string, qty: number) => void;
   remove: (id: string) => void;
   /** Patch an item (e.g. sync live price / stock limits from a checkout quote) */
@@ -70,15 +72,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [items, hydrated]);
 
-  const add = useCallback((item: Omit<CartItem, 'qty'>) => {
+  const add = useCallback((item: Omit<CartItem, 'qty'>, qty = 1) => {
     setItems((prev) => {
       const existing = prev.find((i) => i.id === item.id);
+      const cap = item.unique ? 1 : Math.min(10, item.maxQty ?? existing?.maxQty ?? Infinity);
       if (existing) {
         if (existing.unique) return prev;
-        const cap = Math.min(10, existing.maxQty ?? Infinity);
-        return prev.map((i) => (i.id === item.id ? { ...i, qty: Math.min(cap, i.qty + 1) } : i));
+        return prev.map((i) => (i.id === item.id ? { ...i, ...item, qty: Math.min(cap, i.qty + qty) } : i));
       }
-      return [...prev, { ...item, qty: 1 }];
+      return [...prev, { ...item, qty: Math.max(1, Math.min(cap, qty)) }];
     });
     setOpen(true);
   }, []);

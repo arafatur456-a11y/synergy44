@@ -8,6 +8,7 @@ import JewelryGallery from '@/components/jewelry/JewelryGallery';
 import PendantVisual from '@/components/jewelry/PendantVisual';
 import Reveal from '@/components/ui/Reveal';
 import { getPendants } from '@/lib/catalog';
+import CollectionHero, { pickHeroItems } from '@/components/shop/CollectionHero';
 
 export const metadata: Metadata = {
   title: 'Dichroic Glass Jewelry',
@@ -34,11 +35,17 @@ export default async function JewelryPage() {
         }
         intro="Each pendant is cut, layered and kiln-fused by hand. Thin metal-oxide coatings reflect one color and transmit another — so no two pieces, and no two moments, look the same."
         scene={
-          <StudioScene tone="velvet" plinth={false} className="h-full w-full" objectsClassName="bottom-[16%] items-start gap-6">
-            <PendantVisual colors={['#E3955A', '#E8C468', '#B85A6A', '#EBA977']} shape="teardrop" className="mt-16 w-[18%] max-w-[110px]" />
-            <PendantVisual colors={['#5FBF9A', '#6E8FD8', '#A88BD6', '#7CC9D6']} shape="oval" className="w-[26%] max-w-[160px]" />
-            <PendantVisual colors={['#9C82D8', '#D88AB5', '#6E8FD8', '#B99BDE']} shape="cabochon" className="mt-24 w-[18%] max-w-[110px]" />
-          </StudioScene>
+          <CollectionHero
+            tone="dark"
+            items={pickHeroItems(pendants).map((p) => ({ ...p, label: p.collection }))}
+            fallback={
+              <StudioScene tone="velvet" plinth={false} className="h-full w-full" objectsClassName="bottom-[16%] items-start gap-6">
+                <PendantVisual colors={['#E3955A', '#E8C468', '#B85A6A', '#EBA977']} shape="teardrop" className="mt-16 w-[18%] max-w-[110px]" />
+                <PendantVisual colors={['#5FBF9A', '#6E8FD8', '#A88BD6', '#7CC9D6']} shape="oval" className="w-[26%] max-w-[160px]" />
+                <PendantVisual colors={['#9C82D8', '#D88AB5', '#6E8FD8', '#B99BDE']} shape="cabochon" className="mt-24 w-[18%] max-w-[110px]" />
+              </StudioScene>
+            }
+          />
         }
       />
 

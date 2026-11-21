@@ -7,7 +7,7 @@ export const MAX_QTY_PER_LINE = 10;
 export const MAX_LINES = 30;
 
 /** What the browser sends: product IDs and quantities only. Never prices. */
-export type CheckoutLine = { wcId: number; qty: number };
+export type CheckoutLine = { wcId: number; variationId?: number; qty: number };
 
 export type CheckoutCustomer = {
   email: string;
@@ -27,6 +27,7 @@ export type CheckoutCustomer = {
 
 export type QuoteLine = {
   wcId: number;
+  variationId?: number;
   name: string;
   qty: number;
   unitPrice: number;
@@ -78,14 +79,19 @@ export function validateCustomer(c: Partial<CheckoutCustomer>): CustomerErrors {
 /** Normalizes untrusted line input; returns null if it's malformed. */
 export function sanitizeLines(raw: unknown): CheckoutLine[] | null {
   if (!Array.isArray(raw) || raw.length === 0 || raw.length > MAX_LINES) return null;
-  const merged = new Map<number, number>();
+  const merged = new Map<string, CheckoutLine>();
   for (const l of raw) {
     const wcId = Number((l as CheckoutLine)?.wcId);
     const qty = Number((l as CheckoutLine)?.qty);
+    const rawVid = (l as CheckoutLine)?.variationId;
+    const variationId = rawVid === undefined || rawVid === null ? undefined : Number(rawVid);
     if (!Number.isInteger(wcId) || wcId <= 0 || !Number.isInteger(qty) || qty < 1 || qty > MAX_QTY_PER_LINE) return null;
-    merged.set(wcId, Math.min(MAX_QTY_PER_LINE, (merged.get(wcId) ?? 0) + qty));
+    if (variationId !== undefined && (!Number.isInteger(variationId) || variationId <= 0)) return null;
+    const key = `${wcId}:${variationId ?? 0}`;
+    const prev = merged.get(key);
+    merged.set(key, { wcId, variationId, qty: Math.min(MAX_QTY_PER_LINE, (prev?.qty ?? 0) + qty) });
   }
-  return [...merged].map(([wcId, qty]) => ({ wcId, qty }));
+  return [...merged.values()];
 }
 
 export const US_STATES: [string, string][] = [

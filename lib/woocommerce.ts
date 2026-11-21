@@ -24,8 +24,9 @@
  *   shape     ← "Shape" attribute
  *   image     ← first gallery image · badge ← on_sale → "Sale", featured → "Featured"
  */
-import { brands } from './data';
-import type { Category, Pendant, PendantShape, Product, ProductShape } from './types';
+import sanitizeHtml from 'sanitize-html';
+import { brands, getBrand } from './data';
+import type { Category, Pendant, PendantShape, Product, ProductDetail, ProductShape, ProductVariation } from './types';
 
 /** Catalog pages are cached for this long unless a webhook revalidates them sooner. */
 export const REVALIDATE_SECONDS = 300;
@@ -122,7 +123,7 @@ async function wcGetAll<T>(path: string, query: RequestOptions['query'] = {}, ca
 
 type WCTerm = { id: number; name: string; slug: string };
 type WCCategory = WCTerm & { parent: number };
-type WCAttribute = { name: string; options: string[] };
+type WCAttribute = { id?: number; name: string; options: string[]; variation?: boolean; visible?: boolean };
 export type WCProduct = {
   id: number;
   slug: string;
@@ -144,7 +145,23 @@ export type WCProduct = {
   categories: WCTerm[];
   attributes: WCAttribute[];
   brands?: WCTerm[];
+  variations?: number[];
 };
+
+type WCVariation = {
+  id: number;
+  sku: string;
+  price: string;
+  regular_price: string;
+  on_sale: boolean;
+  purchasable: boolean;
+  stock_status: WCProduct['stock_status'];
+  stock_quantity: number | null;
+  image: { src: string } | null;
+  attributes: { name: string; option: string }[];
+};
+
+const VARIATION_FIELDS = 'id,sku,price,regular_price,on_sale,purchasable,stock_status,stock_quantity,image,attributes';
 
 /** Only request the fields we map — keeps responses small and fast. */
 const PRODUCT_FIELDS =
@@ -264,6 +281,8 @@ export function mapProduct(p: WCProduct): Product | null {
   const regular = money(p.regular_price);
   return {
     id: `wc-${p.id}`,
+    slug: p.slug,
+    sku: p.sku || undefined,
     wcId: p.id,
     type: p.type,
     brand,
@@ -292,6 +311,8 @@ export function mapPendant(p: WCProduct, index: number, j?: JewelryIndex): Penda
   const shapeAttr = attr(p, 'Shape')?.toLowerCase() as PendantShape | undefined;
   return {
     id: `wc-${p.id}`,
+    slug: p.slug,
+    sku: p.sku || undefined,
     wcId: p.id,
     name: decode(p.name),
     collection: attr(p, 'Collection') ?? (subCategory ? decode(subCategory.name) : 'Dichroic glass'),
@@ -303,6 +324,7 @@ export function mapPendant(p: WCProduct, index: number, j?: JewelryIndex): Penda
     description: truncate(stripHtml(p.short_description || p.description), 220),
     permalink: p.permalink,
     inStock: p.stock_status !== 'outofstock' && p.purchasable,
+    stockQuantity: p.stock_quantity,
   };
 }
 
@@ -335,6 +357,94 @@ export async function fetchWooPendants(): Promise<Pendant[]> {
   return jewelry.filter((p) => p.stock_status !== 'outofstock').map((p, i) => mapPendant(p, i, index));
 }
 
+// ─── Single product (cached, tagged 'catalog') ───────────────────────────────
+
+/** Allowlist sanitizer for WooCommerce description HTML (rendered with dangerouslySetInnerHTML). */
+export function sanitizeDescription(html: string): string {
+  return sanitizeHtml(html ?? '', {
+    allowedTags: ['p', 'br', 'strong', 'b', 'em', 'i', 'u', 'ul', 'ol', 'li', 'h2', 'h3', 'h4', 'blockquote', 'a', 'span', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'img', 'hr'],
+    allowedAttributes: { a: ['href', 'title', 'target', 'rel'], img: ['src', 'alt', 'width', 'height'] },
+    allowedSchemes: ['https', 'http', 'mailto'],
+    transformTags: {
+      a: sanitizeHtml.simpleTransform('a', { rel: 'noopener noreferrer' }),
+      img: sanitizeHtml.simpleTransform('img', { loading: 'lazy', decoding: 'async' } as Record<string, string>),
+    },
+    // WordPress often wraps everything in empty paragraphs / &nbsp;
+    exclusiveFilter: (frame) => frame.tag === 'p' && !frame.text.trim() && !frame.mediaChildren.length,
+  }).trim();
+}
+
+function mapVariation(v: WCVariation): ProductVariation {
+  const price = money(v.price);
+  const regular = money(v.regular_price);
+  return {
+    id: v.id,
+    price,
+    regularPrice: v.on_sale && regular > price ? regular : undefined,
+    inStock: v.stock_status !== 'outofstock' && v.purchasable && price > 0,
+    stockQuantity: v.stock_quantity,
+    sku: v.sku || undefined,
+    image: v.image?.src,
+    attributes: Object.fromEntries(v.attributes.map((a) => [a.name, a.option ?? ''])),
+  };
+}
+
+async function fetchVariations(productId: number, cache?: false, include?: number[]): Promise<WCVariation[]> {
+  return wcGetAll<WCVariation>(`products/${productId}/variations`, { _fields: VARIATION_FIELDS, ...(include ? { include: include.join(',') } : {}) }, cache);
+}
+
+/** Uncached variation lookup for checkout validation. */
+export const fetchWooVariationsByIds = (productId: number, ids: number[]) => fetchVariations(productId, false, ids);
+
+export async function fetchWooProductDetail(slug: string): Promise<ProductDetail | null> {
+  const [{ data }, index] = await Promise.all([
+    wcRequest<WCProduct[]>('products', { query: { slug, status: 'publish', _fields: `${PRODUCT_FIELDS},variations` } }),
+    fetchJewelryIndex(),
+  ]);
+  const p = data[0];
+  if (!p) return null;
+
+  const variations = p.type === 'variable' ? (await fetchVariations(p.id)).map(mapVariation) : [];
+  const images = p.images.filter((i) => i.src).map((i) => ({ src: i.src, alt: decode(i.alt || p.name) }));
+  const attributes = p.attributes
+    .filter((a) => a.visible !== false || a.variation)
+    .map((a) => ({ name: decode(a.name), options: a.options.map(decode), variation: !!a.variation }));
+  const common = {
+    slug: p.slug,
+    sku: p.sku || undefined,
+    images,
+    shortDescriptionHtml: sanitizeDescription(p.short_description),
+    descriptionHtml: sanitizeDescription(p.description),
+    attributes,
+    variations,
+  };
+
+  if (isJewelry(p, index)) {
+    const item = mapPendant(p, p.id, index);
+    return { kind: 'pendant', item, label: item.collection, labelHref: '/jewelry', ...common };
+  }
+
+  // Unbranded products still get a page (e.g. gift cards); they just aren't listed under a brand.
+  const mapped = mapProduct(p);
+  const category = mapCategory(p);
+  const item: Product =
+    mapped ??
+    ({
+      id: `wc-${p.id}`, slug: p.slug, sku: p.sku || undefined, wcId: p.id, type: p.type, brand: '', name: decode(p.name), category,
+      price: money(p.price), size: attr(p, 'Size') ?? '', description: truncate(stripHtml(p.short_description || p.description), 160),
+      image: images[0]?.src, shape: SHAPE_BY_CATEGORY[category], colors: ['#FFFFFF', '#EEE8DE'], cap: '#F4F1EB',
+      permalink: p.permalink, inStock: p.stock_status !== 'outofstock' && p.purchasable, stockQuantity: p.stock_quantity,
+    } satisfies Product);
+  const brand = getBrand(item.brand);
+  return {
+    kind: 'product',
+    item,
+    label: brand?.name ?? decode(p.categories[0]?.name ?? 'Hair care'),
+    labelHref: brand ? `/products/hair-care/${brand.slug}` : '/products/hair-care',
+    ...common,
+  };
+}
+
 // ─── Checkout (never cached) ─────────────────────────────────────────────────
 
 /** Fresh product data for checkout validation — bypasses every cache. */
@@ -359,7 +469,7 @@ export type WooAddress = {
 export type WooOrderInput = {
   billing: WooAddress & { email: string };
   shipping: WooAddress;
-  line_items: { product_id: number; quantity: number }[];
+  line_items: { product_id: number; variation_id?: number; quantity: number }[];
   shipping_lines?: { method_id: string; method_title: string; total: string }[];
   customer_note?: string;
 };

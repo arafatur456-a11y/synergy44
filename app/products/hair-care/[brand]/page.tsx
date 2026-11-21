@@ -5,6 +5,7 @@ import PageHeader from '@/components/ui/PageHeader';
 import StudioScene, { type SceneTone } from '@/components/ui/StudioScene';
 import ProductGrid from '@/components/shop/ProductGrid';
 import ProductVisual from '@/components/shop/ProductVisual';
+import CollectionHero, { pickHeroItems } from '@/components/shop/CollectionHero';
 import { brands, getBrand } from '@/lib/data';
 import { productsByBrand } from '@/lib/data';
 import { getProductsByBrand } from '@/lib/catalog';
@@ -39,7 +40,8 @@ export default async function BrandPage({ params }: Params) {
   const brand = getBrand(slug);
   if (!brand) notFound();
   const items = await getProductsByBrand(slug);
-  // Header scene always uses the illustrated packshots for a consistent art direction
+  // Hero: real WooCommerce photography from this brand; illustrated scene only if none exist.
+  const photos = pickHeroItems(items).map((p) => ({ ...p, label: brand.name }));
   const hero = productsByBrand(slug).slice(0, 3);
 
   return (
@@ -50,6 +52,9 @@ export default async function BrandPage({ params }: Params) {
         title={brand.name}
         intro={brand.description}
         scene={
+          <CollectionHero
+            items={photos}
+            fallback={
           <StudioScene tone={sceneTone[slug] ?? 'stone'} plinthWidth="62%" className="h-full w-full" objectsClassName="gap-3">
             {hero.map((p, i) => (
               <ProductVisual
@@ -64,6 +69,8 @@ export default async function BrandPage({ params }: Params) {
               />
             ))}
           </StudioScene>
+            }
+          />
         }
       >
         <p className="mt-8 text-[12px] font-semibold uppercase tracking-[0.18em] text-espresso-500">
