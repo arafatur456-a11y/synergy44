@@ -24,6 +24,7 @@
  *   shape     ← "Shape" attribute
  *   image     ← first gallery image · badge ← on_sale → "Sale", featured → "Featured"
  */
+import { decodeHTML } from 'entities';
 import sanitizeHtml from 'sanitize-html';
 import { brands, getBrand } from './data';
 import type { Category, Pendant, PendantShape, Product, ProductDetail, ProductShape, ProductVariation } from './types';
@@ -244,13 +245,8 @@ function isJewelry(p: WCProduct, j: JewelryIndex): boolean {
   );
 }
 
-export const decode = (s: string) =>
-  s
-    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)))
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&amp;/g, '&')
-    .replace(/&quot;/g, '"')
-    .replace(/&#039;|&apos;/g, "'");
+/** Decodes every HTML entity WordPress may emit (&#8211;, &egrave;, &amp;, &nbsp; …). */
+export const decode = (s: string) => decodeHTML(s ?? '').replace(/\u00a0/g, ' ');
 
 const stripHtml = (html: string) => decode(html.replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim();
 const truncate = (s: string, n: number) => (s.length > n ? `${s.slice(0, n - 1).trimEnd()}…` : s);

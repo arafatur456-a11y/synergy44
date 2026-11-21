@@ -105,6 +105,7 @@ export default function QuickViewModal({ item, onClose }: { item: Pendant | null
                   onClick={() => {
                     add({
                       id: `pendant-${item.id}`,
+                      href: productHref(item),
                       name: item.name,
                       subtitle: `Dichroic glass · ${item.collection}`,
                       price: item.price,

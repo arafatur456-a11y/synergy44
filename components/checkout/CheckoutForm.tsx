@@ -305,10 +305,10 @@ export default function CheckoutForm() {
                               <button type="button" onClick={() => update(item.id, { qty: issue.maxQty!, maxQty: issue.maxQty })} className="underline underline-offset-2">
                                 Update to {issue.maxQty}
                               </button>
-                            ) : issue.permalink && issue.issue?.startsWith('Choose') ? (
-                              <a href={issue.permalink} className="underline underline-offset-2">
+                            ) : item.href && issue.issue?.startsWith('Choose') ? (
+                              <Link href={item.href} className="underline underline-offset-2">
                                 Choose options
-                              </a>
+                              </Link>
                             ) : null}
                             <button type="button" onClick={() => remove(item.id)} className="underline underline-offset-2">
                               Remove

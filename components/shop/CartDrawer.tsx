@@ -90,7 +90,15 @@ export default function CartDrawer() {
                         <div className="flex min-w-0 flex-1 flex-col">
                           <div className="flex justify-between gap-3">
                             <div className="min-w-0">
-                              <p className="font-display text-[1.15rem] font-semibold leading-tight">{item.name}</p>
+                              <p className="font-display text-[1.15rem] font-semibold leading-tight">
+                                {item.href ? (
+                                  <Link href={item.href} onClick={() => setOpen(false)} className="hover:underline hover:underline-offset-4">
+                                    {item.name}
+                                  </Link>
+                                ) : (
+                                  item.name
+                                )}
+                              </p>
                               <p className="mt-0.5 truncate text-xs text-espresso-400">{item.subtitle}</p>
                             </div>
                             <p className="text-sm font-semibold">{formatPrice(item.price * item.qty)}</p>

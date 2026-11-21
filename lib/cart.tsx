@@ -19,6 +19,8 @@ export type CartItem = {
   unique?: boolean;
   /** WooCommerce product ID — present for live catalog items; required for online checkout */
   wcId?: number;
+  /** Our product page for this item (/product/[slug]) */
+  href?: string;
   /** WooCommerce variation ID for variable products */
   variationId?: number;
   /** Max purchasable quantity reported by WooCommerce (null/undefined = no limit) */

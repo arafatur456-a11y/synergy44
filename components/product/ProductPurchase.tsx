@@ -6,6 +6,7 @@ import ProductGallery from './ProductGallery';
 import { useCart, type CartItem } from '@/lib/cart';
 import type { Pendant, Product, ProductDetail, ProductVariation } from '@/lib/types';
 import { cn, formatPrice } from '@/lib/utils';
+import { productHref } from '@/lib/catalog-utils';
 
 /** Find the variation matching the chosen options ('' in a variation = "any"). */
 function matchVariation(variations: ProductVariation[], chosen: Record<string, string>) {
@@ -68,7 +69,9 @@ export default function ProductPurchase({ detail, brandName, children }: { detai
     const subtitle = [isPendant ? `Dichroic glass · ${(item as Pendant).collection}` : brandName, optionLabel || (item as Product).size].filter(Boolean).join(' · ');
     const image = variation?.image ?? detail.images[0]?.src;
     const cartItem: Omit<CartItem, 'qty'> = {
-      id: variation ? `${item.id}-v${variation.id}` : item.id,
+      // Pendants use the same id as the quick view so a one-of-a-kind piece can't be added twice
+      id: isPendant ? `pendant-${item.id}` : variation ? `${item.id}-v${variation.id}` : item.id,
+      href: productHref(item),
       name: item.name,
       subtitle,
       price,

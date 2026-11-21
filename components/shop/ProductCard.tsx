@@ -25,6 +25,7 @@ export default function ProductCard({ product }: { product: Product }) {
   const onAdd = () => {
     add({
       id: product.id,
+      href: productHref(product),
       name: product.name,
       subtitle: [brandName, product.size].filter(Boolean).join(' · '),
       price: product.price,

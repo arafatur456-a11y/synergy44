@@ -11,6 +11,7 @@ import { useCart } from '@/lib/cart';
 import Image from 'next/image';
 import { getBrand, products } from '@/lib/data';
 import type { Product } from '@/lib/types';
+import { productHref } from '@/lib/catalog-utils';
 import { ease, formatPrice } from '@/lib/utils';
 
 const leaveIn = products.find((p) => p.id === 'loma-leave-in')!;
@@ -29,17 +30,24 @@ function Float({ mx, my, depth, className, delay, children }: { mx: MotionValue<
   );
 }
 
-/** Floating "quick add" card — uses a live catalog product passed from the page. */
+/**
+ * Floating featured-product card (live catalog product passed from the page).
+ * The whole card links to our own product page (/product/[slug]); the "+" quick-add sits above
+ * the link layer. Products that need options or are sold out show "View" instead of "+".
+ */
 function SpotlightCard({ product: p }: { product: Product }) {
   const { add } = useCart();
   const brandName = getBrand(p.brand)?.name ?? p.brand;
   const canAdd = p.inStock !== false && p.type !== 'variable';
+  const href = productHref(p);
   return (
-    <div className="glass p-3">
+    <div className="glass group relative p-3 transition-shadow duration-500 hover:shadow-lift">
+      {/* Stretched link: clicking anywhere on the card opens the product page */}
+      <Link href={href} aria-label={`View ${brandName} ${p.name}`} className="absolute inset-0 z-[1] rounded-[inherit]" />
       <div className="flex gap-3">
         <div className="relative grid h-[86px] w-[70px] shrink-0 place-items-center overflow-hidden rounded-[8px] bg-gradient-to-b from-white to-cream-100">
           {p.image ? (
-            <Image src={p.image} alt={p.name} fill sizes="70px" className="object-cover" />
+            <Image src={p.image} alt={p.name} fill sizes="70px" className="object-cover transition-transform duration-700 ease-silk group-hover:scale-105" />
           ) : (
             <ProductVisual shape={p.shape} colors={p.colors} cap={p.cap} label={brandName} className="h-[74px]" />
           )}
@@ -48,7 +56,7 @@ function SpotlightCard({ product: p }: { product: Product }) {
           <p className="truncate text-[9.5px] font-semibold uppercase tracking-[0.18em] text-sage-dark">
             {p.badge ?? 'Featured'} · {brandName}
           </p>
-          <p className="mt-1 line-clamp-2 font-display text-[1.05rem] font-semibold leading-tight">{p.name}</p>
+          <p className="mt-1 line-clamp-2 font-display text-[1.05rem] font-semibold leading-tight group-hover:underline group-hover:underline-offset-4">{p.name}</p>
           <div className="mt-auto flex items-center justify-between">
             <span className="text-sm font-semibold tabular-nums">{formatPrice(p.price)}</span>
             {canAdd ? (
@@ -61,18 +69,19 @@ function SpotlightCard({ product: p }: { product: Product }) {
                     price: p.price,
                     wcId: p.wcId,
                     maxQty: p.stockQuantity,
+                    href,
                     visual: p.image ? { type: 'image', src: p.image, alt: p.name } : { type: 'product', shape: p.shape, colors: p.colors, cap: p.cap, label: brandName },
                   })
                 }
                 aria-label={`Quick add ${brandName} ${p.name}`}
-                className="grid h-8 w-8 place-items-center rounded-full bg-ink text-white transition-transform duration-300 hover:scale-110 active:scale-95"
+                className="relative z-[2] grid h-8 w-8 place-items-center rounded-full bg-ink text-white transition-transform duration-300 hover:scale-110 active:scale-95"
               >
                 <Plus className="h-3.5 w-3.5" />
               </button>
             ) : (
-              <a href={p.permalink ?? '/products/hair-care'} className="text-[10px] font-semibold uppercase tracking-[0.16em] underline underline-offset-4">
+              <span aria-hidden className="text-[10px] font-semibold uppercase tracking-[0.16em] underline underline-offset-4">
                 View
-              </a>
+              </span>
             )}
           </div>
         </div>
