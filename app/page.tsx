@@ -14,9 +14,9 @@ export default async function HomePage() {
   const [pendants, spotlight] = await Promise.all([getPendants(), getSpotlightProduct()]);
   return (
     <>
-      {/* Brand lines first (as on synergy44.com): lines with artwork lead, the rest follow */}
-      <BrandLineSlider brands={[...brands.filter((b) => b.image), ...brands.filter((b) => !b.image)]} />
       <Hero spotlight={spotlight} />
+      {/* Brand lines right under the hero: lines with artwork lead, the rest follow */}
+      <BrandLineSlider brands={[...brands.filter((b) => b.image), ...brands.filter((b) => !b.image)]} />
       <FeaturedEdit />
       <GlassStudio pendants={pendants.slice(0, 4)} />
       <ServicesTeaser />

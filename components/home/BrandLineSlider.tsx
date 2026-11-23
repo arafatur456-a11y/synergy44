@@ -84,8 +84,8 @@ export default function BrandLineSlider({ brands }: { brands: Brand[] }) {
   }, [gliding, step]);
 
   return (
-    <section aria-labelledby="brand-lines-heading" className="relative border-b border-white/[0.06]">
-      <div className="container-x pb-8 pt-6 sm:pt-8">
+    <section aria-labelledby="brand-lines-heading" className="relative border-y border-white/[0.06] bg-surface/40">
+      <div className="container-x py-12 sm:py-16">
         <div className="flex items-end justify-between gap-4">
           <div>
             <h2 id="brand-lines-heading" className="text-[1.35rem] font-semibold tracking-[-0.02em] text-ink sm:text-[1.5rem]">
@@ -137,7 +137,7 @@ export default function BrandLineSlider({ brands }: { brands: Brand[] }) {
           onBlur={() => setHovered(false)}
           className="no-scrollbar -mx-4 mt-5 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-4 pb-4 pt-2 outline-none sm:-mx-8 sm:px-8 lg:mx-0 lg:px-0 [&:focus-visible]:ring-2 [&:focus-visible]:ring-accent/40"
         >
-          {brands.map((b, i) => (
+          {brands.map((b) => (
             <li key={b.slug} className="w-[62vw] max-w-[280px] shrink-0 snap-start sm:w-[240px] lg:w-[calc((100%-4*16px)/5)] lg:max-w-none">
               <Link
                 href={`/products/hair-care/${b.slug}`}
@@ -150,7 +150,6 @@ export default function BrandLineSlider({ brands }: { brands: Brand[] }) {
                       src={b.image}
                       alt={`${b.name} product line`}
                       fill
-                      priority={i < 2}
                       sizes="(min-width: 1024px) 20vw, (min-width: 640px) 240px, 62vw"
                       className={cn('transition-transform duration-700 ease-silk group-hover:scale-[1.04]', b.imageFit === 'contain' ? 'object-contain' : 'object-cover')}
                     />
