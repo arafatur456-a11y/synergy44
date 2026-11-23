@@ -191,7 +191,7 @@ export default function ConciergeDrawer({ open, onClose, request }: { open: bool
                     onClick={() => setTab(id)}
                     className={cn(
                       'flex h-10 items-center justify-center gap-2 rounded-full text-[14px] font-medium transition-colors duration-200',
-                      tab === id ? 'bg-ink text-white' : 'text-stone-500 hover:text-ink',
+                      tab === id ? 'bg-accent text-white' : 'text-stone-500 hover:text-ink',
                     )}
                   >
                     <Icon className="h-3.5 w-3.5" strokeWidth={1.8} /> {label}
@@ -279,7 +279,7 @@ export default function ConciergeDrawer({ open, onClose, request }: { open: bool
                       placeholder="Ask about hair, glass or booking…"
                       className="max-h-32 min-h-[40px] flex-1 resize-none bg-transparent px-2 py-2 text-[15px] leading-snug text-ink placeholder:text-stone-400 focus:outline-none"
                     />
-                    <button type="submit" disabled={busy || !draft.trim()} aria-label="Send" className="grid h-10 w-10 shrink-0 place-items-center rounded-[8px] bg-ink text-white transition disabled:opacity-30">
+                    <button type="submit" disabled={busy || !draft.trim()} aria-label="Send" className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-accent text-white transition hover:bg-accent-hover disabled:opacity-30">
                       <ArrowUp className="h-4 w-4" />
                     </button>
                   </div>
@@ -303,7 +303,7 @@ export default function ConciergeDrawer({ open, onClose, request }: { open: bool
 
 function Bubble({ role, children }: { role: ChatTurn['role']; children: React.ReactNode }) {
   return role === 'user' ? (
-    <div className="ml-auto max-w-[85%] rounded-[8px] bg-ink px-4 py-3 text-[14.5px] leading-relaxed text-white">{children}</div>
+    <div className="ml-auto max-w-[85%] rounded-[14px] rounded-br-[4px] bg-accent px-4 py-3 text-[14.5px] leading-relaxed text-white">{children}</div>
   ) : (
     <div className="max-w-[94%] text-[14.5px] leading-relaxed text-stone-700">
       <p className="mb-1.5 text-[13px] font-medium text-sage-dark">Concierge</p>

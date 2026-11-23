@@ -181,7 +181,7 @@ export default function BookingFlow({ onDone }: { onDone: () => void }) {
                   >
                     <input type="radio" name="package" value={p.id} checked={on} onChange={() => set('packageId', p.id)} className="sr-only" />
                     <span className={cn('mt-1 grid h-4 w-4 shrink-0 place-items-center rounded-full border', on ? 'border-ink' : 'border-stone-400')}>
-                      {on && <span className="h-2 w-2 rounded-full bg-ink" />}
+                      {on && <span className="h-2 w-2 rounded-full bg-accent-light" />}
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="flex items-baseline justify-between gap-3">
@@ -217,7 +217,7 @@ export default function BookingFlow({ onDone }: { onDone: () => void }) {
                     onClick={() => set('date', d.iso)}
                     className={cn(
                       'rounded-[8px] border px-2 py-2.5 text-center transition-colors duration-300',
-                      form.date === d.iso ? 'border-ink bg-ink text-white' : 'border-line bg-paper hover:border-stone-400',
+                      form.date === d.iso ? 'border-accent bg-accent text-white' : 'border-line bg-paper hover:border-stone-400',
                     )}
                   >
                     <span className="block text-[13px] font-semibold opacity-70">{d.dow}</span>

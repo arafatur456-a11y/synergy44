@@ -72,7 +72,7 @@ export default async function JewelryPage() {
 
       <section className="container-x">
         <Reveal>
-          <div className="relative overflow-hidden rounded-media bg-ink px-6 py-14 text-white sm:px-14 sm:py-20">
+          <div className="relative overflow-hidden rounded-media border border-white/10 bg-surface px-6 py-14 text-white sm:px-14 sm:py-20">
             <div className="relative grid gap-10 lg:grid-cols-12 lg:items-end">
               <div className="lg:col-span-8">
                 <h2 className="max-w-[16ch] font-display text-[2.4rem] font-semibold leading-[1] tracking-[-0.03em] sm:text-[3.4rem]">

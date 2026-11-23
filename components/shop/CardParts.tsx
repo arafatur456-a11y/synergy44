@@ -40,12 +40,12 @@ export function MediaFrame({
     <div className="relative">
       <div
         className={cn(
-          'relative aspect-[4/5] overflow-hidden',
+          'relative aspect-[4/5] overflow-hidden border transition-[transform,border-color,box-shadow] duration-500 ease-silk group-hover:-translate-y-1 group-hover:border-accent-light/40 group-hover:shadow-[0_28px_60px_-30px_rgba(0,0,0,0.95),0_0_40px_-12px_rgba(37,99,235,0.35)]',
           shape === 'cabochon' ? 'cabochon' : 'rounded-media',
-          tone === 'light' ? 'bg-mineral-100' : 'bg-kiln ring-1 ring-white/10',
+          tone === 'light' ? 'border-white/[0.08] bg-surface' : 'border-white/10 bg-kiln',
         )}
       >
-        <div className="absolute inset-0" style={background ? { background } : undefined}>
+        <div className="zoom-media absolute inset-0" style={background ? { background } : undefined}>
           {children}
         </div>
       {href ? (
@@ -87,7 +87,7 @@ export function CardAction({
   ariaLabel: string;
 }) {
   const className = cn(
-    'absolute bottom-3 right-3 z-[2] flex h-10 items-center gap-1.5 rounded-full bg-paper px-3.5 text-[14px] font-medium text-ink shadow-soft transition-colors hover:bg-ink hover:text-paper active:translate-y-px disabled:cursor-not-allowed disabled:bg-paper/80 disabled:text-stone-400 disabled:hover:bg-paper/80',
+    'absolute bottom-3 right-3 z-[2] flex h-10 items-center gap-1.5 rounded-full border border-white/10 bg-mineral/75 px-3.5 text-[14px] font-medium text-ink shadow-soft backdrop-blur-md transition-[background-color,border-color,transform] duration-200 hover:border-accent hover:bg-accent hover:text-white active:scale-95 disabled:cursor-not-allowed disabled:text-stone-400 disabled:hover:border-white/10 disabled:hover:bg-mineral/75',
   );
   void price;
   const content = (

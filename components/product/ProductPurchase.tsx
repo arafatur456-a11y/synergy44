@@ -109,7 +109,7 @@ export default function ProductPurchase({ detail, brandName, children }: { detai
             <span className="text-[1.9rem] font-semibold tabular-nums">
               {variable && !variation ? `From ${formatPrice(Math.min(...detail.variations.map((v) => v.price).filter((p) => p > 0)))}` : formatPrice(price)}
             </span>
-            {compareAt && compareAt > price && <span className="rounded-[8px] bg-ink px-2 py-1 text-[13px] font-semibold text-white">Sale</span>}
+            {compareAt && compareAt > price && <span className="rounded-full bg-accent px-2.5 py-1 text-[13px] font-semibold text-white">Sale</span>}
           </div>
           <p className={cn('mt-2 text-[13px] font-semibold', stockLine.tone)} aria-live="polite">
             {stockLine.text}

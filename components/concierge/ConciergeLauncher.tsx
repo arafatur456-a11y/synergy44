@@ -42,12 +42,12 @@ export default function ConciergeLauncher() {
         aria-haspopup="dialog"
         aria-expanded={open}
         className={cn(
-          'group fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-4 z-[70] flex h-14 items-center gap-3 rounded-full bg-ink pl-3 pr-4 text-white shadow-float transition-[opacity,transform] duration-500 ease-silk hover:-translate-y-0.5 sm:right-6 sm:pr-6',
+          'group fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-4 z-[70] flex h-14 items-center gap-3 rounded-full border border-white/10 bg-accent pl-2.5 pr-4 text-white shadow-glow hover:bg-accent-hover shadow-float transition-[opacity,transform] duration-500 ease-silk hover:-translate-y-0.5 sm:right-6 sm:pr-6',
           (open || cartOpen) && 'pointer-events-none translate-y-3 opacity-0',
         )}
       >
         <span className="film cabochon grid h-9 w-8 place-items-center p-[2px]">
-          <span className="cabochon grid h-full w-full place-items-center bg-ink text-white">
+          <span className="cabochon grid h-full w-full place-items-center bg-accent-hover text-white">
           <Sparkles className="h-3.5 w-3.5" strokeWidth={1.7} />
           </span>
         </span>

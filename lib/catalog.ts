@@ -51,6 +51,22 @@ export async function getFeaturedProducts(limit = 4): Promise<Product[]> {
   return (featured.length ? featured : all).slice(0, limit);
 }
 
+/**
+ * The hero's "Cynthia's pick": Loma Calming Crème when the store carries it
+ * (override with HERO_PICK_MATCH, a case-insensitive name pattern), otherwise the first featured product.
+ */
+export async function getSpotlightProduct(): Promise<Product | undefined> {
+  const all = await getProducts();
+  let pattern = /calming\s*cr[eè]me/i;
+  try {
+    if (process.env.HERO_PICK_MATCH) pattern = new RegExp(process.env.HERO_PICK_MATCH, 'i');
+  } catch {
+    /* invalid pattern: keep the default */
+  }
+  const matches = all.filter((p) => pattern.test(p.name));
+  return matches.find((p) => p.brand === 'loma') ?? matches[0] ?? (await getFeaturedProducts(1))[0];
+}
+
 export const getPendants = (): Promise<Pendant[]> => fromSource(fetchWooPendants, mockPendants);
 
 export { collectionsOf } from './catalog-utils';

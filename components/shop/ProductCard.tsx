@@ -46,7 +46,7 @@ export default function ProductCard({ product }: { product: Product }) {
         href={href}
         selectLabel={`View ${brandName} ${product.name}`}
         badge={product.badge}
-        background={product.image ? undefined : `radial-gradient(80% 65% at 50% 40%, #FAFAF7 0%, ${brand?.tint ?? '#E6E8E2'} 70%, #D8DCD4 100%)`}
+        background={product.image ? undefined : `radial-gradient(75% 60% at 50% 42%, ${brand?.tint ?? '#94A3B8'}40 0%, #1B2332 62%, #141A24 100%)`}
         action={
           product.inStock === false ? (
             <CardAction disabled ariaLabel={`${product.name} is sold out`} label="Sold out" icon={<Ban className="h-3.5 w-3.5" />} />
@@ -73,7 +73,7 @@ export default function ProductCard({ product }: { product: Product }) {
           <Image src={product.image} alt={product.name} fill sizes="(min-width: 1280px) 25vw, (min-width: 640px) 33vw, 50vw" className="object-cover" />
         ) : (
           <>
-            <div className="absolute inset-x-[18%] bottom-[14%] h-[10%] bg-[radial-gradient(closest-side,rgba(30,45,39,0.18),transparent)]" />
+            <div className="absolute inset-x-[18%] bottom-[14%] h-[10%] bg-[radial-gradient(closest-side,rgba(0,0,0,0.45),transparent)]" />
             <div className="absolute inset-0 flex items-center justify-center pb-[6%]">
               <ProductVisual shape={product.shape} colors={product.colors} cap={product.cap} label={brandName} className="h-[70%]" />
             </div>

@@ -115,39 +115,38 @@ lib/                     data, types, catalog, woocommerce, cart, contact, lenis
 
 **Card system:** every product and pendant tile is built from `components/shop/CardParts.tsx`. They all share a 4:5 media frame, 4px radius, hairline ring, the same shadow depth and hover zoom, the same badge, a slide-up action bar and a matching meta row. They also share the grid spacing (`CARD_GRID`).
 
-## Design system: "thin film"
+## Design system: dark luxury + modern blue
 
-The visual identity comes from the subject. Dichroic glass shows one color by reflection and another by transmission, so its color changes with the viewing angle. That effect is the site's single bold device. Everything else stays quiet.
+**Change the whole theme in one place:** every color and font is a CSS variable in the `:root` block at the top of `app/globals.css`. Tailwind classes resolve to these variables (via `color-mix`, so opacity modifiers like `text-ink/60` still work).
 
-- **Signature:** `.film` is a conic interference gradient whose hue rotates with `--film-angle`. On the home hero it rims Cynthia's portrait, cut as a `.cabochon` (the oval pendants are shaped to), and turns as the page scrolls (`.film-scroll`, a CSS scroll timeline with no JS). Use it only on glass-related elements: the hero rim, the wordmark's "44", the concierge button and the newsletter panel. Don't spread it to general UI.
-- **Palette** (`tailwind.config.ts`):
-  - `mineral #EFF0EB` page base (cool, not cream)
-  - `ink #1E2D27` rosemary text and dark surfaces
-  - `paper #FAFAF7`, `line #D5D9D2`
-  - `sage-dark #3A5A4B` for labels
-  - `iris #5B4BC4`, the one accent (links, focus, active nav)
-  - `kiln #141418`, the dark ground the glass is shown on
-  - `forest #16201C` for the footer
-- **Type:**
-  - Familjen Grotesk for headlines and interface, set tight (`-0.03em`) in sentence case.
-  - Newsreader (optical sizes) for reading text: intros (`.lead`), descriptions (`.body-serif`, `.prose-s44`), quotes.
-  - The scale is 1.25 from 16px.
-  - Labels (`.label`) are 13px sentence case: no tracked all-caps, no eyebrow rules, no single-word italic accents.
-- **Shape:** controls are pills (`.btn-*`, `.chip`, inputs at 10px), media frames are `rounded-media` (10px), and glass sits in `.cabochon` ovals. Radius follows what a thing is.
-- **Structure:**
-  - Section headers are a headline plus an optional serif intro (`SectionHeader`). There are no section numbers.
-  - Numbers appear only where the content is a real sequence: how a pendant is made, what happens at a visit.
-  - Meta text uses commas, not "A · B" strings. Buttons and links carry no arrows.
-- **Motion:**
-  - Sections don't fade in as you scroll (`Reveal` is now a plain wrapper).
-  - The only automatic motion is the hero's opening sequence (`.intro`, `.intro-film`) and the film turning on scroll.
-  - Interaction motion (drawers, dialogs, button presses) stays.
-  - Everything is compositor-only and respects `prefers-reduced-motion`.
-- **Imagery:** real photography first: Cynthia's portrait, plus WooCommerce product photos via `CollectionHero` and the product cards. `StudioScene` draws a plain product stand-in only when no photo exists. Pass `src` to use a photo:
+| Variable | Default | Used for |
+|---|---|---|
+| `--bg-primary` | `#0B0F17` | page background |
+| `--bg-sunken` | `#080B11` | footer, glass gallery |
+| `--bg-surface` / `--bg-elevated` | `#141A24` / `#1B2332` | cards, panels, drawers, inputs |
+| `--border-subtle` / `--border-strong` | white at 8% / 14% | hairlines |
+| `--text-heading` | `#F8FAFC` | headings, primary text |
+| `--text-body` / `--text-muted` | `#CBD5E1` / `#94A3B8` | paragraphs, secondary text |
+| `--accent-blue` / `--accent-blue-hover` | `#2563EB` / `#1D4ED8` | primary buttons |
+| `--accent-blue-light` / `--accent-blue-soft` | `#3B82F6` / `#93C5FD` | links, focus, active states |
+| `--accent-blue-glow` | blue at 45% | button and card glow |
+| `--accent-sage` | `#8FB8A5` | small labels |
+| `--font-heading` / `--font-body` / `--font-accent` | Familjen Grotesk / Familjen Grotesk / Newsreader | headings, UI, intros and quotes |
 
-  ```tsx
-  <StudioScene src="/images/loma-leave-in.jpg" alt="Loma Leave-In Conditioner" className="aspect-[4/5]" />
-  ```
+To change fonts, swap the files loaded in `app/layout.tsx` (`--font-sans`, `--font-serif`) or point the `--font-*` variables elsewhere.
+
+- **Buttons:**
+  - `.btn-primary` (alias `.btn-dark`) is solid blue with a soft glow.
+  - `.btn-outline` is outlined glass that turns blue on hover.
+  - `.btn-light` is ivory.
+  - All lift 1px on hover and settle on press.
+- **Surfaces:** `.card` is a surface with a hairline, `.card-hover` adds lift and a blue border glow, and `.glass` is dark frosted glass.
+- **Hero:** Cynthia's portrait sits in a dark-glass frame with a studio caption and a floating "Cynthia's pick" card. The pick is Loma Calming Crème, found by `getSpotlightProduct()`; override the name pattern with `HERO_PICK_MATCH`.
+- **Motion:** all compositor-only, and everything respects `prefers-reduced-motion`.
+  - Hero entrance is a CSS stagger (`.intro`, `.intro-portrait`, `.intro-float`).
+  - Sections, product cards, the brand index and guarantee cards reveal on scroll through one shared IntersectionObserver (`Reveal`). Wrap lists in `.stagger` to sequence them.
+  - Product and jewelry cards lift, light their border and zoom the image on hover (`.zoom-media`).
+- **Imagery:** real photography first. `StudioScene` draws a dark product stand-in only when no photo exists; pass `src` to use a photo.
 
 ## Before launch — content to confirm
 

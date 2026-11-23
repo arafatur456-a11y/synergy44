@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import SectionHeader from '@/components/ui/SectionHeader';
+import Reveal from '@/components/ui/Reveal';
 import ProductCard from '@/components/shop/ProductCard';
 import { getFeaturedProducts } from '@/lib/catalog';
 import { CARD_GRID } from '@/components/shop/CardParts';
@@ -17,11 +18,11 @@ export default async function FeaturedEdit() {
           </Link>
         }
       />
-      <ul className={`mt-14 ${CARD_GRID} lg:grid-cols-4`}>
+      <ul className={`stagger mt-14 ${CARD_GRID} lg:grid-cols-4`}>
         {featured.map((p) => (
-          <li key={p.id}>
+          <Reveal as="li" key={p.id}>
             <ProductCard product={p} />
-          </li>
+          </Reveal>
         ))}
       </ul>
     </section>

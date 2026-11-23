@@ -126,7 +126,7 @@ export default function ContactForm({ initialTopic }: { initialTopic: Topic }) {
         className="card flex flex-col items-center px-8 py-20 text-center focus:outline-none"
         role="status"
       >
-        <span className="grid h-16 w-16 place-items-center rounded-full bg-ink text-white">
+        <span className="grid h-16 w-16 place-items-center rounded-full bg-accent text-white">
           <Check className="h-7 w-7" strokeWidth={1.8} />
         </span>
         <h2 className="mt-6 font-display text-[2.6rem] font-semibold">Thank you, {form.name.split(' ')[0]}.</h2>

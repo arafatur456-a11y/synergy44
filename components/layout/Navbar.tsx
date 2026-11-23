@@ -26,7 +26,7 @@ function Wordmark({ light }: { light?: boolean }) {
     <Link href="/" aria-label="Synergy 44, home" className="group flex items-center gap-2 leading-none">
       <span className={cn('font-display text-[1.45rem] font-semibold tracking-[-0.03em]', light ? 'text-white' : 'text-ink')}>Synergy</span>
       <span className="film cabochon grid h-[30px] w-[26px] place-items-center p-[2px]" aria-hidden>
-        <span className={cn('cabochon grid h-full w-full place-items-center text-[12px] font-semibold tracking-[-0.02em]', light ? 'bg-ink text-white' : 'bg-mineral text-ink')}>44</span>
+        <span className={cn('cabochon grid h-full w-full place-items-center text-[12px] font-semibold tracking-[-0.02em]', light ? 'bg-mineral text-white' : 'bg-mineral text-ink')}>44</span>
       </span>
     </Link>
   );
@@ -198,7 +198,7 @@ export default function Navbar() {
             >
               <ShoppingBag className="h-[18px] w-[18px]" strokeWidth={1.6} />
               <span className="hidden sm:inline">Bag</span>
-              <span className={cn('grid h-5 min-w-5 place-items-center rounded-full px-1 text-[12px] tabular-nums', count > 0 ? 'bg-iris text-white' : 'bg-ink/10 text-ink')}>
+              <span className={cn('grid h-5 min-w-5 place-items-center rounded-full px-1 text-[12px] tabular-nums', count > 0 ? 'bg-accent text-white' : 'bg-ink/10 text-ink')}>
                 {count}
               </span>
             </button>
@@ -215,7 +215,7 @@ export default function Navbar() {
       <AnimatePresence>
         {mobile && (
           <motion.div
-            className="fixed inset-0 z-[60] flex flex-col bg-ink text-white lg:hidden"
+            className="fixed inset-0 z-[60] flex flex-col bg-mineral text-white lg:hidden"
             initial={{ clipPath: 'inset(0 0 100% 0)' }}
             animate={{ clipPath: 'inset(0 0 0% 0)' }}
             exit={{ clipPath: 'inset(0 0 100% 0)' }}

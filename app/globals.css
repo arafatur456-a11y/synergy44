@@ -2,36 +2,74 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Registered so the dichroic film can rotate smoothly (hero rim, glass tiles). */
-@property --film-angle {
-  syntax: '<angle>';
-  inherits: true;
-  initial-value: 200deg;
+/* ═══════════════════════════════════════════════════════════════════════════
+   THEME — edit these variables to re-color or re-type the whole site.
+   Tailwind classes (bg-mineral, text-ink, bg-accent, …) all resolve to them.
+   ═══════════════════════════════════════════════════════════════════════════ */
+:root {
+  /* Surfaces */
+  --bg-primary: #0b0f17; /* page background */
+  --bg-sunken: #080b11; /* footer, glass gallery */
+  --bg-surface: #141a24; /* cards, panels, drawers */
+  --bg-elevated: #1b2332; /* raised controls, hover fills */
+  --bg-elevated-2: #232d3f;
+
+  /* Borders */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.14);
+
+  /* Text */
+  --text-heading: #f8fafc; /* headings, primary text */
+  --text-body: #cbd5e1; /* paragraphs */
+  --text-muted: #94a3b8; /* secondary text */
+  --text-subtle: #64748b; /* hints, placeholders */
+
+  /* Accents */
+  --accent-blue: #2563eb; /* primary buttons */
+  --accent-blue-hover: #1d4ed8;
+  --accent-blue-light: #3b82f6; /* links, focus, active states */
+  --accent-blue-soft: #93c5fd; /* accents on dark */
+  --accent-blue-tint: #172554; /* tinted fills */
+  --accent-blue-glow: rgba(37, 99, 235, 0.45);
+  --accent-sage: #8fb8a5; /* small labels — a nod to the organic hair care */
+  --accent-sage-light: #b5d1c3;
+
+  /* Type (the font files are loaded in app/layout.tsx as --font-sans / --font-serif) */
+  --font-heading: var(--font-sans), 'Helvetica Neue', Arial, sans-serif;
+  --font-body: var(--font-sans), 'Helvetica Neue', Arial, sans-serif;
+  --font-accent: var(--font-serif), Georgia, serif; /* intros, quotes, stories */
+
+  /* Shape & motion */
+  --radius-media: 14px;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  color-scheme: dark;
 }
 
 @layer base {
   html {
-    background: #eff0eb;
+    background: var(--bg-primary);
     -webkit-tap-highlight-color: transparent;
     scroll-padding-top: 7rem;
   }
   body {
-    @apply bg-mineral font-sans text-[16px] text-ink antialiased;
+    @apply bg-mineral font-sans text-[16px] text-stone-700 antialiased;
     overflow-x: clip;
     font-feature-settings: 'kern', 'ss02';
   }
   h1, h2, h3, h4 {
+    color: var(--text-heading);
     letter-spacing: -0.02em;
     text-wrap: balance;
   }
   ::selection {
-    background: #5b4bc4;
-    color: #fafaf7;
+    background: var(--accent-blue);
+    color: #fff;
   }
   :focus-visible {
-    outline: 2px solid #5b4bc4;
+    outline: 2px solid var(--accent-blue-light);
     outline-offset: 3px;
-    border-radius: 4px;
+    border-radius: 6px;
   }
 }
 
@@ -40,13 +78,10 @@
     @apply mx-auto w-full max-w-[1320px] px-4 sm:px-8 lg:px-12;
   }
 
-  /* —— Type ——
-     Scale (1.25, from 16px): 13 · 16 · 20 · 25 · 31 · 39 · 49 · 61 · 76 · 95.
-     Headlines are Familjen Grotesk set tight; reading text is Newsreader with generous leading. */
+  /* —— Type —— */
   .label {
     @apply text-[13px] font-medium leading-snug text-sage-dark;
   }
-  /* Legacy name: a quiet sentence-case label — no rule, no caps. */
   .eyebrow {
     @apply label;
   }
@@ -72,72 +107,60 @@
     @apply text-inherit;
   }
 
-  /* —— Buttons: pill-shaped, sentence case. Motion only on press and hover color. —— */
+  /* —— Buttons ——
+     Primary: solid blue with a soft glow. Secondary: outlined glass that picks up blue on hover.
+     Hover lifts 1px, press settles — transform + color only, so they stay cheap to animate. */
   .btn {
-    @apply relative inline-flex h-12 items-center justify-center gap-2.5 whitespace-nowrap rounded-full px-6 text-[15px] font-medium transition-[background-color,color,border-color,box-shadow] duration-200 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-45;
+    @apply relative inline-flex h-12 items-center justify-center gap-2.5 whitespace-nowrap rounded-full px-6 text-[15px] font-medium transition-[background-color,color,border-color,box-shadow,transform] duration-200 hover:-translate-y-px active:translate-y-0 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-45;
   }
-  .btn-dark {
-    @apply btn bg-ink text-paper hover:bg-sage-dark;
-  }
+  .btn-primary,
+  .btn-dark,
   .btn-sage {
-    @apply btn bg-sage-dark text-paper hover:bg-ink;
+    @apply btn bg-accent text-white shadow-glow hover:bg-accent-hover hover:shadow-[0_14px_34px_-10px_var(--accent-blue-glow)];
   }
-  .btn-outline {
-    @apply btn border border-ink/30 text-ink hover:border-ink hover:bg-ink/[0.04];
+  .btn-outline,
+  .btn-ghost-light {
+    @apply btn border border-white/15 bg-white/[0.03] text-ink hover:border-accent-light/70 hover:bg-accent/10 hover:text-white;
   }
   .btn-light {
-    @apply btn bg-paper text-ink hover:bg-iris-pale;
-  }
-  .btn-ghost-light {
-    @apply btn border border-white/35 text-white hover:border-white hover:bg-white/10;
+    @apply btn bg-ink text-mineral hover:bg-white;
   }
 
   .link-underline {
-    @apply inline-flex items-center gap-2 text-[15px] font-medium text-ink underline decoration-ink/25 decoration-1 underline-offset-[6px] transition-colors hover:decoration-iris;
+    @apply inline-flex items-center gap-2 text-[15px] font-medium text-ink underline decoration-white/25 decoration-1 underline-offset-[6px] transition-colors hover:text-iris-light hover:decoration-accent-light;
   }
 
   /* —— Surfaces —— */
   .card {
-    @apply rounded-media border border-line bg-paper;
+    @apply rounded-media border border-white/[0.08] bg-surface;
+  }
+  /* Card with lift + border light on hover (product, jewelry, guarantee…) */
+  .card-hover {
+    @apply transition-[transform,border-color,box-shadow] duration-500 ease-silk hover:-translate-y-1 hover:border-accent-light/40 hover:shadow-[0_24px_50px_-28px_rgba(0,0,0,0.9),0_0_0_1px_rgba(59,130,246,0.15)];
   }
   .glass {
-    @apply rounded-[18px] border border-white/70 bg-[rgba(250,250,247,0.88)] shadow-glass backdrop-blur-md;
+    @apply rounded-[18px] border border-white/10 bg-[rgba(20,26,36,0.72)] shadow-glass backdrop-blur-md;
   }
   .glass-dark {
-    @apply rounded-[18px] border border-white/12 bg-[rgba(22,32,28,0.6)] text-white backdrop-blur-md;
+    @apply glass;
   }
   .frost {
     @apply glass;
   }
 
-  /* —— Thin film: the one bold device. A dichroic interference gradient whose hue rotates with
-     --film-angle. Used only on glass and on the hero's cabochon rim. —— */
+  /* Dark-glass edge: a quiet slate-to-blue sheen used for frames (no rainbow). */
   .film {
-    /* Dark gaps between the colors read as reflections on a glass edge, not a rainbow ring. */
-    background: conic-gradient(
-      from var(--film-angle) at 50% 50%,
-      #1f6f73 0deg,
-      #2fa6a0 30deg,
-      #20302a 70deg,
-      #4a5fc2 110deg,
-      #6e5bd0 150deg,
-      #20302a 195deg,
-      #b98a3c 235deg,
-      #e2b25a 260deg,
-      #20302a 300deg,
-      #1f6f73 360deg
-    );
+    background: linear-gradient(150deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.04) 35%, rgba(59, 130, 246, 0.28) 70%, rgba(255, 255, 255, 0.1));
   }
   .film-text {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(var(--film-angle), #2fa6a0, #6e5bd0 45%, #c86fb0 70%, #e2a13b);
+    background-image: linear-gradient(120deg, #f8fafc, #93c5fd);
   }
-  /* Oval pendant shape — the signature frame. */
   .cabochon {
     border-radius: 50% / 46%;
   }
   .iridescent {
-    background-image: linear-gradient(120deg, #dfeeec 0%, #e6e2f8 45%, #f3e6cf 100%);
+    background-image: linear-gradient(120deg, #141a24 0%, #172554 60%, #1b2332 100%);
   }
   .text-iridescent {
     @apply film-text;
@@ -147,7 +170,7 @@
   }
 
   .input {
-    @apply h-12 w-full rounded-[10px] border border-line bg-paper px-4 text-[16px] text-ink transition placeholder:text-stone-400 focus:border-ink focus:outline-none;
+    @apply h-12 w-full rounded-[10px] border border-white/10 bg-elevated px-4 text-[16px] text-ink transition placeholder:text-stone-400 focus:border-accent-light focus:outline-none focus:ring-2 focus:ring-accent/30;
   }
   textarea.input {
     @apply h-auto py-3.5;
@@ -156,10 +179,10 @@
     @apply inline-flex h-10 items-center whitespace-nowrap rounded-full border px-4 text-[14px] font-medium transition-colors duration-200;
   }
   .chip-on {
-    @apply border-ink bg-ink text-paper;
+    @apply border-accent bg-accent text-white;
   }
   .chip-off {
-    @apply border-line bg-paper text-stone-700 hover:border-ink hover:text-ink;
+    @apply border-white/[0.12] bg-white/[0.03] text-stone-700 hover:border-accent-light/60 hover:text-ink;
   }
 
   /*
@@ -223,7 +246,7 @@
 
 /* WooCommerce product description HTML (sanitized server-side) */
 .prose-s44 {
-  color: #33403a;
+  color: var(--text-body);
   font-family: var(--font-serif), Georgia, serif;
   font-size: 1.075rem;
   line-height: 1.7;
@@ -234,7 +257,7 @@
   font-weight: 600;
   letter-spacing: -0.015em;
   line-height: 1.15;
-  color: #1e2d27;
+  color: var(--text-heading);
   margin-top: 1.6em;
 }
 .prose-s44 h2 { font-size: 1.75rem; }
@@ -244,36 +267,66 @@
 .prose-s44 ul { list-style: disc; }
 .prose-s44 ol { list-style: decimal; }
 .prose-s44 li + li { margin-top: 0.4em; }
-.prose-s44 li::marker { color: #5b4bc4; }
+.prose-s44 li::marker { color: var(--accent-blue-light); }
 .prose-s44 a { text-decoration: underline; text-underline-offset: 3px; }
-.prose-s44 strong, .prose-s44 b { color: #1e2d27; font-weight: 600; }
-.prose-s44 blockquote { border-left: 2px solid #5b4bc4; padding-left: 1rem; font-style: italic; }
+.prose-s44 strong, .prose-s44 b { color: var(--text-heading); font-weight: 600; }
+.prose-s44 blockquote { border-left: 2px solid var(--accent-blue-light); padding-left: 1rem; font-style: italic; }
 .prose-s44 img { max-width: 100%; height: auto; border-radius: 4px; }
 .prose-s44 table { width: 100%; border-collapse: collapse; font-size: 0.92em; }
-.prose-s44 th, .prose-s44 td { border-bottom: 1px solid #d5d9d2; padding: 0.5rem 0.25rem; text-align: left; }
+.prose-s44 th, .prose-s44 td { border-bottom: 1px solid rgba(255,255,255,0.1); padding: 0.5rem 0.25rem; text-align: left; }
 
 /* ─── Scroll performance: compositor-only motion ───────────────────────────────
    Everything below animates only `opacity` / `transform` (GPU) or uses CSS scroll timelines,
    so scrolling never waits on JavaScript. */
 
-/* Reveal-on-scroll (components/ui/Reveal.tsx). Hidden state only when JS is running. */
-/* Sections no longer fade in one by one — content is simply there. The only orchestrated
-   motion is the hero's opening sequence (.intro) and the thin film turning with scroll. */
+/* Reveal-on-scroll (components/ui/Reveal.tsx): fade + 20px rise, played once.
+   Hidden state applies only when JS runs (the `js` class from app/layout.tsx), so content is
+   never lost without JS. Stagger with --reveal-delay (Reveal's `delay` prop or .stagger). */
+.reveal {
+  transition:
+    opacity 0.8s var(--ease-out) var(--reveal-delay, 0s),
+    transform 0.8s var(--ease-out) var(--reveal-delay, 0s);
+}
+.js .reveal:not(.is-visible) {
+  opacity: 0;
+  transform: translate3d(0, var(--reveal-y, 20px), 0);
+}
+/* Children of a .stagger list reveal one after another (up to 8 steps). */
+.stagger > .reveal:nth-child(2) { --reveal-delay: 0.07s; }
+.stagger > .reveal:nth-child(3) { --reveal-delay: 0.14s; }
+.stagger > .reveal:nth-child(4) { --reveal-delay: 0.21s; }
+.stagger > .reveal:nth-child(5) { --reveal-delay: 0.28s; }
+.stagger > .reveal:nth-child(6) { --reveal-delay: 0.35s; }
+.stagger > .reveal:nth-child(7) { --reveal-delay: 0.42s; }
+.stagger > .reveal:nth-child(8) { --reveal-delay: 0.49s; }
 
+/* Hero entrance: copy rises in sequence, the portrait settles in after. */
 .js .intro > * {
-  animation: intro-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: intro-rise 0.9s var(--ease-out) both;
 }
-.js .intro > *:nth-child(2) { animation-delay: 0.08s; }
-.js .intro > *:nth-child(3) { animation-delay: 0.16s; }
-.js .intro > *:nth-child(4) { animation-delay: 0.24s; }
+.js .intro > *:nth-child(2) { animation-delay: 0.1s; }
+.js .intro > *:nth-child(3) { animation-delay: 0.2s; }
+.js .intro > *:nth-child(4) { animation-delay: 0.3s; }
+.js .intro > *:nth-child(5) { animation-delay: 0.4s; }
 @keyframes intro-rise {
-  from { opacity: 0; transform: translate3d(0, 18px, 0); }
+  from { opacity: 0; transform: translate3d(0, 24px, 0); }
 }
-.js .intro-film {
-  animation: intro-film 1.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+.js .intro-portrait {
+  animation: intro-portrait 1.3s var(--ease-out) 0.15s both;
 }
-@keyframes intro-film {
-  from { --film-angle: 20deg; opacity: 0; transform: scale(0.96); }
+@keyframes intro-portrait {
+  from { opacity: 0; transform: translate3d(0, 32px, 0) scale(0.97); }
+}
+.js .intro-float {
+  animation: intro-rise 0.9s var(--ease-out) 0.7s both;
+}
+
+/* Image zoom inside a hovered card (transform only). */
+.zoom-media {
+  transition: transform 1.1s var(--ease-out);
+}
+.group:hover .zoom-media {
+  transform: scale(1.05);
 }
 
 /* Botanical line drawing (components/ui/BotanicalSprig.tsx) */
@@ -322,21 +375,9 @@
 }
 
 
-@supports (animation-timeline: scroll()) {
-  @media (prefers-reduced-motion: no-preference) {
-    /* The film turns as the page scrolls past the hero. */
-    .film-scroll {
-      animation: film-turn linear both;
-      animation-timeline: scroll(root);
-      animation-range: 0 120vh;
-    }
-  }
-}
-@keyframes film-turn {
-  to { --film-angle: 380deg; }
-}
-
 @media (prefers-reduced-motion: reduce) {
+  .js .reveal:not(.is-visible) { opacity: 1; transform: none; }
+  .group:hover .zoom-media { transform: none; }
   .js .sprig-draw path { stroke-dashoffset: 0; }
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

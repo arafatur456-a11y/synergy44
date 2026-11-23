@@ -58,7 +58,7 @@ export default function CartDrawer() {
 
             {items.length === 0 ? (
               <div className="flex flex-1 flex-col items-center justify-center px-8 text-center">
-                <div className="grid h-16 w-16 place-items-center rounded-full bg-ink">
+                <div className="grid h-16 w-16 place-items-center rounded-full bg-accent">
                   <ShoppingBag className="h-6 w-6 text-white" strokeWidth={1.5} />
                 </div>
                 <p className="mt-5 font-display text-[1.9rem] font-semibold">Your bag is empty</p>

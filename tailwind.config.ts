@@ -1,65 +1,72 @@
 import type { Config } from 'tailwindcss';
 
+/** Color from a CSS variable, with support for Tailwind's /opacity modifiers. */
+const c = (v: string) => `color-mix(in srgb, var(${v}) calc(<alpha-value> * 100%), transparent)`;
+
 const config: Config = {
   content: ['./app/**/*.{ts,tsx}', './components/**/*.{ts,tsx}', './lib/**/*.{ts,tsx}'],
   theme: {
     extend: {
-      // "Thin film" palette: mineral base, rosemary ink, one violet accent drawn from the glass.
-      // The dichroic spectrum (teal → iris → amber) is reserved for glass and the hero rim.
+      // Every color resolves to a CSS variable defined in app/globals.css (:root), so the whole
+      // theme can be re-tuned there. `c()` keeps Tailwind opacity modifiers (e.g. text-ink/60) working.
       colors: {
-        ink: '#1E2D27', // rosemary — text and dark surfaces
-        paper: '#FAFAF7',
-        line: '#D5D9D2',
+        ink: c('--text-heading'), // headings and primary text (ivory on dark)
+        paper: c('--bg-surface'), // raised surfaces: cards, panels, drawers
+        line: c('--border-strong'),
         mineral: {
-          DEFAULT: '#EFF0EB', // page base
-          100: '#E6E8E2',
-          200: '#DADDD5',
-          300: '#C8CCC3',
+          DEFAULT: c('--bg-primary'), // page background
+          100: c('--bg-surface'),
+          200: c('--bg-elevated'),
+          300: c('--bg-elevated-2'),
         },
+        surface: c('--bg-surface'),
+        elevated: c('--bg-elevated'),
         stone: {
-          DEFAULT: '#1E2D27',
-          700: '#33403A',
-          500: '#5A645F',
-          400: '#78807B',
+          DEFAULT: c('--text-heading'),
+          700: c('--text-body'),
+          500: c('--text-muted'),
+          400: c('--text-subtle'),
         },
         forest: {
-          DEFAULT: '#16201C',
-          800: '#1B2621',
-          700: '#24322B',
-          600: '#2F4038',
+          DEFAULT: c('--bg-sunken'),
+          800: c('--bg-surface'),
+          700: c('--bg-elevated'),
+          600: c('--bg-elevated-2'),
         },
-        kiln: '#141418', // dark field the glass is shown on
+        kiln: c('--bg-sunken'),
         sage: {
-          DEFAULT: '#557565',
-          dark: '#3A5A4B',
-          light: '#93AC9F',
-          pale: '#DCE4DE',
-          mist: '#E9EEEA',
+          DEFAULT: c('--accent-sage'),
+          dark: c('--accent-sage'),
+          light: c('--accent-sage-light'),
+          pale: c('--bg-elevated'),
+          mist: c('--bg-surface'),
         },
+        accent: {
+          DEFAULT: c('--accent-blue'),
+          hover: c('--accent-blue-hover'),
+          light: c('--accent-blue-light'),
+        },
+        // Legacy name for the accent, kept so existing classes follow the blue theme.
         iris: {
-          DEFAULT: '#5B4BC4',
-          light: '#B4A9EE',
-          pale: '#E6E2F8',
-        },
-        film: {
-          teal: '#2FA6A0',
-          iris: '#6E5BD0',
-          amber: '#E2A13B',
+          DEFAULT: c('--accent-blue-light'),
+          light: c('--accent-blue-soft'),
+          pale: c('--accent-blue-tint'),
         },
       },
       fontFamily: {
-        display: ['var(--font-sans)', 'Helvetica Neue', 'Arial', 'sans-serif'],
-        sans: ['var(--font-sans)', 'Helvetica Neue', 'Arial', 'sans-serif'],
-        serif: ['var(--font-serif)', 'Georgia', 'serif'],
+        display: ['var(--font-heading)'],
+        sans: ['var(--font-body)'],
+        serif: ['var(--font-accent)'],
       },
       borderRadius: {
         media: '10px',
       },
       boxShadow: {
-        soft: '0 1px 2px rgba(30,45,39,.06), 0 12px 30px -18px rgba(30,45,39,.25)',
-        lift: '0 2px 6px rgba(30,45,39,.06), 0 30px 60px -32px rgba(30,45,39,.45)',
-        float: '0 50px 90px -40px rgba(14,22,19,.6), 0 20px 36px -20px rgba(14,22,19,.3)',
-        glass: '0 40px 80px -30px rgba(14,22,19,.5), inset 0 1px 0 rgba(255,255,255,.7)',
+        soft: '0 1px 2px rgba(0,0,0,.3), 0 12px 30px -18px rgba(0,0,0,.6)',
+        lift: '0 2px 6px rgba(0,0,0,.35), 0 30px 60px -30px rgba(0,0,0,.75)',
+        float: '0 50px 90px -40px rgba(0,0,0,.85), 0 20px 36px -20px rgba(0,0,0,.6)',
+        glass: '0 40px 80px -30px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.06)',
+        glow: '0 10px 30px -10px var(--accent-blue-glow)',
       },
       transitionTimingFunction: {
         silk: 'cubic-bezier(0.22, 1, 0.36, 1)',

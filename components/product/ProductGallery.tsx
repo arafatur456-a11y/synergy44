@@ -68,7 +68,7 @@ export default function ProductGallery({
       <div
         className={cn(
           'group relative aspect-[4/5] flex-1 overflow-hidden rounded-media ring-1',
-          dark ? 'bg-[#0F0D12] ring-white/10' : 'bg-[#ECE6DC] shadow-soft ring-ink/[0.06]',
+          dark ? 'bg-kiln ring-white/10' : 'bg-surface ring-white/[0.08]',
         )}
         onKeyDown={(e) => {
           if (e.key === 'ArrowLeft') go(-1);
@@ -94,7 +94,7 @@ export default function ProductGallery({
             <PendantVisual colors={(item as Pendant).colors} shape={(item as Pendant).shape} chain={false} className="w-[44%]" />
           </div>
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center" style={{ background: 'radial-gradient(90% 70% at 50% 38%, #FFFFFF 0%, #EEE8DE 55%, #DCD3C6 100%)' }}>
+          <div className="absolute inset-0 flex items-center justify-center" style={{ background: 'radial-gradient(75% 60% at 50% 40%, #2A3650 0%, #1B2332 55%, #141A24 100%)' }}>
             <ProductVisual shape={(item as Product).shape} colors={(item as Product).colors} cap={(item as Product).cap} label={brandName} className="h-[72%]" />
           </div>
         )}

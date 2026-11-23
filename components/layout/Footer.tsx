@@ -69,14 +69,14 @@ export default function Footer() {
                 placeholder="name@example.com"
                 className="h-full flex-1 bg-transparent text-[16px] text-white placeholder:text-white/40 focus:outline-none"
               />
-              <button type="submit" disabled={joined || status === 'sending'} className="flex h-11 items-center gap-2 rounded-full bg-paper px-5 text-[15px] font-medium text-ink transition-colors hover:bg-iris-pale disabled:opacity-80">
+              <button type="submit" disabled={joined || status === 'sending'} className="flex h-11 items-center gap-2 rounded-full bg-accent px-5 text-[15px] font-medium text-white transition-colors hover:bg-accent-hover disabled:opacity-80">
                 {status === 'sending' ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" /> Joining
                   </>
                 ) : joined ? (
                   <>
-                    <Check className="h-4 w-4 text-iris" /> Subscribed
+                    <Check className="h-4 w-4" /> Subscribed
                   </>
                 ) : (
                   <>

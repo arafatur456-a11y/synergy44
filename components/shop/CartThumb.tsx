@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 export default function CartThumb({ item, small }: { item: CartItem; small?: boolean }) {
   const v = item.visual;
   return (
-    <div className={cn('grid shrink-0 place-items-center overflow-hidden rounded-[8px] bg-[#ECE6DC]', small ? 'h-[72px] w-[58px]' : 'h-24 w-20')}>
+    <div className={cn('grid shrink-0 place-items-center overflow-hidden rounded-[8px] bg-elevated', small ? 'h-[72px] w-[58px]' : 'h-24 w-20')}>
       {v.type === 'image' ? (
         <div className="relative h-full w-full">
           <Image src={v.src} alt={v.alt} fill sizes="80px" className="object-cover" />

@@ -9,7 +9,7 @@ export type SceneTone = 'forest' | 'stone' | 'velvet' | 'umber';
 
 const tones: Record<SceneTone, { bg: string; spot: string; arch: string; floor: string; sprig: string; glow: string }> = {
   forest: {
-    bg: 'radial-gradient(120% 90% at 50% 8%, #3E5A4E 0%, #1E2D27 50%, #111A16 100%)',
+    bg: 'radial-gradient(120% 90% at 50% 8%, #22304A 0%, #121927 50%, #0B0F17 100%)',
     spot: 'radial-gradient(closest-side, rgba(220,240,232,.32), transparent)',
     arch: 'linear-gradient(180deg, rgba(255,255,255,.07), rgba(0,0,0,.3))',
     floor: 'linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.5))',
@@ -17,12 +17,12 @@ const tones: Record<SceneTone, { bg: string; spot: string; arch: string; floor: 
     glow: 'rgba(220,240,232,.14)',
   },
   stone: {
-    bg: 'radial-gradient(120% 90% at 50% 0%, #FFFFFF 0%, #E6E9E3 46%, #C3CAC2 100%)',
-    spot: 'radial-gradient(closest-side, rgba(255,255,255,.95), transparent)',
-    arch: 'linear-gradient(180deg, rgba(255,255,255,.75), rgba(90,110,100,.2))',
-    floor: 'linear-gradient(180deg, rgba(0,0,0,0), rgba(30,45,39,.16))',
+    bg: 'radial-gradient(120% 90% at 50% 0%, #2A3650 0%, #161D2A 50%, #0B0F17 100%)',
+    spot: 'radial-gradient(closest-side, rgba(147,197,253,.28), transparent)',
+    arch: 'linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.3))',
+    floor: 'linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.45))',
     sprig: 'text-sage/25',
-    glow: 'rgba(255,255,255,.5)',
+    glow: 'rgba(147,197,253,.08)',
   },
   velvet: {
     bg: 'radial-gradient(110% 80% at 50% 14%, #33293D 0%, #17131C 52%, #09080B 100%)',

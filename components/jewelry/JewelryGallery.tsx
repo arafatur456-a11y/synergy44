@@ -27,7 +27,7 @@ export default function JewelryGallery({ pendants }: { pendants: Pendant[] }) {
               aria-pressed={active === c}
               className={cn(
                 'chip',
-                active === c ? 'border-white bg-white text-ink' : 'border-white/20 bg-transparent text-white/75 hover:border-white/60 hover:text-white',
+                active === c ? 'border-accent bg-accent text-white' : 'border-white/20 bg-transparent text-white/75 hover:border-white/60 hover:text-white',
               )}
             >
               {c === 'All' ? 'All pieces' : c}

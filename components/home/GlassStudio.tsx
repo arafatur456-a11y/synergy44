@@ -35,11 +35,11 @@ export default function GlassStudio({ pendants }: { pendants: Pendant[] }) {
           }
         />
 
-        <ul className={`mt-14 ${CARD_GRID} lg:grid-cols-4`}>
+        <ul className={`stagger mt-14 ${CARD_GRID} lg:grid-cols-4`}>
           {pendants.slice(0, 4).map((p) => (
-            <li key={p.id}>
+            <Reveal as="li" key={p.id}>
               <PendantCard pendant={p} onOpen={() => setSelected(p)} />
-            </li>
+            </Reveal>
           ))}
         </ul>
 
