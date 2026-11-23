@@ -10,7 +10,7 @@ import { productHref } from '@/lib/catalog-utils';
 import type { Product } from '@/lib/types';
 import { useCart } from '@/lib/cart';
 
-export default function ProductCard({ product }: { product: Product }) {
+export default function ProductCard({ product, badge }: { product: Product; /** Overrides the product's own badge */ badge?: string }) {
   const { add } = useCart();
   const [added, setAdded] = useState(false);
   const brand = getBrand(product.brand);
@@ -41,11 +41,11 @@ export default function ProductCard({ product }: { product: Product }) {
   const href = productHref(product);
 
   return (
-    <article className="group relative">
+    <article className="group relative flex h-full w-full flex-col">
       <MediaFrame
         href={href}
         selectLabel={`View ${brandName} ${product.name}`}
-        badge={product.badge}
+        badge={badge ?? product.badge}
         background={product.image ? undefined : `radial-gradient(75% 60% at 50% 42%, ${brand?.tint ?? '#94A3B8'}40 0%, #1B2332 62%, #141A24 100%)`}
         action={
           product.inStock === false ? (

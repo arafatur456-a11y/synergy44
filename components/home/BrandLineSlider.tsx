@@ -20,7 +20,6 @@ const GLIDE_MS = 3800;
 export default function BrandLineSlider({ brands }: { brands: Brand[] }) {
   const track = useRef<HTMLUListElement>(null);
   const [atStart, setAtStart] = useState(true);
-  const [atEnd, setAtEnd] = useState(false);
   const [hovered, setHovered] = useState(false);
   const [userPaused, setUserPaused] = useState(false);
   const [visible, setVisible] = useState(true);
@@ -45,7 +44,6 @@ export default function BrandLineSlider({ brands }: { brands: Brand[] }) {
     const update = () => {
       raf = 0;
       setAtStart(el.scrollLeft <= 4);
-      setAtEnd(el.scrollLeft >= el.scrollWidth - el.clientWidth - 4);
     };
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(update);
@@ -146,7 +144,7 @@ export default function BrandLineSlider({ brands }: { brands: Brand[] }) {
                 aria-label={`Shop ${b.name}: ${b.tagline}`}
                 className="group block rounded-[18px] border border-white/[0.08] bg-surface p-2 transition-[transform,border-color,box-shadow] duration-500 ease-silk hover:-translate-y-1 hover:border-accent-light/50 hover:shadow-[0_24px_50px_-26px_rgba(0,0,0,0.95),0_0_32px_-10px_rgba(37,99,235,0.45)] focus-visible:border-accent-light"
               >
-                <div className="relative aspect-square overflow-hidden rounded-[12px] bg-elevated">
+                <div className="relative aspect-square overflow-hidden rounded-[12px] bg-elevated" style={b.image && b.imageBg ? { background: b.imageBg } : undefined}>
                   {b.image ? (
                     <Image
                       src={b.image}
@@ -154,7 +152,7 @@ export default function BrandLineSlider({ brands }: { brands: Brand[] }) {
                       fill
                       priority={i < 2}
                       sizes="(min-width: 1024px) 20vw, (min-width: 640px) 240px, 62vw"
-                      className="object-cover transition-transform duration-700 ease-silk group-hover:scale-[1.04]"
+                      className={cn('transition-transform duration-700 ease-silk group-hover:scale-[1.04]', b.imageFit === 'contain' ? 'object-contain' : 'object-cover')}
                     />
                   ) : (
                     <div

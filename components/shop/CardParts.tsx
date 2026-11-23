@@ -139,7 +139,7 @@ export function CardMeta({
     <div className="mt-4 flex items-start justify-between gap-4">
       <div className="min-w-0">
         <p className={cn('text-[13px]', dark ? 'text-iris-light' : 'text-sage-dark')}>{eyebrow}</p>
-        <h3 className={cn('mt-0.5 text-[17px] font-medium leading-snug tracking-[-0.01em]', dark ? 'text-white' : 'text-ink')}>
+        <h3 className={cn('mt-0.5 line-clamp-2 min-h-[2.75em] text-[17px] font-medium leading-snug tracking-[-0.01em]', dark ? 'text-white' : 'text-ink')}>
           {href ? (
             <Link href={href} className="underline decoration-transparent underline-offset-4 transition-colors hover:decoration-current">
               {title}

@@ -78,6 +78,7 @@ export const brands: Brand[] = [
   {
     slug: 'olaplex',
     name: 'Olaplex',
+    image: '/images/brands/olaplex.jpg',
     tagline: 'Bond-building repair',
     description: 'Patented bond-building technology that strengthens and repairs hair from the inside out.',
     tint: '#ECE6DC',
@@ -85,6 +86,9 @@ export const brands: Brand[] = [
   {
     slug: 'neuma',
     name: 'Neuma',
+    image: '/images/brands/neuma.jpg',
+    imageFit: 'contain',
+    imageBg: 'linear-gradient(180deg, #C5BFBB 0%, #DCDCDA 100%)',
     tagline: 'Organic luxury textures',
     description: 'Luxurious textures infused with certified-organic botanicals for softness, shine and moisture.',
     tint: '#E6DEF0',
@@ -101,6 +105,7 @@ export const brands: Brand[] = [
   {
     slug: 'sutra',
     name: 'Sutra',
+    image: '/images/brands/sutra.jpg',
     tagline: 'Effortless heat styling',
     description: 'Sleek heat-styling tools designed for smooth blowouts, polished waves and everyday ease.',
     tint: '#F4DFE3',
@@ -108,8 +113,9 @@ export const brands: Brand[] = [
   {
     slug: 'goomee',
     name: 'Goomee',
-    tagline: 'Reusable makeup removal',
-    description: 'Soft, reusable makeup-removal pads that work with water — a gentle, low-waste ritual.',
+    image: '/images/brands/goomee.jpg',
+    tagline: 'Markless hair loops',
+    description: 'Spiral hair loops that hold without creases or dents, plus soft, reusable makeup-removal pads that work with just water.',
     tint: '#F3EADB',
   },
 ];

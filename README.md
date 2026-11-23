@@ -146,6 +146,8 @@ To change fonts, swap the files loaded in `app/layout.tsx` (`--font-sans`, `--fo
   - Hero entrance is a CSS stagger (`.intro`, `.intro-portrait`, `.intro-float`).
   - Sections, product cards, the brand index and guarantee cards reveal on scroll through one shared IntersectionObserver (`Reveal`). Wrap lists in `.stagger` to sequence them.
   - Product and jewelry cards lift, light their border and zoom the image on hover (`.zoom-media`).
+- **Brand showcase:** `BrandLineSlider` uses each brand's `image` from `lib/data.ts` (artwork in `public/images/brands/`). Non-square art can set `imageFit: 'contain'` with an `imageBg` so it is never cropped.
+- **Linting:** `npm run lint` (ESLint with `next/core-web-vitals` + `next/typescript`, config in `eslint.config.mjs`).
 - **Imagery:** real photography first. `StudioScene` draws a dark product stand-in only when no photo exists; pass `src` to use a photo.
 
 ## Before launch — content to confirm

@@ -1,7 +1,6 @@
 import Hero from '@/components/home/Hero';
 import BrandLineSlider from '@/components/home/BrandLineSlider';
 import { brands } from '@/lib/data';
-import BrandMarquee from '@/components/home/BrandMarquee';
 import FeaturedEdit from '@/components/home/FeaturedEdit';
 import GlassStudio from '@/components/home/GlassStudio';
 import ServicesTeaser from '@/components/home/ServicesTeaser';
@@ -18,7 +17,6 @@ export default async function HomePage() {
       {/* Brand lines first (as on synergy44.com): lines with artwork lead, the rest follow */}
       <BrandLineSlider brands={[...brands.filter((b) => b.image), ...brands.filter((b) => !b.image)]} />
       <Hero spotlight={spotlight} />
-      <BrandMarquee />
       <FeaturedEdit />
       <GlassStudio pendants={pendants.slice(0, 4)} />
       <ServicesTeaser />

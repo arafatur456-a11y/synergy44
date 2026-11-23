@@ -16,8 +16,14 @@ export type Brand = {
   tint: string;
   /** Other names/slugs the store may use for this brand (WooCommerce brand, category or attribute) */
   aliases?: string[];
-  /** Brand-line artwork for the home showcase (square image in /public) */
+  /** Brand-line artwork for the home showcase (image in /public; square works best) */
   image?: string;
+  /**
+   * How non-square artwork fills the square card: 'contain' shows the whole image on
+   * `imageBg` (no cropping). Defaults to 'cover'.
+   */
+  imageFit?: 'cover' | 'contain';
+  imageBg?: string;
 };
 
 export type Product = {

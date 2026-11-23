@@ -4,13 +4,9 @@ import Link from 'next/link';
 import InstagramLink from '@/components/ui/InstagramLink';
 import { Leaf, Rabbit, Recycle } from 'lucide-react';
 import PageHeader from '@/components/ui/PageHeader';
-import StudioScene from '@/components/ui/StudioScene';
 import SectionHeader from '@/components/ui/SectionHeader';
 import Reveal from '@/components/ui/Reveal';
-import Parallax from '@/components/ui/Parallax';
 import GuaranteeGrid from '@/components/GuaranteeGrid';
-import PendantVisual from '@/components/jewelry/PendantVisual';
-import ProductVisual from '@/components/shop/ProductVisual';
 import { milestones } from '@/lib/data';
 import cynthiaPortrait from '@/public/images/cynthia-reedy.jpg';
 

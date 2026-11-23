@@ -6,7 +6,6 @@ import Reveal from './Reveal';
  * Split editorial page header: bold title on the left, an art-directed scene on the right.
  */
 export default function PageHeader({
-  eyebrow,
   title,
   intro,
   crumbs = [],

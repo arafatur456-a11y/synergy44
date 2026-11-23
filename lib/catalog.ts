@@ -45,10 +45,12 @@ export async function getProductsByBrand(brandSlug: string): Promise<Product[]> 
   return (await getProducts()).filter((p) => p.brand === brandSlug);
 }
 
+/** Featured products first; topped up with other in-stock products so a row is always full. */
 export async function getFeaturedProducts(limit = 4): Promise<Product[]> {
   const all = await getProducts();
   const featured = all.filter((p) => p.featured);
-  return (featured.length ? featured : all).slice(0, limit);
+  const rest = all.filter((p) => !p.featured && p.inStock !== false);
+  return [...featured, ...rest].slice(0, limit);
 }
 
 /**
