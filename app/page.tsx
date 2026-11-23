@@ -1,4 +1,6 @@
 import Hero from '@/components/home/Hero';
+import BrandLineSlider from '@/components/home/BrandLineSlider';
+import { brands } from '@/lib/data';
 import BrandMarquee from '@/components/home/BrandMarquee';
 import FeaturedEdit from '@/components/home/FeaturedEdit';
 import GlassStudio from '@/components/home/GlassStudio';
@@ -13,6 +15,8 @@ export default async function HomePage() {
   const [pendants, spotlight] = await Promise.all([getPendants(), getSpotlightProduct()]);
   return (
     <>
+      {/* Brand lines first (as on synergy44.com): lines with artwork lead, the rest follow */}
+      <BrandLineSlider brands={[...brands.filter((b) => b.image), ...brands.filter((b) => !b.image)]} />
       <Hero spotlight={spotlight} />
       <BrandMarquee />
       <FeaturedEdit />

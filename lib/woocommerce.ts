@@ -253,13 +253,24 @@ const truncate = (s: string, n: number) => (s.length > n ? `${s.slice(0, n - 1).
 const attr = (p: WCProduct, name: string) => p.attributes.find((a) => a.name.toLowerCase() === name.toLowerCase())?.options[0];
 const money = (v: string) => (v === '' ? 0 : Number(v));
 
+/** slug / alias / name (lower-case) → site brand slug */
+const BRAND_KEYS = new Map<string, string>(
+  brands.flatMap((b) => [b.slug, b.name.toLowerCase(), ...(b.aliases ?? [])].map((k) => [k.toLowerCase(), b.slug] as [string, string])),
+);
+const brandKey = (v?: string) => (v ? BRAND_KEYS.get(v.toLowerCase().trim()) : undefined);
+
 function mapBrand(p: WCProduct): string | undefined {
-  const known = new Set(brands.map((b) => b.slug));
-  const fromTaxonomy = p.brands?.find((b) => known.has(b.slug))?.slug;
-  if (fromTaxonomy) return fromTaxonomy;
-  const fromAttr = attr(p, 'Brand');
-  if (fromAttr) return brands.find((b) => b.name.toLowerCase() === fromAttr.toLowerCase())?.slug;
-  return p.categories.find((c) => known.has(c.slug))?.slug;
+  for (const b of p.brands ?? []) {
+    const hit = brandKey(b.slug) ?? brandKey(b.name);
+    if (hit) return hit;
+  }
+  const fromAttr = brandKey(attr(p, 'Brand'));
+  if (fromAttr) return fromAttr;
+  for (const c of p.categories) {
+    const hit = brandKey(c.slug) ?? brandKey(c.name);
+    if (hit) return hit;
+  }
+  return undefined;
 }
 
 function mapCategory(p: WCProduct): Category {

@@ -17,7 +17,7 @@ export default function Hero({ spotlight }: { spotlight?: Product }) {
       <div aria-hidden className="pointer-events-none absolute -top-40 right-[-10%] h-[760px] w-[760px] bg-[radial-gradient(closest-side,rgba(37,99,235,0.22),transparent)]" />
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
-      <div className="container-x relative grid grid-cols-[minmax(0,1fr)] gap-14 pb-20 pt-10 sm:pt-16 lg:min-h-[calc(100svh-76px)] lg:grid-cols-12 lg:items-center lg:gap-10 lg:pb-24">
+      <div className="container-x relative grid grid-cols-[minmax(0,1fr)] gap-14 pb-20 pt-12 sm:pt-16 lg:grid-cols-12 lg:items-center lg:gap-10 lg:pb-24">
         <div className="intro lg:col-span-6 xl:col-span-6">
           <p className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3.5 py-1.5 text-[13px] text-stone-700">
             <span className="h-1.5 w-1.5 rounded-full bg-accent-light" />

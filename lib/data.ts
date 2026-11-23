@@ -52,13 +52,25 @@ export const brands: Brand[] = [
   {
     slug: 'loma',
     name: 'Loma',
+    image: '/images/brands/loma.jpg',
     tagline: 'Botanical salon care',
     description: 'Plant-powered, salon-grade formulas that cleanse, nourish and protect — gentle enough for every day.',
     tint: '#EFE2C6',
   },
   {
+    slug: 'crack',
+    name: 'Crack',
+    tagline: 'Frizz-fighting vegan styling',
+    description: '100% vegan leave-ins and styling crèmes that smooth frizz, protect and add shine — the “habit forming hair fix”.',
+    tint: '#BFE6F5',
+    aliases: ['crack-hair-fix', 'crack-hair'],
+    image: '/images/brands/crack.jpg',
+  },
+  {
     slug: 'mks-eco',
     name: 'MKS Eco',
+    image: '/images/brands/mks-eco.jpg',
+    aliases: ['mks', 'mkseco', 'mks-eco-sustainable-beauty'],
     tagline: 'Clean, eco-conscious care',
     description: 'Thoughtfully made, eco-minded hair care and styling that respects your hair and the planet.',
     tint: '#DFE9E3',
@@ -79,7 +91,9 @@ export const brands: Brand[] = [
   },
   {
     slug: 'gama',
-    name: 'Gama',
+    name: 'GA.MA',
+    image: '/images/brands/gama.jpg',
+    aliases: ['ga-ma', 'ga.ma', 'gama-italy', 'gama-professional', 'gama-italy-professional'],
     tagline: 'Professional dryers & irons',
     description: 'Professional-grade dryers and styling irons trusted behind the salon chair.',
     tint: '#E4E0DA',
@@ -137,6 +151,10 @@ export const products: Product[] = [
   // Sutra
   { id: 'sutra-wand', brand: 'sutra', name: 'Interchangeable Curling Wand', category: 'Tools', price: 149, size: '1" & 1.25" barrels', description: 'Effortless waves with interchangeable, quick-heating barrels.', shape: 'wand', colors: ['#E8D3D8', '#B88E98'], cap: '#D9C29A' },
   { id: 'sutra-iron', brand: 'sutra', name: 'Infrared Styling Iron', category: 'Tools', price: 139, size: '1" plates', description: 'Straighten or curl with smooth, even infrared heat.', shape: 'iron', colors: ['#E3CDD3', '#A9808B'], cap: '#D9C29A' },
+
+  // Crack
+  { id: 'crack-mist', brand: 'crack', name: 'Mist Frizz-Fighting Leave-In', category: 'Condition', price: 18, size: '2 oz', description: 'Lightweight leave-in conditioner that fights frizz and detangles.', shape: 'spray', colors: ['#7FD3F0', '#2BA8D8'], cap: '#F7F3EC' },
+  { id: 'crack-creme', brand: 'crack', name: 'Original Styling Crème', category: 'Style', price: 16, size: '1.25 oz', description: 'Smooths, controls frizz, protects and adds shine. 100% vegan.', shape: 'tube', colors: ['#8ED9F2', '#2BA8D8'], cap: '#F7F3EC' },
 
   // Goomee
   { id: 'goomee-markers', brand: 'goomee', name: 'The Markers — Removal Pads', category: 'Beauty', price: 24, size: '4 reusable pads', description: 'Remove makeup with just water — soft, reusable and gentle.', shape: 'pouch', colors: ['#F5E3D7', '#D9A98C'], cap: '#F7F3EC', badge: 'Low waste' },

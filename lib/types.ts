@@ -14,6 +14,10 @@ export type Brand = {
   description: string;
   /** Soft accent used behind product imagery */
   tint: string;
+  /** Other names/slugs the store may use for this brand (WooCommerce brand, category or attribute) */
+  aliases?: string[];
+  /** Brand-line artwork for the home showcase (square image in /public) */
+  image?: string;
 };
 
 export type Product = {
