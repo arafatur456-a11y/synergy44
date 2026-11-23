@@ -12,7 +12,7 @@ export function InstagramIcon({ className }: { className?: string }) {
 }
 
 type Props = {
-  /** `light` for cream/paper sections, `dark` for ink/forest sections */
+  /** `light` for mineral/paper sections, `dark` for ink/forest sections */
   tone?: 'light' | 'dark';
   /** `inline`: icon + handle as an underlined link · `pill`: bordered button · `icon`: round icon only */
   variant?: 'inline' | 'pill' | 'icon';
@@ -32,10 +32,10 @@ export default function InstagramLink({ tone = 'light', variant = 'inline', labe
       aria-label={`${text} on Instagram (opens in a new tab)`}
       className={cn(
         'group inline-flex items-center transition-colors duration-300',
-        variant === 'icon' && cn('h-11 w-11 justify-center rounded-full border', dark ? 'border-white/25 text-white hover:border-champagne-light hover:text-champagne-light' : 'border-ink/20 text-ink hover:border-champagne hover:text-champagne'),
+        variant === 'icon' && cn('h-11 w-11 justify-center rounded-full border', dark ? 'border-white/25 text-white hover:border-iris-light hover:text-iris-light' : 'border-ink/20 text-ink hover:border-iris hover:text-iris'),
         variant === 'pill' &&
-          cn('h-12 gap-3 rounded-[2px] border px-5 text-[12px] font-semibold uppercase tracking-[0.16em]', dark ? 'border-white/30 text-white hover:border-champagne-light hover:text-champagne-light' : 'border-ink/25 text-ink hover:border-ink hover:bg-ink hover:text-white'),
-        variant === 'inline' && cn('gap-2.5 text-[14px] font-medium', dark ? 'text-white/80 hover:text-champagne-light' : 'text-ink hover:text-champagne'),
+          cn('h-12 gap-3 rounded-[8px] border px-5 text-[13px] font-semibold', dark ? 'border-white/30 text-white hover:border-iris-light hover:text-iris-light' : 'border-ink/25 text-ink hover:border-ink hover:bg-ink hover:text-white'),
+        variant === 'inline' && cn('gap-2.5 text-[14px] font-medium', dark ? 'text-white/80 hover:text-iris-light' : 'text-ink hover:text-iris'),
         className,
       )}
     >

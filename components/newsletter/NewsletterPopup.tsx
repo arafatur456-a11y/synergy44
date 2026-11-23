@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowRight, Check, Loader2, X } from 'lucide-react';
+import { Check, Loader2, X } from 'lucide-react';
 import { DISMISSED_KEY, NEWSLETTER_EVENT, SUBSCRIBED_KEY, subscribe } from '@/lib/newsletter';
 import { lockScroll } from '@/lib/scroll-lock';
 import { ease } from '@/lib/utils';
@@ -151,7 +151,7 @@ export default function NewsletterPopup() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 24, opacity: 0 }}
             transition={{ duration: 0.6, ease }}
-            className="relative grid max-h-[94svh] w-full max-w-[820px] overflow-y-auto bg-paper shadow-float sm:rounded-[6px] md:grid-cols-[0.9fr_1.1fr]"
+            className="relative grid max-h-[94svh] w-full max-w-[820px] overflow-y-auto bg-paper shadow-float sm:rounded-media md:grid-cols-[0.9fr_1.1fr]"
           >
             <button
               onClick={close}
@@ -162,15 +162,11 @@ export default function NewsletterPopup() {
             </button>
 
             {/* Editorial panel */}
-            <div className="relative flex min-h-[170px] flex-col justify-end overflow-hidden bg-forest p-7 text-white sm:p-8 md:min-h-[460px] md:p-10">
-              <div aria-hidden className="absolute -left-20 -top-24 h-80 w-80 bg-[radial-gradient(closest-side,rgba(216,188,132,0.35),transparent)]" />
-              <div aria-hidden className="absolute -bottom-24 right-[-30%] h-80 w-80 bg-[radial-gradient(closest-side,rgba(143,169,155,0.35),transparent)]" />
-              <div aria-hidden className="absolute right-8 top-10 h-24 w-16 rotate-6 rounded-[46%] border border-white/15 bg-[radial-gradient(70%_60%_at_40%_35%,rgba(110,143,216,0.55),rgba(95,191,154,0.35)_45%,transparent_75%)] md:h-32 md:w-24" />
-              <p className="relative text-[10px] font-semibold uppercase tracking-[0.26em] text-champagne-light">The Synergy 44 letter</p>
-              <p className="relative mt-4 font-display text-[1.75rem] font-semibold leading-[1.02] tracking-[-0.02em] sm:text-[2rem] md:text-[2.5rem]">
-                First look at <em className="font-medium text-champagne-light">new glass</em>.
+            <div className="relative flex min-h-[170px] flex-col justify-end overflow-hidden bg-kiln p-7 text-white sm:p-8 md:min-h-[460px] md:p-10">
+              <div aria-hidden className="film film-scroll cabochon absolute right-8 top-9 h-24 w-[76px] p-[3px] md:h-32 md:w-[102px]"><div className="cabochon h-full w-full bg-[radial-gradient(70%_60%_at_40%_35%,#3b4f8f,#141418_75%)]" /></div>
+                            <p className="relative max-w-[12ch] font-display text-[1.75rem] font-semibold leading-[1.02] tracking-[-0.02em] sm:text-[2rem] md:text-[2.5rem]">
+                Pendants sell quickly. Subscribers see them first.
               </p>
-              <p className="relative mt-3 hidden max-w-[30ch] text-[13.5px] leading-relaxed text-white/65 sm:block">One-of-a-kind pieces sell quickly. Subscribers hear first.</p>
             </div>
 
             {/* Form */}
@@ -183,7 +179,7 @@ export default function NewsletterPopup() {
                   <h2 id="nl-title" className="mt-6 font-display text-[2rem] font-semibold leading-tight">
                     Welcome{name.trim() ? `, ${name.trim().split(' ')[0]}` : ''}.
                   </h2>
-                  <p id="nl-desc" className="mt-3 text-[15px] leading-relaxed text-espresso-700">
+                  <p id="nl-desc" className="mt-3 text-[15px] leading-relaxed text-stone-700">
                     You’re on the list. Expect occasional notes on new glass, seasonal hair rituals and studio news. Never spam.
                   </p>
                   <button onClick={close} className="btn-dark mt-8 w-full">
@@ -192,12 +188,11 @@ export default function NewsletterPopup() {
                 </div>
               ) : (
                 <form noValidate onSubmit={onSubmit}>
-                  <p className="eyebrow">Join the letter</p>
-                  <h2 id="nl-title" className="mt-5 font-display text-[2rem] font-semibold leading-[1.05] tracking-[-0.01em] sm:text-[2.3rem]">
-                    Hair rituals, new glass &amp; <em className="font-medium text-champagne">quiet</em> inspiration.
+                  <h2 id="nl-title" className="font-display text-[2rem] font-semibold leading-[1.02] tracking-[-0.03em] sm:text-[2.3rem]">
+                    Get the studio letter
                   </h2>
-                  <p id="nl-desc" className="mt-3 text-[14.5px] leading-relaxed text-espresso-500">
-                    A few thoughtful emails a season. Unsubscribe any time.
+                  <p id="nl-desc" className="mt-3 font-serif text-[1.05rem] leading-relaxed text-stone-500">
+                    New pendants before they’re listed, hair care that’s working in the salon, and studio news. A few emails a season.
                   </p>
 
                   <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden className="hidden" value={website} onChange={(e) => setWebsite(e.target.value)} />
@@ -255,11 +250,11 @@ export default function NewsletterPopup() {
                       </>
                     ) : (
                       <>
-                        Subscribe <ArrowRight className="h-4 w-4" />
+                        Subscribe
                       </>
                     )}
                   </button>
-                  <button type="button" onClick={close} className="mt-4 w-full text-center text-[13px] text-espresso-500 underline-offset-4 hover:text-ink hover:underline">
+                  <button type="button" onClick={close} className="mt-4 w-full text-center text-[13px] text-stone-500 underline-offset-4 hover:text-ink hover:underline">
                     No thanks
                   </button>
                 </form>

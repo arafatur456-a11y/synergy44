@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { useCallback, useState } from 'react';
-import { ArrowRight } from 'lucide-react';
 import SectionHeader from '@/components/ui/SectionHeader';
 import Reveal from '@/components/ui/Reveal';
 import PendantCard from '@/components/jewelry/PendantCard';
@@ -12,9 +11,9 @@ import { CARD_GRID } from '@/components/shop/CardParts';
 import InstagramLink from '@/components/ui/InstagramLink';
 
 const steps = [
-  ['Cut', 'Glass is hand-cut and composed like a small painting.'],
-  ['Fuse', 'Kiln-fired until the layers melt into one luminous form.'],
-  ['Finish', 'Polished and set by hand — ready to catch the light.'],
+  ['Cut', 'Sheets of dichroic and clear glass are cut and stacked by hand, like a small collage.'],
+  ['Fuse', 'The stack is fired in the kiln until the layers melt into a single piece.'],
+  ['Finish', 'Each piece is polished, fitted with a bail and strung, ready to wear.'],
 ];
 
 export default function GlassStudio({ pendants }: { pendants: Pendant[] }) {
@@ -22,47 +21,45 @@ export default function GlassStudio({ pendants }: { pendants: Pendant[] }) {
   const close = useCallback(() => setSelected(null), []);
 
   return (
-    <section className="relative overflow-hidden bg-[#0D0C10] py-24 text-white sm:py-32">
-      <div aria-hidden className="absolute left-1/2 top-0 h-[520px] w-[900px] -translate-x-1/2 bg-[radial-gradient(closest-side,rgba(91,74,122,0.3),transparent)]" />
-      <div aria-hidden className="absolute -right-40 bottom-0 h-[420px] w-[520px] bg-[radial-gradient(closest-side,rgba(46,107,90,0.25),transparent)]" />
+    <section className="relative overflow-hidden bg-kiln py-20 text-white sm:py-28">
 
       <div className="container-x relative">
         <SectionHeader
           dark
-          index="03"
-          label="The glass studio"
-          title={
-            <>
-              Light, <em className="font-medium italic text-champagne-light">layered</em> by hand.
-            </>
-          }
-          intro="Dichroic glass carries microscopically thin layers of metal oxides that reflect one color and transmit another — so every pendant shifts as you move."
+          title="Every pendant is one of a kind"
+          intro="Dichroic glass carries layers of metal oxide thinner than a soap bubble. They reflect one color and let another through, so each piece changes as you move."
           action={
-            <Link href="/jewelry" className="btn-light self-start">
-              Enter the gallery <ArrowRight className="h-4 w-4" />
+            <Link href="/jewelry" className="btn-light">
+              See all the glass
             </Link>
           }
         />
 
-        <ul className={`mt-16 ${CARD_GRID} lg:grid-cols-4`}>
-          {pendants.slice(0, 4).map((p, i) => (
-            <Reveal as="li" key={p.id} delay={i * 0.08}>
+        <ul className={`mt-14 ${CARD_GRID} lg:grid-cols-4`}>
+          {pendants.slice(0, 4).map((p) => (
+            <li key={p.id}>
               <PendantCard pendant={p} onOpen={() => setSelected(p)} />
-            </Reveal>
+            </li>
           ))}
         </ul>
 
-        <ol className="mt-20 grid border-t border-white/15 sm:grid-cols-3">
-          {steps.map(([t, b], i) => (
-            <Reveal as="li" key={t} delay={i * 0.08} className="border-b border-white/15 py-7 sm:border-b-0 sm:border-r sm:px-8 sm:first:pl-0 sm:last:border-r-0">
-              <span className="font-display text-sm italic text-champagne-light">0{i + 1}</span>
-              <h3 className="mt-2 font-display text-2xl font-semibold">{t}</h3>
-              <p className="mt-1.5 text-sm text-white/60">{b}</p>
-            </Reveal>
-          ))}
-        </ol>
+        {/* A real sequence, so it's numbered */}
+        <div className="mt-20 grid gap-10 lg:grid-cols-12">
+          <h3 className="text-[15px] font-medium text-white/60 lg:col-span-3">How a pendant is made</h3>
+          <ol className="grid gap-8 sm:grid-cols-3 lg:col-span-9">
+            {steps.map(([t, b], i) => (
+              <li key={t}>
+                <p className="flex items-baseline gap-3">
+                  <span className="text-[15px] tabular-nums text-iris-light">{i + 1}.</span>
+                  <span className="text-[1.5rem] font-semibold tracking-[-0.02em]">{t}</span>
+                </p>
+                <p className="mt-2 max-w-[30ch] font-serif text-[1.05rem] leading-relaxed text-white/65">{b}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
 
-        <Reveal className="mt-12 flex flex-col gap-5 border-t border-white/15 pt-10 sm:flex-row sm:items-center sm:justify-between">
+        <Reveal className="mt-16 flex flex-col gap-5 border-t border-white/10 pt-8 sm:flex-row sm:items-center sm:justify-between">
           <p className="max-w-md text-[15px] leading-relaxed text-white/65">
             New pieces appear in the studio feed first, along with kiln days and works in progress.
           </p>

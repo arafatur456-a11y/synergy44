@@ -18,9 +18,9 @@ export const dynamicParams = false;
 const sceneTone: Record<string, SceneTone> = {
   loma: 'stone',
   'mks-eco': 'forest',
-  olaplex: 'espresso',
+  olaplex: 'stone',
   neuma: 'velvet',
-  gama: 'espresso',
+  gama: 'stone',
   sutra: 'stone',
   goomee: 'forest',
 };
@@ -48,7 +48,7 @@ export default async function BrandPage({ params }: Params) {
     <>
       <PageHeader
         eyebrow={brand.tagline}
-        crumbs={[{ label: 'Hair Care', href: '/products/hair-care' }, { label: brand.name }]}
+        crumbs={[{ label: 'Hair care', href: '/products/hair-care' }, { label: brand.name }]}
         title={brand.name}
         intro={brand.description}
         scene={
@@ -73,7 +73,7 @@ export default async function BrandPage({ params }: Params) {
           />
         }
       >
-        <p className="mt-8 text-[12px] font-semibold uppercase tracking-[0.18em] text-espresso-500">
+        <p className="mt-8 text-[13px] font-semibold text-stone-500">
           {items.length} {items.length === 1 ? 'product' : 'products'} in this collection
         </p>
       </PageHeader>
@@ -90,7 +90,7 @@ export default async function BrandPage({ params }: Params) {
               <Link
                 href={`/products/hair-care/${b.slug}`}
                 aria-current={b.slug === slug ? 'page' : undefined}
-                className={cn('font-display text-[1.8rem] font-semibold transition-colors', b.slug === slug ? 'text-ink' : 'text-espresso-400 hover:text-ink')}
+                className={cn('font-display text-[1.8rem] font-semibold transition-colors', b.slug === slug ? 'text-ink' : 'text-stone-400 hover:text-ink')}
               >
                 {b.name}
               </Link>

@@ -115,28 +115,39 @@ lib/                     data, types, catalog, woocommerce, cart, contact, lenis
 
 **Card system:** every product and pendant tile is built from `components/shop/CardParts.tsx`. They all share a 4:5 media frame, 4px radius, hairline ring, the same shadow depth and hover zoom, the same badge, a slide-up action bar and a matching meta row. They also share the grid spacing (`CARD_GRID`).
 
-## Design system
+## Design system: "thin film"
 
-- **Type:** Playfair Display (600, high-contrast serif) for display, Inter Tight for UI and body. Headings are set in `#111` ink; italic champagne-gold accents (`.accent`).
-- **Palette** (`tailwind.config.ts`): `ink #111`, `cream #F5F1EA`, `paper #FBF9F5`, `line #E3DCD1`, `forest #131C18`, `sage #4A6B5D`, `champagne #A27D42`.
-- **Geometry:** sharp 2–6px radii, hairline rules, numbered editorial section headers (`SectionHeader`), asymmetric 12-column grids.
-- **Buttons:** rectangular, tracked caps, fill-wipe hover + arrow nudge (`.btn-dark`, `.btn-outline`, `.btn-light`, `.btn-ghost-light`).
-- **Glass:** `.glass` (milk glass, deep layered shadows) and `.glass-dark` for cards floating over imagery. The header is a frosted sticky bar (`backdrop-blur-md`).
-- **Imagery:** `components/ui/StudioScene.tsx` renders art-directed “studio photographs” in code — spotlight, arched niche, stone plinth, botanical shadow, grain, pointer-following light — in `forest`, `stone`, `velvet` and `espresso` tones. **Pass `src` to swap in real photography** with no layout changes:
+The visual identity comes from the subject. Dichroic glass shows one color by reflection and another by transmission, so its color changes with the viewing angle. That effect is the site's single bold device. Everything else stays quiet.
+
+- **Signature:** `.film` is a conic interference gradient whose hue rotates with `--film-angle`. On the home hero it rims Cynthia's portrait, cut as a `.cabochon` (the oval pendants are shaped to), and turns as the page scrolls (`.film-scroll`, a CSS scroll timeline with no JS). Use it only on glass-related elements: the hero rim, the wordmark's "44", the concierge button and the newsletter panel. Don't spread it to general UI.
+- **Palette** (`tailwind.config.ts`):
+  - `mineral #EFF0EB` page base (cool, not cream)
+  - `ink #1E2D27` rosemary text and dark surfaces
+  - `paper #FAFAF7`, `line #D5D9D2`
+  - `sage-dark #3A5A4B` for labels
+  - `iris #5B4BC4`, the one accent (links, focus, active nav)
+  - `kiln #141418`, the dark ground the glass is shown on
+  - `forest #16201C` for the footer
+- **Type:**
+  - Familjen Grotesk for headlines and interface, set tight (`-0.03em`) in sentence case.
+  - Newsreader (optical sizes) for reading text: intros (`.lead`), descriptions (`.body-serif`, `.prose-s44`), quotes.
+  - The scale is 1.25 from 16px.
+  - Labels (`.label`) are 13px sentence case: no tracked all-caps, no eyebrow rules, no single-word italic accents.
+- **Shape:** controls are pills (`.btn-*`, `.chip`, inputs at 10px), media frames are `rounded-media` (10px), and glass sits in `.cabochon` ovals. Radius follows what a thing is.
+- **Structure:**
+  - Section headers are a headline plus an optional serif intro (`SectionHeader`). There are no section numbers.
+  - Numbers appear only where the content is a real sequence: how a pendant is made, what happens at a visit.
+  - Meta text uses commas, not "A · B" strings. Buttons and links carry no arrows.
+- **Motion:**
+  - Sections don't fade in as you scroll (`Reveal` is now a plain wrapper).
+  - The only automatic motion is the hero's opening sequence (`.intro`, `.intro-film`) and the film turning on scroll.
+  - Interaction motion (drawers, dialogs, button presses) stays.
+  - Everything is compositor-only and respects `prefers-reduced-motion`.
+- **Imagery:** real photography first: Cynthia's portrait, plus WooCommerce product photos via `CollectionHero` and the product cards. `StudioScene` draws a plain product stand-in only when no photo exists. Pass `src` to use a photo:
 
   ```tsx
-  <StudioScene src="/images/loma-leave-in.jpg" alt="Loma Leave-In Conditioner on stone" className="aspect-[4/5]" />
+  <StudioScene src="/images/loma-leave-in.jpg" alt="Loma Leave-In Conditioner" className="aspect-[4/5]" />
   ```
-
-- **Motion & scroll performance:** native scrolling (no JS smooth-scroll library). Everything that moves while scrolling is compositor-only:
-  - Reveals: `Reveal` uses one shared IntersectionObserver plus CSS `opacity`/`transform` transitions, and plays once.
-  - Parallax and hero drift: CSS scroll-driven animations (`animation-timeline`), with no scroll listeners. Browsers without support show a static layout.
-  - The navbar state comes from an IntersectionObserver.
-  - The pendant sheen animates `transform` only while hovered.
-  - No animated `filter`, no blend modes, and soft glows are radial gradients rather than `filter: blur()`. Backdrop blur is limited to the sticky header and a few glass cards.
-  - Everything respects `prefers-reduced-motion`.
-
-  Keep new effects to `transform`/`opacity` so the site stays at 60fps.
 
 ## Before launch — content to confirm
 
@@ -144,7 +155,7 @@ All of these are placeholders and are flagged in the data files:
 
 - **Products & jewelry** come from WooCommerce once connected. The demo catalog in `lib/data.ts` is only for development.
 - **Services** (`lib/data.ts` → `serviceGroups`) — prices and durations.
-- **Testimonials** — quotes are illustrative. Replace with clients’ verbatim reviews (with permission).
+- **Testimonials** — the site shows the first two entries in `testimonials` (Lisa Mary, Ru Knoedler). Confirm the wording with each client before launch.
 - **Guarantee and biography wording** — confirm with Cynthia.
 - **Imagery** — scenes, packshots and pendants are drawn in code. Pass real photos to `StudioScene` via `src` (see above), and replace `ProductVisual` / `PendantVisual` with `next/image` once product photography exists.
 - **Checkout** — test a full order on a staging store or with a 100%-off coupon before launch. Confirm the shipping line and the payment gateways on the Pay for order page.

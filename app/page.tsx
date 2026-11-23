@@ -1,7 +1,6 @@
 import Hero from '@/components/home/Hero';
 import BrandMarquee from '@/components/home/BrandMarquee';
 import FeaturedEdit from '@/components/home/FeaturedEdit';
-import CraftsSplit from '@/components/home/CraftsSplit';
 import GlassStudio from '@/components/home/GlassStudio';
 import ServicesTeaser from '@/components/home/ServicesTeaser';
 import Testimonials from '@/components/Testimonials';
@@ -17,22 +16,15 @@ export default async function HomePage() {
       <Hero spotlight={spotlight} />
       <BrandMarquee />
       <FeaturedEdit />
-      <CraftsSplit />
       <GlassStudio pendants={pendants.slice(0, 4)} />
       <ServicesTeaser />
       <Testimonials />
-      <section className="bg-paper py-24 sm:py-32">
+      <section className="py-20 sm:py-28">
         <div className="container-x">
           <SectionHeader
-            index="06"
-            label="Our promise"
-            title={
-              <>
-                The Synergy 44 <em className="accent">Guarantee.</em>
-              </>
-            }
-            intro="Clean products, honest advice and handmade quality — backed by a simple promise: if something isn’t right, we’ll make it right."
-            className="mb-14"
+            title="If something isn’t right, we’ll make it right"
+            intro="That’s the Synergy 44 guarantee, on every product, appointment and pendant."
+            className="mb-12"
           />
           <GuaranteeGrid />
         </div>

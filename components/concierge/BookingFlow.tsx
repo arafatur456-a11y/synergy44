@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { ArrowLeft, ArrowRight, Check, Clock, Loader2, MapPin } from 'lucide-react';
+import { ArrowLeft, Check, Clock, Loader2, MapPin } from 'lucide-react';
 import {
   bookingLocations,
   formatBookingDate,
@@ -22,7 +22,7 @@ const STEPS = ['Package', 'Date & time', 'Your details'];
 
 const empty: BookingPayload = { packageId: '', date: '', window: 'flexible', location: bookingLocations[0] ?? '', name: '', email: '', phone: '', notes: '', company: '' };
 
-/** Three-step haircut package request: package → preferred day/window → contact → confirmation. */
+/** Three-step haircut package request: package preferred day/window contact confirmation. */
 export default function BookingFlow({ onDone }: { onDone: () => void }) {
   const [step, setStep] = useState<Step>(0);
   const [form, setForm] = useState<BookingPayload>(empty);
@@ -95,25 +95,25 @@ export default function BookingFlow({ onDone }: { onDone: () => void }) {
           <Check className="h-6 w-6" strokeWidth={1.8} />
         </div>
         <h3 className="mt-6 font-display text-[2rem] font-semibold leading-tight">Request received</h3>
-        <p className="mt-2 text-[14.5px] leading-relaxed text-espresso-700">
+        <p className="mt-2 text-[14.5px] leading-relaxed text-stone-700">
           Thank you, {confirmed.booking.name.split(' ')[0]}. The studio will confirm your time personally{confirmed.booking.email ? ' by email' : ' by phone'}, usually within one business day.
         </p>
         <dl className="mt-7 divide-y divide-line border-y border-line text-[14px]">
           {[
             ['Reference', confirmed.reference],
-            ['Package', `${pkg.name} · ${pkg.price}`],
+            ['Package', `${pkg.name}, ${pkg.price}`],
             ['Preferred day', formatBookingDate(confirmed.booking.date)],
             ['Time', `${w?.label} (${w?.hint})`],
             ['Studio', confirmed.booking.location],
-            ['Contact', [confirmed.booking.email, confirmed.booking.phone].filter(Boolean).join(' · ')],
+            ['Contact', [confirmed.booking.email, confirmed.booking.phone].filter(Boolean).join(', ')],
           ].map(([k, v]) => (
             <div key={k} className="flex justify-between gap-4 py-3">
-              <dt className="text-espresso-500">{k}</dt>
+              <dt className="text-stone-500">{k}</dt>
               <dd className="text-right font-medium">{v}</dd>
             </div>
           ))}
         </dl>
-        <p className="mt-4 text-[12px] leading-relaxed text-espresso-400">This is a request, not a confirmed appointment yet. Prices are from our current salon menu and may vary with hair length and condition.</p>
+        <p className="mt-4 text-[12px] leading-relaxed text-stone-400">This is a request, not a confirmed appointment yet. Prices are from our current salon menu and may vary with hair length and condition.</p>
         <div className="mt-7 flex flex-col gap-3">
           <button
             onClick={() => {
@@ -125,7 +125,7 @@ export default function BookingFlow({ onDone }: { onDone: () => void }) {
           >
             Make another request
           </button>
-          <button onClick={onDone} className="text-center text-sm text-espresso-500 hover:text-ink">
+          <button onClick={onDone} className="text-center text-sm text-stone-500 hover:text-ink">
             Back to the concierge
           </button>
         </div>
@@ -154,8 +154,8 @@ export default function BookingFlow({ onDone }: { onDone: () => void }) {
       <ol className="flex gap-2 px-6 pt-6" aria-label="Booking steps">
         {STEPS.map((label, i) => (
           <li key={label} className="flex-1" aria-current={i === step ? 'step' : undefined}>
-            <span className={cn('block h-[2px] transition-colors duration-500', i <= step ? 'bg-champagne' : 'bg-line')} />
-            <span className={cn('mt-2 block text-[10px] font-semibold uppercase tracking-[0.18em]', i === step ? 'text-ink' : 'text-espresso-400')}>{label}</span>
+            <span className={cn('block h-[2px] transition-colors duration-500', i <= step ? 'bg-iris' : 'bg-line')} />
+            <span className={cn('mt-2 block text-[13px] font-semibold', i === step ? 'text-ink' : 'text-stone-400')}>{label}</span>
           </li>
         ))}
       </ol>
@@ -167,7 +167,7 @@ export default function BookingFlow({ onDone }: { onDone: () => void }) {
         {step === 0 && (
           <fieldset>
             <legend className="font-display text-[1.6rem] font-semibold leading-tight">Choose your package</legend>
-            <p className="mt-1 text-[13px] text-espresso-500">Every cut begins with a consultation.</p>
+            <p className="mt-1 text-[13px] text-stone-500">Every cut begins with a consultation.</p>
             <div className="mt-5 space-y-2.5" role="radiogroup" aria-describedby={errors.packageId ? 'bk-packageId-err' : undefined}>
               {haircutPackages.map((p) => {
                 const on = form.packageId === p.id;
@@ -175,12 +175,12 @@ export default function BookingFlow({ onDone }: { onDone: () => void }) {
                   <label
                     key={p.id}
                     className={cn(
-                      'flex cursor-pointer items-start gap-4 rounded-[4px] border p-4 transition-colors duration-300',
-                      on ? 'border-ink bg-cream' : 'border-line bg-paper hover:border-espresso-400',
+                      'flex cursor-pointer items-start gap-4 rounded-media border p-4 transition-colors duration-300',
+                      on ? 'border-ink bg-mineral' : 'border-line bg-paper hover:border-stone-400',
                     )}
                   >
                     <input type="radio" name="package" value={p.id} checked={on} onChange={() => set('packageId', p.id)} className="sr-only" />
-                    <span className={cn('mt-1 grid h-4 w-4 shrink-0 place-items-center rounded-full border', on ? 'border-ink' : 'border-espresso-400')}>
+                    <span className={cn('mt-1 grid h-4 w-4 shrink-0 place-items-center rounded-full border', on ? 'border-ink' : 'border-stone-400')}>
                       {on && <span className="h-2 w-2 rounded-full bg-ink" />}
                     </span>
                     <span className="min-w-0 flex-1">
@@ -188,8 +188,8 @@ export default function BookingFlow({ onDone }: { onDone: () => void }) {
                         <span className="font-display text-[1.15rem] font-semibold leading-tight">{p.name}</span>
                         <span className="shrink-0 text-[14px] font-semibold tabular-nums">{p.price}</span>
                       </span>
-                      <span className="mt-1 block text-[13px] leading-snug text-espresso-500">{p.includes}</span>
-                      <span className="mt-2 flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-espresso-400">
+                      <span className="mt-1 block text-[13px] leading-snug text-stone-500">{p.includes}</span>
+                      <span className="mt-2 flex items-center gap-3 text-[13px] font-semibold text-stone-400">
                         <span className="flex items-center gap-1">
                           <Clock className="h-3 w-3" /> {p.duration}
                         </span>
@@ -216,16 +216,16 @@ export default function BookingFlow({ onDone }: { onDone: () => void }) {
                     aria-pressed={form.date === d.iso}
                     onClick={() => set('date', d.iso)}
                     className={cn(
-                      'rounded-[3px] border px-2 py-2.5 text-center transition-colors duration-300',
-                      form.date === d.iso ? 'border-ink bg-ink text-white' : 'border-line bg-paper hover:border-espresso-400',
+                      'rounded-[8px] border px-2 py-2.5 text-center transition-colors duration-300',
+                      form.date === d.iso ? 'border-ink bg-ink text-white' : 'border-line bg-paper hover:border-stone-400',
                     )}
                   >
-                    <span className="block text-[10px] font-semibold uppercase tracking-[0.18em] opacity-70">{d.dow}</span>
+                    <span className="block text-[13px] font-semibold opacity-70">{d.dow}</span>
                     <span className="block text-[14px] font-semibold">{d.day}</span>
                   </button>
                 ))}
               </div>
-              <label htmlFor="bk-date" className="mt-4 block text-[11px] font-semibold uppercase tracking-[0.18em] text-espresso-500">
+              <label htmlFor="bk-date" className="mt-4 block text-[13px] font-semibold text-stone-500">
                 Or pick another date
               </label>
               <input
@@ -243,7 +243,7 @@ export default function BookingFlow({ onDone }: { onDone: () => void }) {
             </fieldset>
 
             <fieldset>
-              <legend className="text-[11px] font-semibold uppercase tracking-[0.18em]">Time window</legend>
+              <legend className="text-[13px] font-semibold">Time window</legend>
               <div className="mt-3 grid grid-cols-2 gap-2">
                 {timeWindows.map((w) => (
                   <button
@@ -252,12 +252,12 @@ export default function BookingFlow({ onDone }: { onDone: () => void }) {
                     aria-pressed={form.window === w.value}
                     onClick={() => set('window', w.value as TimeWindow)}
                     className={cn(
-                      'rounded-[3px] border px-3 py-3 text-left transition-colors duration-300',
-                      form.window === w.value ? 'border-ink bg-cream' : 'border-line bg-paper hover:border-espresso-400',
+                      'rounded-[8px] border px-3 py-3 text-left transition-colors duration-300',
+                      form.window === w.value ? 'border-ink bg-mineral' : 'border-line bg-paper hover:border-stone-400',
                     )}
                   >
                     <span className="block text-[14px] font-semibold">{w.label}</span>
-                    <span className="block text-[12px] text-espresso-500">{w.hint}</span>
+                    <span className="block text-[12px] text-stone-500">{w.hint}</span>
                   </button>
                 ))}
               </div>
@@ -266,7 +266,7 @@ export default function BookingFlow({ onDone }: { onDone: () => void }) {
 
             {bookingLocations.length > 1 && (
               <fieldset>
-                <legend className="text-[11px] font-semibold uppercase tracking-[0.18em]">Studio</legend>
+                <legend className="text-[13px] font-semibold">Studio</legend>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {bookingLocations.map((l) => (
                     <button key={l} type="button" aria-pressed={form.location === l} onClick={() => set('location', l)} className={cn('chip gap-2', form.location === l ? 'chip-on' : 'chip-off')}>
@@ -284,7 +284,7 @@ export default function BookingFlow({ onDone }: { onDone: () => void }) {
           <div className="space-y-5">
             <div>
               <h3 className="font-display text-[1.6rem] font-semibold leading-tight">How can we reach you?</h3>
-              <p className="mt-1 text-[13px] text-espresso-500">An email or phone number is enough. We’ll confirm your time personally.</p>
+              <p className="mt-1 text-[13px] text-stone-500">An email or phone number is enough. We’ll confirm your time personally.</p>
             </div>
             <Field id="bk-name" label="Name" error={errors.name}>
               <input id="bk-name" autoComplete="name" value={form.name} onChange={(e) => set('name', e.target.value)} className="input" aria-invalid={!!errors.name} aria-describedby={errors.name ? 'bk-name-err' : undefined} />
@@ -308,11 +308,11 @@ export default function BookingFlow({ onDone }: { onDone: () => void }) {
             </Field>
 
             {form.packageId && form.date && (
-              <div className="rounded-[4px] border border-line bg-cream p-4 text-[13px] leading-relaxed text-espresso-700">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-champagne">Your request</p>
+              <div className="rounded-media border border-line bg-mineral p-4 text-[13px] leading-relaxed text-stone-700">
+                <p className="text-[13px] font-semibold text-iris">Your request</p>
                 <p className="mt-1.5 font-display text-[1.1rem] font-semibold text-ink">{packageById(form.packageId)?.name}</p>
                 <p>
-                  {formatBookingDate(form.date)} · {windowLabel(form.window)?.label.toLowerCase()} · {form.location}
+                  {formatBookingDate(form.date)}, {windowLabel(form.window)?.label.toLowerCase()}, {form.location}
                 </p>
               </div>
             )}
@@ -338,7 +338,7 @@ export default function BookingFlow({ onDone }: { onDone: () => void }) {
             </>
           ) : step < 2 ? (
             <>
-              Continue <ArrowRight className="h-4 w-4" />
+              Continue
             </>
           ) : (
             'Request this appointment'
@@ -352,7 +352,7 @@ export default function BookingFlow({ onDone }: { onDone: () => void }) {
 function Field({ id, label, error, children }: { id: string; label: string; error?: string; children: React.ReactNode }) {
   return (
     <div>
-      <label htmlFor={id} className="mb-2 block text-[11px] font-semibold uppercase tracking-[0.18em] text-espresso-500">
+      <label htmlFor={id} className="mb-2 block text-[13px] font-semibold text-stone-500">
         {label}
       </label>
       {children}

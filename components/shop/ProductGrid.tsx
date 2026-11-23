@@ -24,7 +24,7 @@ function FilterList({
 }) {
   return (
     <div>
-      <p className="border-b border-ink pb-3 text-[11px] font-semibold uppercase tracking-[0.22em]">{title}</p>
+      <p className="border-b border-ink pb-3 text-[13px] font-semibold">{title}</p>
       <ul className="mt-2">
         {items.map((it) => {
           const on = value === it.value;
@@ -36,14 +36,14 @@ function FilterList({
                 disabled={it.count === 0}
                 className={cn(
                   'group flex w-full items-center justify-between py-2 text-left text-[15px] transition-colors disabled:cursor-default disabled:opacity-35',
-                  on ? 'font-semibold text-ink' : 'text-espresso-700 hover:text-ink',
+                  on ? 'font-semibold text-ink' : 'text-stone-700 hover:text-ink',
                 )}
               >
                 <span className="flex items-center gap-3">
                   <span className={cn('h-px transition-all duration-500 ease-silk', on ? 'w-4 bg-ink' : 'w-0 bg-ink group-hover:w-2')} />
                   {it.label}
                 </span>
-                <span className="text-[12px] tabular-nums text-espresso-400">{it.count}</span>
+                <span className="text-[12px] tabular-nums text-stone-400">{it.count}</span>
               </button>
             </li>
           );
@@ -162,23 +162,23 @@ export default function ProductGrid({
 
         {/* Toolbar */}
         <div className="mt-6 flex flex-col gap-4 border-y border-ink/15 py-4 sm:flex-row sm:items-center sm:justify-between lg:mt-0">
-          <p className="text-[12px] font-semibold uppercase tracking-[0.18em]" aria-live="polite">
+          <p className="text-[13px] font-semibold" aria-live="polite">
             {results.length} {results.length === 1 ? 'product' : 'products'}
           </p>
           <div className="flex gap-3">
             <label className="relative flex-1 sm:w-60 sm:flex-none">
               <span className="sr-only">Search products</span>
-              <Search className="pointer-events-none absolute left-0 top-1/2 h-4 w-4 -translate-y-1/2 text-espresso-500" />
+              <Search className="pointer-events-none absolute left-0 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-500" />
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search"
-                className="h-10 w-full border-b border-transparent bg-transparent pl-7 text-[14px] placeholder:text-espresso-400 focus:border-ink focus:outline-none"
+                className="h-10 w-full border-b border-transparent bg-transparent pl-7 text-[14px] placeholder:text-stone-400 focus:border-ink focus:outline-none"
               />
             </label>
-            <label className="flex items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.14em]">
-              <span className="hidden text-espresso-500 sm:inline">Sort</span>
-              <select value={sort} onChange={(e) => setSort(e.target.value as Sort)} className="h-10 cursor-pointer bg-transparent pr-1 text-[12px] font-semibold uppercase tracking-[0.14em] focus:outline-none">
+            <label className="flex items-center gap-2 text-[13px] font-semibold">
+              <span className="hidden text-stone-500 sm:inline">Sort</span>
+              <select value={sort} onChange={(e) => setSort(e.target.value as Sort)} className="h-10 cursor-pointer bg-transparent pr-1 text-[13px] font-semibold focus:outline-none">
                 <option value="featured">Featured</option>
                 <option value="price-asc">Price ↑</option>
                 <option value="price-desc">Price ↓</option>
@@ -191,7 +191,7 @@ export default function ProductGrid({
         {results.length === 0 ? (
           <div className="py-28 text-center">
             <p className="font-display text-4xl font-semibold">Nothing matches — yet.</p>
-            <p className="mt-3 text-espresso-700">Try another brand or ritual.</p>
+            <p className="mt-3 text-stone-700">Try another brand or ritual.</p>
             <button onClick={clear} className="btn-outline mt-8">
               Reset filters
             </button>

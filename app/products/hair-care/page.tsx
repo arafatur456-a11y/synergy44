@@ -27,13 +27,13 @@ export default async function HairCarePage({ searchParams }: { searchParams: Pro
     <>
       <PageHeader
         eyebrow="The apothecary"
-        crumbs={[{ label: 'Hair Care' }]}
+        crumbs={[{ label: 'Hair care' }]}
         title={
           <>
-            Hair care, <em className="accent">considered.</em>
+            Hair care Cynthia uses in the salon
           </>
         }
-        intro="Every formula here earned its place behind our chair first — clean, effective and kind, with professional tools to match."
+        intro="Organic and vegan-forward formulas, bond repair, and the professional dryers and irons she styles with."
         scene={
           <CollectionHero
             items={photos}

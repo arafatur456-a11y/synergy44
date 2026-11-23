@@ -40,8 +40,8 @@ export default async function ProductPage({ params }: Params) {
   const isPendant = kind === 'pendant';
   const brandName = isPendant ? 'Synergy 44' : getBrand((item as Product).brand)?.name ?? detail.label;
   const crumbs = isPendant
-    ? [{ label: 'Glass Jewelry', href: '/jewelry' }]
-    : [{ label: 'Hair Care', href: '/products/hair-care' }, ...(detail.labelHref !== '/products/hair-care' ? [{ label: detail.label, href: detail.labelHref }] : [])];
+    ? [{ label: 'Glass jewelry', href: '/jewelry' }]
+    : [{ label: 'Hair care', href: '/products/hair-care' }, ...(detail.labelHref !== '/products/hair-care' ? [{ label: detail.label, href: detail.labelHref }] : [])];
 
   const facts = [
     detail.sku && ['SKU', detail.sku],
@@ -73,7 +73,7 @@ export default async function ProductPage({ params }: Params) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />
 
       <section className="container-x pb-20 pt-8 sm:pt-12">
-        <nav aria-label="Breadcrumb" className="mb-8 text-[11px] font-semibold uppercase tracking-[0.18em] text-espresso-500 sm:mb-12">
+        <nav aria-label="Breadcrumb" className="mb-8 text-[14px] text-stone-500 sm:mb-12">
           <ol className="flex flex-wrap items-center gap-2.5">
             <li>
               <Link href="/" className="transition-colors hover:text-ink">
@@ -82,14 +82,14 @@ export default async function ProductPage({ params }: Params) {
             </li>
             {crumbs.map((c) => (
               <li key={c.href} className="flex items-center gap-2.5">
-                <span aria-hidden className="h-px w-4 bg-espresso-400" />
+                <span aria-hidden>/</span>
                 <Link href={c.href} className="transition-colors hover:text-ink">
                   {c.label}
                 </Link>
               </li>
             ))}
             <li className="hidden min-w-0 items-center gap-2.5 sm:flex">
-              <span aria-hidden className="h-px w-4 bg-espresso-400" />
+              <span aria-hidden>/</span>
               <span aria-current="page" className="truncate text-ink">
                 {item.name}
               </span>
@@ -98,11 +98,11 @@ export default async function ProductPage({ params }: Params) {
         </nav>
 
         <ProductPurchase detail={detail} brandName={brandName}>
-          <Link href={detail.labelHref} className="eyebrow transition-colors hover:text-champagne">
+          <Link href={detail.labelHref} className="eyebrow transition-colors hover:text-iris">
             {detail.label}
           </Link>
           <h1 className="mt-5 font-display text-[2.4rem] font-semibold leading-[1.02] tracking-[-0.02em] text-balance sm:text-[3.1rem]">{item.name}</h1>
-          {detail.sku && <p className="mt-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-espresso-400">SKU {detail.sku}</p>}
+          {detail.sku && <p className="mt-3 text-[13px] font-semibold text-stone-400">SKU {detail.sku}</p>}
         </ProductPurchase>
       </section>
 
@@ -115,7 +115,7 @@ export default async function ProductPage({ params }: Params) {
                 <dl className="mt-8 border-t border-ink">
                   {facts.map(([k, v]) => (
                     <div key={k} className="flex justify-between gap-6 border-b border-line py-3.5 text-[14px]">
-                      <dt className="text-espresso-500">{k}</dt>
+                      <dt className="text-stone-500">{k}</dt>
                       <dd className="text-right font-medium">{v}</dd>
                     </div>
                   ))}
@@ -130,12 +130,12 @@ export default async function ProductPage({ params }: Params) {
       )}
 
       {related.length > 0 && (
-        <section className={cn('py-20 sm:py-28', isPendant && 'bg-[#0D0C10] text-white')}>
+        <section className={cn('py-20 sm:py-28', isPendant && 'bg-kiln text-white')}>
           <div className="container-x">
             <SectionHeader
               dark={isPendant}
               label={isPendant ? 'More from the studio' : `More from ${detail.label}`}
-              title={isPendant ? <>You may also <em className="font-medium italic text-champagne-light">love.</em></> : <>Complete the <em className="accent">ritual.</em></>}
+              title={isPendant ? 'More pieces from the studio' : `More from ${detail.label}`}
               action={
                 <Link href={detail.labelHref} className={cn('link-underline self-start', isPendant && '!text-white')}>
                   View all

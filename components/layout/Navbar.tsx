@@ -4,37 +4,29 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowRight, ChevronDown, Menu, ShoppingBag, X } from 'lucide-react';
+import { ChevronDown, Menu, ShoppingBag, X } from 'lucide-react';
 import { brands } from '@/lib/data';
-import { categories, products } from '@/lib/data';
+import { categories } from '@/lib/data';
 import { useCart } from '@/lib/cart';
 import { lockScroll } from '@/lib/scroll-lock';
 import { cn, ease } from '@/lib/utils';
-import ProductVisual from '@/components/shop/ProductVisual';
-import PendantVisual from '@/components/jewelry/PendantVisual';
-import StudioScene from '@/components/ui/StudioScene';
 
 const leftLinks = [
-  { label: 'Hair Care', href: '/products/hair-care', mega: true },
-  { label: 'Glass Jewelry', href: '/jewelry' },
-  { label: 'Hair Styling', href: '/hair-styling' },
-];
-const rightLinks = [
+  { label: 'Hair care', href: '/products/hair-care', mega: true },
+  { label: 'Glass jewelry', href: '/jewelry' },
+  { label: 'Salon', href: '/hair-styling' },
   { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },
 ];
-const allLinks = [...leftLinks, ...rightLinks];
+const allLinks = leftLinks;
 
-const olaplex = products.find((p) => p.id === 'olaplex-3')!;
-
+/** Wordmark: the name set plainly, with "44" sitting in a small thin-film cabochon. */
 function Wordmark({ light }: { light?: boolean }) {
   return (
-    <Link href="/" aria-label="Synergy 44 — home" className="group flex flex-col items-center leading-none">
-      <span className={cn('font-display text-[1.6rem] font-semibold tracking-[0.12em] sm:text-[1.85rem]', light ? 'text-white' : 'text-ink')}>
-        SYNERGY<span className="ml-2 italic tracking-normal text-champagne">44</span>
-      </span>
-      <span className={cn('mt-1.5 hidden text-[9px] font-semibold uppercase tracking-[0.42em] sm:block', light ? 'text-white/60' : 'text-espresso-500')}>
-        Salon · Apothecary · Glass
+    <Link href="/" aria-label="Synergy 44, home" className="group flex items-center gap-2 leading-none">
+      <span className={cn('font-display text-[1.45rem] font-semibold tracking-[-0.03em]', light ? 'text-white' : 'text-ink')}>Synergy</span>
+      <span className="film cabochon grid h-[30px] w-[26px] place-items-center p-[2px]" aria-hidden>
+        <span className={cn('cabochon grid h-full w-full place-items-center text-[12px] font-semibold tracking-[-0.02em]', light ? 'bg-ink text-white' : 'bg-mineral text-ink')}>44</span>
       </span>
     </Link>
   );
@@ -45,15 +37,15 @@ function NavLink({ href, label, active }: { href: string; label: string; active:
     <Link
       href={href}
       className={cn(
-        'group relative py-2 text-[11.5px] font-semibold uppercase tracking-[0.16em] transition-colors',
-        active ? 'text-ink' : 'text-espresso-700 hover:text-ink',
+        'group relative py-2 text-[15px] font-medium transition-colors',
+        active ? 'text-ink' : 'text-stone-500 hover:text-ink',
       )}
     >
       {label}
       <span
         className={cn(
-          'absolute -bottom-0.5 left-0 h-px w-full origin-left bg-ink transition-transform duration-500 ease-silk',
-          active ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100',
+          'absolute -bottom-0.5 left-0 h-[2px] w-full rounded-full bg-iris transition-opacity duration-200',
+          active ? 'opacity-100' : 'opacity-0',
         )}
       />
     </Link>
@@ -67,55 +59,42 @@ function MegaMenu({ onNavigate }: { onNavigate: () => void }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -6 }}
       transition={{ duration: 0.4, ease }}
-      className="absolute inset-x-0 top-full border-b border-ink/10 bg-paper shadow-[0_40px_60px_-40px_rgba(17,17,17,.35)]"
+      className="absolute inset-x-0 top-full border-b border-ink/10 bg-paper shadow-[0_40px_60px_-40px_rgba(30,45,39,.35)]"
     >
       <div className="container-x grid grid-cols-12 gap-10 py-12">
         <div className="col-span-4">
-          <p className="eyebrow-plain text-espresso-500">Shop by brand</p>
+          <p className="label">Brands</p>
           <ul className="mt-6 space-y-1">
             {brands.map((b) => (
               <li key={b.slug}>
                 <Link href={`/products/hair-care/${b.slug}`} onClick={onNavigate} className="group flex items-baseline justify-between border-b border-line py-2.5">
-                  <span className="font-display text-[1.35rem] font-medium transition-transform duration-500 ease-silk group-hover:translate-x-1.5">{b.name}</span>
-                  <span className="text-[11px] text-espresso-500 transition-colors group-hover:text-ink">{b.tagline}</span>
+                  <span className="text-[1.2rem] font-medium group-hover:text-iris">{b.name}</span>
+                  <span className="text-[13px] text-stone-500">{b.tagline}</span>
                 </Link>
               </li>
             ))}
           </ul>
         </div>
         <div className="col-span-2">
-          <p className="eyebrow-plain text-espresso-500">Shop by ritual</p>
+          <p className="label">By step</p>
           <ul className="mt-6 space-y-3">
             {categories.map((c) => (
               <li key={c}>
-                <Link href={`/products/hair-care?category=${c}`} onClick={onNavigate} className="text-[15px] font-medium text-espresso-700 transition-colors hover:text-ink">
+                <Link href={`/products/hair-care?category=${c}`} onClick={onNavigate} className="text-[15px] font-medium text-stone-700 transition-colors hover:text-ink">
                   {c}
                 </Link>
               </li>
             ))}
           </ul>
-          <Link href="/products/hair-care" onClick={onNavigate} className="link-underline mt-8">
-            Shop all <ArrowRight className="h-3.5 w-3.5" />
+        </div>
+        <div className="col-span-5 col-start-8 self-end">
+          <p className="body-serif">
+            Every line here is one Cynthia uses behind the chair: organic and vegan formulas, bond repair, and professional tools.
+          </p>
+          <Link href="/products/hair-care" onClick={onNavigate} className="btn-dark mt-6">
+            Shop all hair care
           </Link>
         </div>
-        <Link href="/products/hair-care/olaplex" onClick={onNavigate} className="group col-span-3 block">
-          <div className="overflow-hidden rounded-[4px]">
-            <StudioScene tone="forest" plinthWidth="58%" className="aspect-[4/5] transition-transform duration-[1.2s] ease-silk group-hover:scale-[1.04]">
-              <ProductVisual {...olaplex} label="Olaplex" className="h-[150px] drop-shadow-2xl" />
-            </StudioScene>
-          </div>
-          <p className="mt-4 text-[10.5px] font-semibold uppercase tracking-[0.2em] text-champagne">The edit</p>
-          <p className="mt-1 font-display text-xl font-semibold">Bond repair essentials</p>
-        </Link>
-        <Link href="/jewelry" onClick={onNavigate} className="group col-span-3 block">
-          <div className="overflow-hidden rounded-[4px]">
-            <StudioScene tone="velvet" plinth={false} className="aspect-[4/5] transition-transform duration-[1.2s] ease-silk group-hover:scale-[1.04]" objectsClassName="bottom-[22%]">
-              <PendantVisual colors={['#5FBF9A', '#6E8FD8', '#A88BD6', '#7CC9D6']} shape="oval" className="w-28" />
-            </StudioScene>
-          </div>
-          <p className="mt-4 text-[10.5px] font-semibold uppercase tracking-[0.2em] text-champagne">The studio</p>
-          <p className="mt-1 font-display text-xl font-semibold">Handmade dichroic glass</p>
-        </Link>
       </div>
     </motion.div>
   );
@@ -173,33 +152,18 @@ export default function Navbar() {
 
   return (
     <>
-      <div ref={sentinel} aria-hidden className="pointer-events-none absolute left-0 top-[60px] h-px w-px" />
-      <div className="bg-ink text-white">
-        <div className="container-x flex h-9 items-center justify-center text-[10px] font-medium uppercase tracking-[0.22em] sm:justify-between">
-          <span className="hidden text-white/60 sm:inline">Michigan · California</span>
-          <span>
-            Organic &amp; vegan hair care <span className="mx-2 text-champagne-light">✦</span> Handmade glass
-          </span>
-          <Link href="/contact?topic=consultation" className="hidden items-center gap-1.5 text-white/80 transition hover:text-white sm:inline-flex">
-            Book a consultation <ArrowRight className="h-3 w-3" />
-          </Link>
-        </div>
-      </div>
-
+      <div ref={sentinel} aria-hidden className="pointer-events-none absolute left-0 top-[24px] h-px w-px" />
       <header
         className={cn(
           'sticky top-0 z-50 border-b transition-[background-color,border-color,box-shadow] duration-500 ease-silk',
-          scrolled || mega ? 'border-ink/10 bg-cream/[0.9] shadow-[0_10px_30px_-20px_rgba(17,17,17,.35)] backdrop-blur-md' : 'border-transparent bg-cream',
+          scrolled || mega ? 'border-ink/10 bg-mineral/[0.92] backdrop-blur-md' : 'border-transparent bg-mineral',
         )}
         onMouseLeave={closeMega}
       >
-        <nav className="container-x grid h-[84px] grid-cols-[1fr_auto_1fr] items-center" aria-label="Primary">
-          {/* Left */}
-          <div className="flex items-center">
-            <button onClick={() => setMobile(true)} aria-label="Open menu" className="-ml-2 grid h-11 w-11 place-items-center lg:hidden">
-              <Menu className="h-5 w-5" strokeWidth={1.5} />
-            </button>
-            <ul className="hidden items-center gap-8 lg:flex">
+        <nav className="container-x flex h-[76px] items-center gap-10" aria-label="Primary">
+          <Wordmark />
+          <div className="flex flex-1 items-center">
+            <ul className="hidden items-center gap-7 lg:flex">
               {leftLinks.map((l) =>
                 l.mega ? (
                   <li key={l.href} onMouseEnter={openMega}>
@@ -208,13 +172,13 @@ export default function Navbar() {
                       aria-expanded={mega}
                       aria-haspopup="true"
                       className={cn(
-                        'group relative flex items-center gap-1.5 py-2 text-[11.5px] font-semibold uppercase tracking-[0.16em] transition-colors',
-                        isActive(l.href) || mega ? 'text-ink' : 'text-espresso-700 hover:text-ink',
+                        'group relative flex items-center gap-1 py-2 text-[15px] font-medium transition-colors',
+                        isActive(l.href) || mega ? 'text-ink' : 'text-stone-500 hover:text-ink',
                       )}
                     >
                       {l.label}
                       <ChevronDown className={cn('h-3 w-3 transition-transform duration-300', mega && 'rotate-180')} strokeWidth={2.2} />
-                      <span className={cn('absolute -bottom-0.5 left-0 h-px w-full origin-left bg-ink transition-transform duration-500 ease-silk', isActive(l.href) || mega ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100')} />
+                      <span className={cn('absolute -bottom-0.5 left-0 h-[2px] w-full rounded-full bg-iris transition-opacity duration-200', isActive(l.href) ? 'opacity-100' : 'opacity-0')} />
                     </button>
                   </li>
                 ) : (
@@ -226,27 +190,20 @@ export default function Navbar() {
             </ul>
           </div>
 
-          <Wordmark />
-
-          {/* Right */}
-          <div className="flex items-center justify-end gap-8">
-            <ul className="hidden items-center gap-8 lg:flex" onMouseEnter={closeMega}>
-              {rightLinks.map((l) => (
-                <li key={l.href}>
-                  <NavLink {...l} active={isActive(l.href)} />
-                </li>
-              ))}
-            </ul>
+          <div className="flex items-center justify-end gap-2">
             <button
               onClick={() => openCart(true)}
               aria-label={`Open bag, ${count} item${count === 1 ? '' : 's'}`}
-              className="group relative -mr-2 flex h-11 items-center gap-2 px-2 text-[11.5px] font-semibold uppercase tracking-[0.16em]"
+              className="-mr-2 flex h-11 items-center gap-2 rounded-full px-3 text-[15px] font-medium transition-colors hover:bg-ink/[0.05]"
             >
-              <ShoppingBag className="h-[18px] w-[18px] transition-transform duration-500 ease-silk group-hover:-translate-y-0.5" strokeWidth={1.5} />
+              <ShoppingBag className="h-[18px] w-[18px]" strokeWidth={1.6} />
               <span className="hidden sm:inline">Bag</span>
-              <span className={cn('grid h-5 min-w-5 place-items-center rounded-full px-1 text-[10px] tabular-nums transition-colors', count > 0 ? 'bg-ink text-white' : 'bg-ink/10 text-ink')}>
+              <span className={cn('grid h-5 min-w-5 place-items-center rounded-full px-1 text-[12px] tabular-nums', count > 0 ? 'bg-iris text-white' : 'bg-ink/10 text-ink')}>
                 {count}
               </span>
+            </button>
+            <button onClick={() => setMobile(true)} aria-label="Open menu" className="-mr-2 grid h-11 w-11 place-items-center lg:hidden">
+              <Menu className="h-5 w-5" strokeWidth={1.6} />
             </button>
           </div>
         </nav>
@@ -264,7 +221,7 @@ export default function Navbar() {
             exit={{ clipPath: 'inset(0 0 100% 0)' }}
             transition={{ duration: 0.7, ease }}
           >
-            <div className="container-x flex h-[84px] shrink-0 items-center justify-between">
+            <div className="container-x flex h-[76px] shrink-0 items-center justify-between">
               <Wordmark light />
               <button onClick={() => setMobile(false)} aria-label="Close menu" className="-mr-2 grid h-11 w-11 place-items-center">
                 <X className="h-5 w-5" strokeWidth={1.5} />
@@ -282,7 +239,7 @@ export default function Navbar() {
                   >
                     {'mega' in l && l.mega ? (
                       <>
-                        <button onClick={() => setMobileBrands((o) => !o)} aria-expanded={mobileBrands} className="flex w-full items-center justify-between py-5 font-display text-[2rem] font-medium">
+                        <button onClick={() => setMobileBrands((o) => !o)} aria-expanded={mobileBrands} className="flex w-full items-center justify-between py-4 font-display text-[1.9rem] font-medium tracking-[-0.02em]">
                           {l.label}
                           <ChevronDown className={cn('h-5 w-5 transition-transform', mobileBrands && 'rotate-180')} strokeWidth={1.5} />
                         </button>
@@ -290,8 +247,8 @@ export default function Navbar() {
                           {mobileBrands && (
                             <motion.ul initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="grid grid-cols-2 overflow-hidden pb-5">
                               <li className="col-span-2">
-                                <Link href="/products/hair-care" className="block py-2 text-[12px] font-semibold uppercase tracking-[0.18em] text-champagne-light">
-                                  Shop all hair care →
+                                <Link href="/products/hair-care" className="block py-2 text-[15px] font-medium text-iris-light">
+                                  All hair care
                                 </Link>
                               </li>
                               {brands.map((b) => (
@@ -306,7 +263,7 @@ export default function Navbar() {
                         </AnimatePresence>
                       </>
                     ) : (
-                      <Link href={l.href} className="block py-5 font-display text-[2rem] font-medium">
+                      <Link href={l.href} className="block py-4 font-display text-[1.9rem] font-medium tracking-[-0.02em]">
                         {l.label}
                       </Link>
                     )}
@@ -314,7 +271,7 @@ export default function Navbar() {
                 ))}
               </ul>
               <Link href="/contact?topic=salon" className="btn-light mt-10 w-full">
-                Book a visit <ArrowRight className="h-4 w-4" />
+                Book a visit
               </Link>
             </div>
           </motion.div>

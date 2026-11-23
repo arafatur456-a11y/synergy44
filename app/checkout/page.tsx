@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
 import CheckoutForm from '@/components/checkout/CheckoutForm';
 import { isWooConfigured } from '@/lib/woocommerce';
 
@@ -21,13 +20,13 @@ export default function CheckoutPage() {
         <div>
           <p className="eyebrow">Secure checkout</p>
           <h1 className="mt-5 font-display text-[2.8rem] font-semibold leading-none tracking-[-0.02em] sm:text-[3.6rem]">
-            Almost <em className="accent">yours.</em>
+            Almost yours.
           </h1>
         </div>
-        <ol className="flex gap-6 text-[11px] font-semibold uppercase tracking-[0.18em]" aria-label="Checkout steps">
-          <li className="text-espresso-400">Bag</li>
+        <ol className="flex gap-6 text-[13px] font-semibold" aria-label="Checkout steps">
+          <li className="text-stone-400">Bag</li>
           <li className="text-ink">Details</li>
-          <li className="text-espresso-400">Payment</li>
+          <li className="text-stone-400">Payment</li>
         </ol>
       </div>
 
@@ -36,9 +35,9 @@ export default function CheckoutPage() {
       ) : (
         <div className="card mx-auto max-w-xl p-12 text-center shadow-soft">
           <p className="font-display text-[2rem] font-semibold">Online checkout isn’t connected yet</p>
-          <p className="mt-3 text-espresso-700">Send us your bag and we’ll confirm your order personally.</p>
+          <p className="mt-3 text-stone-700">Send us your bag and we’ll confirm your order personally.</p>
           <Link href="/contact?topic=product" className="btn-dark mt-8">
-            Request this order <ArrowRight className="h-4 w-4" />
+            Request this order
           </Link>
         </div>
       )}

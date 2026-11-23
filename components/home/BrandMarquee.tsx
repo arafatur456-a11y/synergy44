@@ -1,26 +1,30 @@
 import Link from 'next/link';
 import { brands } from '@/lib/data';
 
-/** Dark editorial band of brand names — a strong separator between hero and content. */
+/**
+ * The brands, set as one sentence of large type. Each name links to its collection —
+ * a typographic index rather than a scrolling marquee.
+ */
 export default function BrandMarquee() {
-  const row = [...brands, ...brands];
   return (
-    <section aria-label="Our brands" className="relative overflow-hidden bg-ink py-7 text-white">
-      <div className="mask-fade-x">
-        <ul className="flex w-max animate-marquee items-center gap-12 hover:[animation-play-state:paused]">
-          {row.map((b, i) => (
-            <li key={i} className="flex items-center gap-12" aria-hidden={i >= brands.length}>
+    <section aria-labelledby="brands-heading" className="bg-ink text-paper">
+      <div className="container-x grid gap-8 py-16 sm:py-20 lg:grid-cols-12">
+        <h2 id="brands-heading" className="text-[15px] font-medium text-sage-light lg:col-span-3 lg:pt-3">
+          The lines Cynthia uses behind the chair, and sells here
+        </h2>
+        <p className="font-display text-[clamp(2rem,4.4vw,3.9rem)] font-medium leading-[1.08] tracking-[-0.03em] lg:col-span-9">
+          {brands.map((b, i) => (
+            <span key={b.slug}>
               <Link
                 href={`/products/hair-care/${b.slug}`}
-                tabIndex={i >= brands.length ? -1 : undefined}
-                className="font-display text-[1.9rem] font-medium italic text-white/85 transition-colors duration-500 hover:text-champagne-light sm:text-[2.4rem]"
+                className="underline decoration-white/0 decoration-2 underline-offset-[0.14em] transition-colors hover:text-iris-light hover:decoration-iris-light"
               >
                 {b.name}
               </Link>
-              <span className="text-sm text-champagne">✦</span>
-            </li>
+              {i < brands.length - 2 ? ', ' : i === brands.length - 2 ? ' and ' : '.'}
+            </span>
           ))}
-        </ul>
+        </p>
       </div>
     </section>
   );

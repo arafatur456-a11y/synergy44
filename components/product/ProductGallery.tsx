@@ -54,7 +54,7 @@ export default function ProductGallery({
                 aria-label={`Show image ${i + 1}`}
                 aria-current={i === index}
                 className={cn(
-                  'relative block aspect-[4/5] w-[72px] overflow-hidden rounded-[3px] ring-1 transition lg:w-full',
+                  'relative block aspect-[4/5] w-[72px] overflow-hidden rounded-[8px] ring-1 transition lg:w-full',
                   i === index ? 'ring-2 ring-ink' : 'ring-ink/10 opacity-70 hover:opacity-100',
                 )}
               >
@@ -67,7 +67,7 @@ export default function ProductGallery({
 
       <div
         className={cn(
-          'group relative aspect-[4/5] flex-1 overflow-hidden rounded-[4px] ring-1',
+          'group relative aspect-[4/5] flex-1 overflow-hidden rounded-media ring-1',
           dark ? 'bg-[#0F0D12] ring-white/10' : 'bg-[#ECE6DC] shadow-soft ring-ink/[0.06]',
         )}
         onKeyDown={(e) => {
@@ -90,7 +90,7 @@ export default function ProductGallery({
             className="sheen-live absolute inset-0 flex flex-col items-center"
             style={{ background: `radial-gradient(70% 55% at 50% 42%, ${(item as Pendant).colors[0]}40 0%, #1A1620 55%, #0B0A0D 100%)` }}
           >
-            <div className="h-[20%] w-px bg-gradient-to-b from-transparent via-champagne/60 to-champagne" />
+            <div className="h-[20%] w-px bg-gradient-to-b from-transparent via-iris/60 to-iris" />
             <PendantVisual colors={(item as Pendant).colors} shape={(item as Pendant).shape} chain={false} className="w-[44%]" />
           </div>
         ) : (

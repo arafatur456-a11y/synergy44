@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowRight, Check, Ruler, Sparkles, X } from 'lucide-react';
+import { Check, Ruler, Sparkles, X } from 'lucide-react';
 import PendantVisual from './PendantVisual';
 import type { Pendant } from '@/lib/types';
 import { productHref } from '@/lib/catalog-utils';
@@ -47,7 +47,7 @@ export default function QuickViewModal({ item, onClose }: { item: Pendant | null
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: 30, opacity: 0 }}
             transition={{ duration: 0.7, ease }}
-            className="relative grid max-h-[94svh] w-full max-w-5xl overflow-y-auto bg-paper shadow-float sm:rounded-[6px] md:grid-cols-[1.1fr_1fr]"
+            className="relative grid max-h-[94svh] w-full max-w-5xl overflow-y-auto bg-paper shadow-float sm:rounded-media md:grid-cols-[1.1fr_1fr]"
           >
             <button
               ref={closeRef}
@@ -73,7 +73,7 @@ export default function QuickViewModal({ item, onClose }: { item: Pendant | null
               ) : (
                 <PendantVisual colors={item.colors} shape={item.shape} className="relative w-44 animate-drift sm:w-56" />
               )}
-              <p className="absolute bottom-5 left-6 text-[10px] font-semibold uppercase tracking-[0.22em] text-white/50">Move to see the colors shift</p>
+              <p className="absolute bottom-5 left-6 text-[13px] font-semibold text-white/50">Move to see the colors shift</p>
             </div>
 
             <div className="flex flex-col p-8 sm:p-12">
@@ -82,18 +82,18 @@ export default function QuickViewModal({ item, onClose }: { item: Pendant | null
                 {item.name}
               </h3>
               <p className="mt-4 text-xl font-semibold tabular-nums">{formatPrice(item.price)}</p>
-              <p className="mt-6 text-[15.5px] leading-relaxed text-espresso-700">{item.description}</p>
+              <p className="mt-6 text-[15.5px] leading-relaxed text-stone-700">{item.description}</p>
 
               <dl className="mt-8 divide-y divide-line border-y border-line text-[14px]">
                 <div className="flex items-center justify-between py-3.5">
-                  <dt className="flex items-center gap-2.5 text-espresso-500">
-                    <Sparkles className="h-4 w-4 text-champagne" strokeWidth={1.6} /> Material
+                  <dt className="flex items-center gap-2.5 text-stone-500">
+                    <Sparkles className="h-4 w-4 text-iris" strokeWidth={1.6} /> Material
                   </dt>
                   <dd className="font-medium">Kiln-fused dichroic glass</dd>
                 </div>
                 <div className="flex items-center justify-between py-3.5">
-                  <dt className="flex items-center gap-2.5 text-espresso-500">
-                    <Ruler className="h-4 w-4 text-champagne" strokeWidth={1.6} /> Size
+                  <dt className="flex items-center gap-2.5 text-stone-500">
+                    <Ruler className="h-4 w-4 text-iris" strokeWidth={1.6} /> Size
                   </dt>
                   <dd className="font-medium">{item.size ? `Approx. ${item.size}` : 'One of a kind'}</dd>
                 </div>
@@ -107,7 +107,7 @@ export default function QuickViewModal({ item, onClose }: { item: Pendant | null
                       id: `pendant-${item.id}`,
                       href: productHref(item),
                       name: item.name,
-                      subtitle: `Dichroic glass · ${item.collection}`,
+                      subtitle: `Dichroic glass, ${item.collection}`,
                       price: item.price,
                       unique: true,
                       wcId: item.wcId,
@@ -126,14 +126,14 @@ export default function QuickViewModal({ item, onClose }: { item: Pendant | null
                     </>
                   ) : (
                     <>
-                      Add to bag — {formatPrice(item.price)} <ArrowRight className="h-4 w-4" />
+                      Add to bag — {formatPrice(item.price)}
                     </>
                   )}
                 </button>
                 <Link href={productHref(item)} onClick={onClose} className="link-underline mx-auto mt-5 flex w-max">
-                  View full details <ArrowRight className="h-3.5 w-3.5" />
+                  View full details
                 </Link>
-                <p className="mt-3 text-center text-[11px] uppercase tracking-[0.16em] text-espresso-500">One of a kind · handmade by Cynthia Reedy</p>
+                <p className="mt-3 text-center text-[13px] text-stone-500">One of a kind, handmade by Cynthia Reedy</p>
               </div>
             </div>
           </motion.div>

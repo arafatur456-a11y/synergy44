@@ -12,9 +12,9 @@ export const site = {
 export type NavItem = { label: string; href: string; mega?: boolean };
 
 export const nav: NavItem[] = [
-  { label: 'Hair Care', href: '/products/hair-care', mega: true },
-  { label: 'Glass Jewelry', href: '/jewelry' },
-  { label: 'Hair Styling', href: '/hair-styling' },
+  { label: 'Hair care', href: '/products/hair-care', mega: true },
+  { label: 'Glass jewelry', href: '/jewelry' },
+  { label: 'Salon', href: '/hair-styling' },
   { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },
 ];

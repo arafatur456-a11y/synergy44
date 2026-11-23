@@ -27,7 +27,7 @@ export default function ProductCard({ product }: { product: Product }) {
       id: product.id,
       href: productHref(product),
       name: product.name,
-      subtitle: [brandName, product.size].filter(Boolean).join(' · '),
+      subtitle: [brandName, product.size].filter(Boolean).join(', '),
       price: product.price,
       wcId: product.wcId,
       maxQty: product.stockQuantity,
@@ -46,26 +46,24 @@ export default function ProductCard({ product }: { product: Product }) {
         href={href}
         selectLabel={`View ${brandName} ${product.name}`}
         badge={product.badge}
-        background={product.image ? undefined : `radial-gradient(90% 70% at 50% 38%, #FFFFFF 0%, ${brand?.tint ?? '#EEE8DE'} 55%, #DCD3C6 100%)`}
+        background={product.image ? undefined : `radial-gradient(80% 65% at 50% 40%, #FAFAF7 0%, ${brand?.tint ?? '#E6E8E2'} 70%, #D8DCD4 100%)`}
         action={
           product.inStock === false ? (
-            <CardAction disabled ariaLabel={`${product.name} is sold out`} label="Sold out" icon={<Ban className="h-4 w-4" />} />
+            <CardAction disabled ariaLabel={`${product.name} is sold out`} label="Sold out" icon={<Ban className="h-3.5 w-3.5" />} />
           ) : product.type === 'variable' ? (
-            <CardAction href={href} ariaLabel={`Choose options for ${product.name}`} label="Choose options" icon={<ArrowUpRight className="h-4 w-4" />} price={product.price} />
+            <CardAction href={href} ariaLabel={`Choose options for ${product.name}`} label="Options" icon={<ArrowUpRight className="h-3.5 w-3.5" />} price={product.price} />
           ) : (
           <CardAction
             onClick={onAdd}
             ariaLabel={`Quick add ${brandName} ${product.name}`}
             label={
               added ? (
-                <span className="inline-flex items-center gap-2">
-                  <Check className="h-4 w-4" /> Added to bag
-                </span>
+                'Added'
               ) : (
-                'Quick add'
+                'Add'
               )
             }
-            icon={added ? <Check className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+            icon={added ? <Check className="h-3.5 w-3.5" /> : <Plus className="h-3.5 w-3.5" />}
             price={product.price}
           />
           )
@@ -75,7 +73,7 @@ export default function ProductCard({ product }: { product: Product }) {
           <Image src={product.image} alt={product.name} fill sizes="(min-width: 1280px) 25vw, (min-width: 640px) 33vw, 50vw" className="object-cover" />
         ) : (
           <>
-            <div className="absolute inset-x-[18%] bottom-[14%] h-[10%] bg-[radial-gradient(closest-side,rgba(17,17,17,0.2),transparent)]" />
+            <div className="absolute inset-x-[18%] bottom-[14%] h-[10%] bg-[radial-gradient(closest-side,rgba(30,45,39,0.18),transparent)]" />
             <div className="absolute inset-0 flex items-center justify-center pb-[6%]">
               <ProductVisual shape={product.shape} colors={product.colors} cap={product.cap} label={brandName} className="h-[70%]" />
             </div>
@@ -91,10 +89,6 @@ export default function ProductCard({ product }: { product: Product }) {
         detail={
           <>
             {product.size}
-            <span className="hidden sm:inline">
-              {product.size ? ' · ' : ''}
-              {product.category}
-            </span>
           </>
         }
       />

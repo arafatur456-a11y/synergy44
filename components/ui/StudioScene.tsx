@@ -5,22 +5,22 @@ import type { ReactNode } from 'react';
 import BotanicalSprig from './BotanicalSprig';
 import { cn } from '@/lib/utils';
 
-export type SceneTone = 'forest' | 'stone' | 'velvet' | 'espresso';
+export type SceneTone = 'forest' | 'stone' | 'velvet' | 'umber';
 
 const tones: Record<SceneTone, { bg: string; spot: string; arch: string; floor: string; sprig: string; glow: string }> = {
   forest: {
-    bg: 'radial-gradient(120% 90% at 50% 8%, #3D5E4F 0%, #1B2A23 46%, #0C1310 100%)',
-    spot: 'radial-gradient(closest-side, rgba(255,232,192,.42), transparent)',
+    bg: 'radial-gradient(120% 90% at 50% 8%, #3E5A4E 0%, #1E2D27 50%, #111A16 100%)',
+    spot: 'radial-gradient(closest-side, rgba(220,240,232,.32), transparent)',
     arch: 'linear-gradient(180deg, rgba(255,255,255,.07), rgba(0,0,0,.3))',
     floor: 'linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.5))',
     sprig: 'text-[#9DB8A9]/[0.16]',
-    glow: 'rgba(255,236,200,.16)',
+    glow: 'rgba(220,240,232,.14)',
   },
   stone: {
-    bg: 'radial-gradient(120% 90% at 50% 0%, #FFFFFF 0%, #ECE5DA 46%, #CDC1AF 100%)',
+    bg: 'radial-gradient(120% 90% at 50% 0%, #FFFFFF 0%, #E6E9E3 46%, #C3CAC2 100%)',
     spot: 'radial-gradient(closest-side, rgba(255,255,255,.95), transparent)',
-    arch: 'linear-gradient(180deg, rgba(255,255,255,.75), rgba(150,130,100,.22))',
-    floor: 'linear-gradient(180deg, rgba(0,0,0,0), rgba(70,55,35,.16))',
+    arch: 'linear-gradient(180deg, rgba(255,255,255,.75), rgba(90,110,100,.2))',
+    floor: 'linear-gradient(180deg, rgba(0,0,0,0), rgba(30,45,39,.16))',
     sprig: 'text-sage/25',
     glow: 'rgba(255,255,255,.5)',
   },
@@ -32,13 +32,13 @@ const tones: Record<SceneTone, { bg: string; spot: string; arch: string; floor: 
     sprig: 'text-[#C9B8E8]/[0.12]',
     glow: 'rgba(225,210,255,.16)',
   },
-  espresso: {
-    bg: 'radial-gradient(120% 90% at 50% 8%, #5A4633 0%, #261D15 48%, #110D09 100%)',
-    spot: 'radial-gradient(closest-side, rgba(255,226,180,.4), transparent)',
+  umber: {
+    bg: 'radial-gradient(120% 90% at 50% 8%, #3B4A52 0%, #1C2429 50%, #0E1215 100%)',
+    spot: 'radial-gradient(closest-side, rgba(210,225,240,.34), transparent)',
     arch: 'linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.32))',
     floor: 'linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.5))',
-    sprig: 'text-[#E3C99B]/[0.14]',
-    glow: 'rgba(255,226,180,.16)',
+    sprig: 'text-[#B9CAD6]/[0.14]',
+    glow: 'rgba(210,225,240,.14)',
   },
 };
 
@@ -48,11 +48,11 @@ function Plinth({ width }: { width: string }) {
     <div className="absolute bottom-[9%] left-1/2 -translate-x-1/2" style={{ width }}>
       <div
         className="h-[clamp(40px,7%,72px)] min-h-[44px] w-full"
-        style={{ background: 'linear-gradient(90deg,#7F766A 0%,#CFC6B8 28%,#EEE7DC 48%,#BDB3A4 78%,#6F675C 100%)' }}
+        style={{ background: 'linear-gradient(90deg,#6E7670 0%,#C4CAC4 28%,#E9ECE8 48%,#B2B9B3 78%,#646B66 100%)' }}
       />
       <div
         className="absolute -top-[13px] left-0 h-[26px] w-full rounded-[50%]"
-        style={{ background: 'radial-gradient(ellipse at 45% 40%, #FAF6EF 0%, #DCD3C5 60%, #BFB4A4 100%)' }}
+        style={{ background: 'radial-gradient(ellipse at 45% 40%, #F7F8F5 0%, #D6DBD5 60%, #B5BCB6 100%)' }}
       />
       <div className="absolute -bottom-5 left-[-8%] h-6 w-[116%] bg-[radial-gradient(closest-side,rgba(0,0,0,0.5),transparent)]" />
     </div>
@@ -60,8 +60,9 @@ function Plinth({ width }: { width: string }) {
 }
 
 /**
- * Art-directed "studio photograph" built in code: spotlight, arched niche, stone plinth,
- * botanical shadow and grain. Pass `src` to show real photography instead.
+ * Product stand-in drawn in code (used only when no real photo exists): a soft light on a
+ * plain ground with a low plinth. No arched niche, foliage or grain — those read as a
+ * stock "3D render". Pass `src` to show real photography instead.
  */
 export default function StudioScene({
   tone = 'forest',
@@ -71,8 +72,8 @@ export default function StudioScene({
   alt = '',
   plinth = true,
   plinthWidth = '52%',
-  arch = true,
-  sprig = true,
+  arch = false,
+  sprig = false,
   objectsClassName,
   priority,
 }: {
@@ -107,7 +108,7 @@ export default function StudioScene({
   }
 
   return (
-    <div className={cn('grain relative isolate overflow-hidden', className)} style={{ background: t.bg }} onPointerMove={onMove}>
+    <div className={cn('relative isolate overflow-hidden', className)} style={{ background: t.bg }} onPointerMove={onMove}>
       <div aria-hidden className="absolute left-1/2 top-[-22%] h-[85%] w-[78%] -translate-x-1/2" style={{ background: t.spot }} />
       <div
         aria-hidden

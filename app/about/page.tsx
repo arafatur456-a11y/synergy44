@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import InstagramLink from '@/components/ui/InstagramLink';
-import { ArrowRight, Leaf, Rabbit, Recycle } from 'lucide-react';
+import { Leaf, Rabbit, Recycle } from 'lucide-react';
 import PageHeader from '@/components/ui/PageHeader';
 import StudioScene from '@/components/ui/StudioScene';
 import SectionHeader from '@/components/ui/SectionHeader';
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 };
 
 const sustainable = [
-  { icon: Leaf, title: 'Organic & vegan-forward', body: 'We favor certified-organic botanicals and vegan formulas wherever we can.' },
+  { icon: Leaf, title: 'Organic and vegan-forward', body: 'We favor certified-organic botanicals and vegan formulas wherever we can.' },
   { icon: Rabbit, title: 'Kind by design', body: 'We choose brands that share our respect for animals and people.' },
   { icon: Recycle, title: 'Less waste', body: 'From reusable Goomee pads to refill-friendly sizes, we look for ways to waste less.' },
 ];
@@ -33,24 +33,17 @@ export default function AboutPage() {
         crumbs={[{ label: 'About' }]}
         title={
           <>
-            The Hair Healers <em className="accent">&amp; the artist</em> behind the glass.
+            The Hair Healers &amp; the artist behind the glass.
           </>
         }
-        intro="Synergy 44 is where two crafts meet — the science of healthy hair and the art of light — both guided by cosmetologist and glass artist Cynthia Reedy."
-        scene={
-          <StudioScene tone="forest" plinthWidth="54%" className="h-full w-full" objectsClassName="items-end gap-8">
-            <ProductVisual shape="dropper" colors={['#F5DFA8', '#B98436']} cap="#F7F3EC" label="Loma" className="h-[170px] sm:h-[220px]" />
-            <PendantVisual colors={['#5FBF9A', '#6E8FD8', '#A88BD6', '#7CC9D6']} shape="oval" chain={false} className="mb-4 w-24 sm:w-28" />
-          </StudioScene>
-        }
+        intro="Synergy 44 brings together two crafts, healthy hair and dichroic glass, both practiced by cosmetologist and glass artist Cynthia Reedy."
       />
 
       {/* Portrait + story */}
-      <section className="container-x grid gap-16 py-24 sm:py-32 lg:grid-cols-12 lg:gap-6">
+      <section className="container-x grid gap-12 pb-20 pt-4 sm:pb-28 lg:grid-cols-12 lg:gap-8">
         <div className="relative mx-auto w-full max-w-[460px] lg:col-span-5 lg:max-w-none">
-          <Parallax speed={24}>
-            <figure className="rounded-[6px] bg-paper p-2.5 shadow-lift ring-1 ring-ink/[0.06] sm:p-3">
-              <div className="relative aspect-[4/5] overflow-hidden rounded-[3px] ring-1 ring-inset ring-champagne/40">
+          <figure>
+              <div className="relative aspect-[4/5] overflow-hidden rounded-media">
                 <Image
                   src={cynthiaPortrait}
                   alt="Portrait of Cynthia Reedy, cosmetologist and glass artist, smiling outdoors"
@@ -60,19 +53,16 @@ export default function AboutPage() {
                   className="object-cover object-top"
                 />
               </div>
-              <figcaption className="flex flex-col gap-1 px-2 pb-1 pt-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-                <span className="font-display text-[1.15rem] font-semibold">Cynthia Reedy</span>
-                <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-espresso-500">Cosmetologist · Glass artist</span>
+              <figcaption className="mt-4 text-[14px] text-stone-500">
+                <span className="font-medium text-ink">Cynthia Reedy</span>, cosmetologist and glass artist
               </figcaption>
             </figure>
-          </Parallax>
         </div>
         <Reveal className="lg:col-span-6 lg:col-start-7 lg:pt-12">
-          <p className="eyebrow">Meet Cynthia</p>
-          <h2 className="h-section mt-6">
-            An artist’s eye, <em className="accent">a healer’s hands.</em>
+          <h2 className="h-section">
+            An artist’s eye, a healer’s hands.
           </h2>
-          <div className="mt-8 space-y-6 text-[1.08rem] leading-[1.75] text-espresso-700">
+          <div className="body-serif mt-8 max-w-[60ch] space-y-5 !text-[1.15rem]">
             <p>
               Cynthia studied at Eastern Michigan University, where a foundation in art, color and form shaped everything that came after.
               That same sensibility guides her work as a licensed cosmetologist — and her glass studio.
@@ -84,67 +74,57 @@ export default function AboutPage() {
           </div>
           <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-5">
             <Link href="/contact?topic=consultation" className="btn-dark">
-              Book a consultation <ArrowRight className="h-4 w-4" />
+              Book a consultation
             </Link>
-            <InstagramLink label="Follow Cynthia’s studio · @synergy44llc" />
+            <InstagramLink label="Follow the studio on Instagram" />
           </div>
         </Reveal>
       </section>
 
       {/* Timeline */}
-      <section className="border-y border-ink/10 bg-paper py-24 sm:py-32">
+      <section className="bg-paper py-20 sm:py-28">
         <div className="container-x">
-          <SectionHeader index="01" label="The journey" title={<>A practice built <em className="accent">slowly.</em></>} />
-          <ol className="mt-14 border-t border-ink">
-            {milestones.map((m, i) => (
-              <Reveal as="li" key={m.title} delay={i * 0.06} className="group grid gap-4 border-b border-line py-9 sm:grid-cols-12 sm:gap-6">
-                <span className="font-display text-[2.4rem] font-semibold italic leading-none text-champagne sm:col-span-2">0{i + 1}</span>
-                <div className="sm:col-span-4">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-espresso-500">{m.phase}</p>
-                  <h3 className="mt-2 font-display text-[1.9rem] font-semibold leading-tight transition-transform duration-500 ease-silk group-hover:translate-x-1.5">{m.title}</h3>
-                </div>
-                <p className="text-[15.5px] leading-relaxed text-espresso-700 sm:col-span-6">{m.body}</p>
-              </Reveal>
+          <SectionHeader title="How the practice came together" />
+          <ol className="mt-12 border-t border-ink/20">
+            {milestones.map((m) => (
+              <li key={m.title} className="grid gap-3 border-b border-line py-8 sm:grid-cols-12 sm:gap-6">
+                <p className="label sm:col-span-2 sm:pt-2">{m.phase}</p>
+                <h3 className="text-[1.6rem] font-semibold leading-tight tracking-[-0.02em] sm:col-span-4">{m.title}</h3>
+                <p className="body-serif sm:col-span-6">{m.body}</p>
+              </li>
             ))}
           </ol>
         </div>
       </section>
 
       {/* Guarantee — dark */}
-      <section className="relative overflow-hidden bg-forest py-24 text-white sm:py-32">
-        <div aria-hidden className="absolute -left-40 top-0 h-[480px] w-[640px] bg-[radial-gradient(closest-side,rgba(74,107,93,0.35),transparent)]" />
+      <section className="relative overflow-hidden bg-forest py-20 text-white sm:py-28">
         <div className="container-x relative">
           <SectionHeader
             dark
-            index="02"
-            label="Our promise"
-            title={
-              <>
-                The Synergy 44 <em className="font-medium italic text-champagne-light">Guarantee.</em>
-              </>
-            }
-            intro="Clean products, honest advice and handmade quality — backed by a simple promise: if something isn’t right, we’ll make it right."
-            className="mb-14"
+            title="If something isn’t right, we’ll make it right"
+            intro="That’s the Synergy 44 guarantee, on every product, appointment and pendant."
+            className="mb-12"
           />
           <GuaranteeGrid dark />
         </div>
       </section>
 
       {/* Sustainability */}
-      <section className="container-x py-24 sm:py-32">
-        <SectionHeader index="03" label="Sustainable by choice" title={<>Beauty that <em className="accent">respects</em> the planet.</>} />
-        <ul className="mt-14 grid border-t border-ink md:grid-cols-3">
-          {sustainable.map(({ icon: Icon, title, body }, i) => (
-            <Reveal as="li" key={title} delay={i * 0.08} className="border-b border-line py-9 md:border-b-0 md:border-r md:px-8 md:first:pl-0 md:last:border-r-0">
-              <Icon className="h-6 w-6 text-sage-dark" strokeWidth={1.3} />
-              <h3 className="mt-6 font-display text-[1.7rem] font-semibold">{title}</h3>
-              <p className="mt-2 text-[15px] leading-relaxed text-espresso-700">{body}</p>
-            </Reveal>
+      <section className="container-x py-20 sm:py-28">
+        <SectionHeader title="Choosing products that are easier on the planet" />
+        <ul className="mt-12 grid gap-10 md:grid-cols-3 md:gap-8">
+          {sustainable.map(({ icon: Icon, title, body }) => (
+            <li key={title}>
+              <Icon className="h-6 w-6 text-sage-dark" strokeWidth={1.5} />
+              <h3 className="mt-5 text-[1.3rem] font-semibold tracking-[-0.015em]">{title}</h3>
+              <p className="body-serif mt-2 max-w-[34ch]">{body}</p>
+            </li>
           ))}
         </ul>
-        <Reveal className="mt-14 flex flex-wrap gap-3">
+        <Reveal className="mt-12 flex flex-wrap gap-3">
           <Link href="/products/hair-care" className="btn-dark">
-            Shop clean hair care <ArrowRight className="h-4 w-4" />
+            Shop clean hair care
           </Link>
           <Link href="/contact" className="btn-outline">
             Get in touch

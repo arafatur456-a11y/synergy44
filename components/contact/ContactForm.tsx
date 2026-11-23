@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowRight, Check, Loader2 } from 'lucide-react';
+import { Check, Loader2 } from 'lucide-react';
 import { topics, validateContact, type ContactPayload, type FieldErrors, type Topic } from '@/lib/contact';
 import { useCart } from '@/lib/cart';
 import { site } from '@/lib/site';
@@ -27,9 +27,9 @@ function Field({
 }) {
   return (
     <div className={className}>
-      <label htmlFor={htmlFor} className="mb-2 flex items-baseline justify-between text-[11px] font-semibold uppercase tracking-[0.16em] text-ink">
+      <label htmlFor={htmlFor} className="mb-2 flex items-baseline justify-between text-[13px] font-semibold text-ink">
         {label}
-        {optional && <span className="text-[10px] font-medium tracking-[0.14em] text-espresso-400">Optional</span>}
+        {optional && <span className="text-[10px] font-medium tracking-[0.14em] text-stone-400">Optional</span>}
       </label>
       {children}
       <AnimatePresence>
@@ -130,7 +130,7 @@ export default function ContactForm({ initialTopic }: { initialTopic: Topic }) {
           <Check className="h-7 w-7" strokeWidth={1.8} />
         </span>
         <h2 className="mt-6 font-display text-[2.6rem] font-semibold">Thank you, {form.name.split(' ')[0]}.</h2>
-        <p className="mt-3 max-w-sm text-espresso-500">Your message is on its way. We’ll be in touch at {form.email} soon.</p>
+        <p className="mt-3 max-w-sm text-stone-500">Your message is on its way. We’ll be in touch at {form.email} soon.</p>
         <button
           onClick={() => {
             setForm((f) => ({ ...f, message: '', preferredDate: '' }));
@@ -152,7 +152,7 @@ export default function ContactForm({ initialTopic }: { initialTopic: Topic }) {
   return (
     <form onSubmit={submit} noValidate className="card p-6 shadow-soft sm:p-10">
       <fieldset>
-        <legend className="mb-4 text-[11px] font-semibold uppercase tracking-[0.16em] text-ink">How can we help?</legend>
+        <legend className="mb-4 text-[13px] font-semibold text-ink">How can we help?</legend>
         <div className="flex flex-wrap gap-2">
           {topics.map((t) => (
             <label key={t.value} className={cn('chip cursor-pointer', form.topic === t.value ? 'chip-on' : 'chip-off')}>
@@ -228,9 +228,9 @@ export default function ContactForm({ initialTopic }: { initialTopic: Topic }) {
       </div>
 
       {includeBag && (
-        <div className="mt-6 rounded-[3px] border border-line bg-cream p-5 text-sm">
+        <div className="mt-6 rounded-[8px] border border-line bg-mineral p-5 text-sm">
           <p className="font-semibold">Your bag will be included</p>
-          <ul className="mt-2 space-y-1 text-espresso-500">
+          <ul className="mt-2 space-y-1 text-stone-500">
             {items.map((i) => (
               <li key={i.id}>
                 {i.qty} × {i.name} — {formatPrice(i.price * i.qty)}
@@ -241,13 +241,13 @@ export default function ContactForm({ initialTopic }: { initialTopic: Topic }) {
       )}
 
       {status === 'error' && (
-        <p role="alert" className="mt-6 rounded-[3px] border border-[#E7C2B6] bg-[#F6E4DE] px-5 py-4 text-sm text-[#7A3322]">
+        <p role="alert" className="mt-6 rounded-[8px] border border-[#E7C2B6] bg-[#F6E4DE] px-5 py-4 text-sm text-[#7A3322]">
           {serverError}
         </p>
       )}
 
       <div className="mt-8 flex flex-col-reverse items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-xs text-espresso-400">We reply personally, usually within one to two business days.</p>
+        <p className="text-xs text-stone-400">We reply personally, usually within one to two business days.</p>
         <button type="submit" disabled={status === 'sending'} className="btn-dark w-full sm:w-auto">
           {status === 'sending' ? (
             <>
@@ -255,7 +255,7 @@ export default function ContactForm({ initialTopic }: { initialTopic: Topic }) {
             </>
           ) : (
             <>
-              Send message <ArrowRight className="h-4 w-4" />
+              Send message
             </>
           )}
         </button>

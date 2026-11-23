@@ -29,8 +29,8 @@ export default function PendantVisual({
 
   return (
     <div className={cn('relative flex flex-col items-center', className)}>
-      {chain && <div className="h-12 w-px bg-gradient-to-b from-transparent via-champagne/60 to-champagne" />}
-      <div className="relative z-10 -mb-1.5 h-4 w-3 rounded-full border-[1.5px] border-champagne bg-champagne-pale/40" />
+      {chain && <div className="h-12 w-px bg-gradient-to-b from-transparent via-iris/60 to-iris" />}
+      <div className="relative z-10 -mb-1.5 h-4 w-3 rounded-full border-[1.5px] border-iris bg-iris-pale/40" />
       <div
         className={cn('relative aspect-square', isTear ? 'mt-3 w-[66%]' : isSquare ? 'mt-4 w-[74%]' : 'w-[86%]')}
         style={{

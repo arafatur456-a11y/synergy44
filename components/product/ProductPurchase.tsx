@@ -56,9 +56,9 @@ export default function ProductPurchase({ detail, brandName, children }: { detai
 
   const stockLine = useMemo(() => {
     if (!inStock) return { text: isPendant ? 'Sold — this piece has found its home' : 'Sold out', tone: 'text-[#A4452F]' };
-    if (variable && !allChosen) return { text: `Choose ${choiceAttrs.map((a) => a.name.toLowerCase()).join(' & ')}`, tone: 'text-espresso-500' };
+    if (variable && !allChosen) return { text: `Choose ${choiceAttrs.map((a) => a.name.toLowerCase()).join(' & ')}`, tone: 'text-stone-500' };
     if (variable && variation && !variation.inStock) return { text: 'This option is sold out', tone: 'text-[#A4452F]' };
-    if (isPendant) return { text: 'One of a kind · ready to ship', tone: 'text-sage-dark' };
+    if (isPendant) return { text: 'One of a kind, ready to ship', tone: 'text-sage-dark' };
     if (typeof stockQty === 'number' && stockQty > 0 && stockQty <= 5) return { text: `Only ${stockQty} left`, tone: 'text-[#A4452F]' };
     return { text: 'In stock', tone: 'text-sage-dark' };
   }, [inStock, isPendant, variable, allChosen, variation, stockQty, choiceAttrs]);
@@ -66,7 +66,7 @@ export default function ProductPurchase({ detail, brandName, children }: { detai
   const onAdd = () => {
     if (!canAdd) return;
     const optionLabel = variation ? Object.values(chosen).filter(Boolean).join(' / ') : '';
-    const subtitle = [isPendant ? `Dichroic glass · ${(item as Pendant).collection}` : brandName, optionLabel || (item as Product).size].filter(Boolean).join(' · ');
+    const subtitle = [isPendant ? `Dichroic glass, ${(item as Pendant).collection}` : brandName, optionLabel || (item as Product).size].filter(Boolean).join(', ');
     const image = variation?.image ?? detail.images[0]?.src;
     const cartItem: Omit<CartItem, 'qty'> = {
       // Pendants use the same id as the quick view so a one-of-a-kind piece can't be added twice
@@ -101,7 +101,7 @@ export default function ProductPurchase({ detail, brandName, children }: { detai
 
           <div className="mt-6 flex items-baseline gap-3">
             {compareAt && compareAt > price && (
-              <span className="text-lg font-medium text-espresso-400 line-through">
+              <span className="text-lg font-medium text-stone-400 line-through">
                 <span className="sr-only">Was </span>
                 {formatPrice(compareAt)}
               </span>
@@ -109,9 +109,9 @@ export default function ProductPurchase({ detail, brandName, children }: { detai
             <span className="text-[1.9rem] font-semibold tabular-nums">
               {variable && !variation ? `From ${formatPrice(Math.min(...detail.variations.map((v) => v.price).filter((p) => p > 0)))}` : formatPrice(price)}
             </span>
-            {compareAt && compareAt > price && <span className="rounded-[2px] bg-ink px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-white">Sale</span>}
+            {compareAt && compareAt > price && <span className="rounded-[8px] bg-ink px-2 py-1 text-[13px] font-semibold text-white">Sale</span>}
           </div>
-          <p className={cn('mt-2 text-[12px] font-semibold uppercase tracking-[0.16em]', stockLine.tone)} aria-live="polite">
+          <p className={cn('mt-2 text-[13px] font-semibold', stockLine.tone)} aria-live="polite">
             {stockLine.text}
           </p>
 
@@ -120,9 +120,9 @@ export default function ProductPurchase({ detail, brandName, children }: { detai
           {/* Variation choices */}
           {choiceAttrs.map((a) => (
             <fieldset key={a.name} className="mt-8">
-              <legend className="text-[11px] font-semibold uppercase tracking-[0.18em]">
+              <legend className="text-[13px] font-semibold">
                 {a.name}
-                {chosen[a.name] && <span className="ml-2 font-medium normal-case tracking-normal text-espresso-500">— {chosen[a.name]}</span>}
+                {chosen[a.name] && <span className="ml-2 font-medium normal-case tracking-normal text-stone-500">— {chosen[a.name]}</span>}
               </legend>
               <div className="mt-3 flex flex-wrap gap-2">
                 {a.options.map((opt) => {
@@ -147,7 +147,7 @@ export default function ProductPurchase({ detail, brandName, children }: { detai
           {/* Quantity + add */}
           <div className="mt-8 flex gap-3">
             {!isPendant && (
-              <div className="flex h-[52px] items-center rounded-[2px] border border-ink/25" role="group" aria-label="Quantity">
+              <div className="flex h-[52px] items-center rounded-[8px] border border-ink/25" role="group" aria-label="Quantity">
                 <button type="button" onClick={() => setQty((q) => Math.max(1, q - 1))} disabled={qty <= 1 || !canAdd} aria-label="Decrease quantity" className="grid h-full w-12 place-items-center disabled:opacity-30">
                   <Minus className="h-3.5 w-3.5" />
                 </button>
@@ -174,13 +174,13 @@ export default function ProductPurchase({ detail, brandName, children }: { detai
             </button>
           </div>
 
-          <ul className="mt-8 space-y-3 border-t border-line pt-6 text-[13.5px] text-espresso-700">
+          <ul className="mt-8 space-y-3 border-t border-line pt-6 text-[13.5px] text-stone-700">
             <li className="flex items-center gap-3">
               <Lock className="h-4 w-4 text-sage-dark" strokeWidth={1.6} /> Secure checkout through the Synergy 44 store
             </li>
             {isPendant ? (
               <li className="flex items-center gap-3">
-                <Sparkles className="h-4 w-4 text-champagne" strokeWidth={1.6} /> Handmade, kiln-fused dichroic glass by Cynthia Reedy
+                <Sparkles className="h-4 w-4 text-iris" strokeWidth={1.6} /> Handmade, kiln-fused dichroic glass by Cynthia Reedy
               </li>
             ) : (
               <li className="flex items-center gap-3">

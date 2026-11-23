@@ -26,7 +26,7 @@ function Tile({ item, className, sizes, priority, tone }: { item: HeroItem; clas
     <Link
       href={productHref(item)}
       className={cn(
-        'group relative block overflow-hidden rounded-[4px] ring-1',
+        'group relative block overflow-hidden rounded-media ring-1',
         tone === 'light' ? 'bg-paper shadow-soft ring-ink/[0.06]' : 'bg-[#15121A] ring-white/10',
         className,
       )}
@@ -43,10 +43,10 @@ function Tile({ item, className, sizes, priority, tone }: { item: HeroItem; clas
       <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/55 via-black/15 to-transparent" />
       <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-4 text-white sm:p-5">
         <div className="min-w-0">
-          {item.label && <p className="text-[9.5px] font-semibold uppercase tracking-[0.22em] text-white/75">{item.label}</p>}
+          {item.label && <p className="text-[13px] font-semibold text-white/75">{item.label}</p>}
           <p className="mt-1 line-clamp-2 font-display text-[1.05rem] font-semibold leading-snug sm:text-[1.2rem]">{item.name}</p>
         </div>
-        <span className="hidden shrink-0 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/80 transition-colors group-hover:text-white sm:inline">View →</span>
+        <span className="hidden shrink-0 text-[13px] font-semibold text-white/80 transition-colors group-hover:text-white sm:inline">View</span>
       </div>
     </Link>
   );
@@ -54,14 +54,14 @@ function Tile({ item, className, sizes, priority, tone }: { item: HeroItem; clas
 
 /**
  * Editorial mosaic of real product photography for collection / brand page heroes.
- *   3 items → one tall feature tile + two stacked tiles · 2 → pair · 1 → single frame
+ *   3 items one tall feature tile + two stacked tiles · 2 pair · 1 single frame
  * Falls back to `fallback` (the illustrated StudioScene) when the collection has no photos.
  */
 export default function CollectionHero({ items, tone = 'light', fallback }: { items: HeroItem[]; tone?: 'light' | 'dark'; fallback: ReactNode }) {
   if (items.length === 0) return <>{fallback}</>;
 
   return (
-    <div className={cn('relative h-full w-full p-3 sm:p-5 lg:p-6', tone === 'light' ? 'bg-cream-100' : 'bg-[#0D0C10]')}>
+    <div className={cn('relative h-full w-full p-3 sm:p-5 lg:p-6', tone === 'light' ? 'bg-mineral-100' : 'bg-[#0D0C10]')}>
       {/* warm wash behind the tiles */}
       <div
         aria-hidden

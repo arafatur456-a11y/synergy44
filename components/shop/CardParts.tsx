@@ -3,17 +3,19 @@ import type { ReactNode } from 'react';
 import { cn, formatPrice } from '@/lib/utils';
 
 /**
- * Shared card anatomy for every product and pendant tile, so grids stay immaculate:
- *   • media: 4:5 ratio · 4px radius · hairline ring · soft → lifted shadow · 1.4s zoom on hover
- *   • badge: paper chip, top-left
- *   • action: slide-up bar on desktop hover, round button on touch
- *   • meta: eyebrow / serif title / detail line / price
+ * Shared card anatomy for every product and pendant tile:
+ *   - media: 4:5 frame. Hair care sits in a 10px-radius rectangle on a pale mineral ground;
+ *     glass sits in a cabochon oval on the kiln-dark ground — the shape it's actually cut to.
+ *   - badge: small pill, top-left
+ *   - action: an always-visible "Add" pill (no hover-only controls, so touch works the same)
+ *   - meta: brand, name, detail, price
  */
 
-export const CARD_GRID = 'grid grid-cols-2 gap-x-4 gap-y-12 sm:gap-x-5';
+export const CARD_GRID = 'grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 sm:gap-y-14';
 
 export function MediaFrame({
   tone = 'light',
+  shape = 'rect',
   background,
   badge,
   action,
@@ -23,6 +25,7 @@ export function MediaFrame({
   children,
 }: {
   tone?: 'light' | 'dark';
+  shape?: 'rect' | 'cabochon';
   background?: string;
   badge?: string;
   action?: ReactNode;
@@ -34,27 +37,23 @@ export function MediaFrame({
   children: ReactNode;
 }) {
   return (
-    <div
-      className={cn(
-        'relative aspect-[4/5] overflow-hidden rounded-[4px] transition-shadow duration-700 ease-silk',
-        tone === 'light' ? 'bg-[#ECE6DC] shadow-soft ring-1 ring-ink/[0.06] group-hover:shadow-lift' : 'bg-[#0F0D12] ring-1 ring-white/10 group-hover:ring-white/25',
-      )}
-    >
-      <div className="absolute inset-0 transition-transform duration-[1.4s] ease-silk group-hover:scale-[1.06]" style={background ? { background } : undefined}>
-        {children}
-      </div>
+    <div className="relative">
       <div
-        aria-hidden
         className={cn(
-          'pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-700 group-hover:opacity-100',
-          tone === 'light' ? 'bg-[radial-gradient(60%_50%_at_50%_0%,rgba(255,255,255,.55),transparent)]' : 'bg-[radial-gradient(60%_50%_at_50%_0%,rgba(255,255,255,.12),transparent)]',
+          'relative aspect-[4/5] overflow-hidden',
+          shape === 'cabochon' ? 'cabochon' : 'rounded-media',
+          tone === 'light' ? 'bg-mineral-100' : 'bg-kiln ring-1 ring-white/10',
         )}
-      />
+      >
+        <div className="absolute inset-0" style={background ? { background } : undefined}>
+          {children}
+        </div>
       {href ? (
         <Link href={href} aria-label={selectLabel} className="absolute inset-0 z-[1]" />
       ) : (
         onSelect && <button type="button" onClick={onSelect} aria-label={selectLabel} className="absolute inset-0 z-[1] cursor-pointer" />
       )}
+      </div>
       {badge && <CardBadge>{badge}</CardBadge>}
       {action}
     </div>
@@ -63,7 +62,7 @@ export function MediaFrame({
 
 export function CardBadge({ children }: { children: ReactNode }) {
   return (
-    <span className="absolute left-3 top-3 z-[2] rounded-[2px] bg-paper px-2.5 py-1.5 text-[9.5px] font-semibold uppercase tracking-[0.18em] text-ink shadow-soft">
+    <span className="absolute left-3 top-3 z-[2] rounded-full bg-paper/95 px-3 py-1 text-[13px] font-medium text-ink">
       {children}
     </span>
   );
@@ -88,17 +87,13 @@ export function CardAction({
   ariaLabel: string;
 }) {
   const className = cn(
-    'absolute bottom-3 right-3 z-[2] grid h-11 w-11 place-items-center rounded-full bg-ink text-white shadow-lift transition-transform duration-300 active:scale-95 disabled:cursor-not-allowed disabled:bg-espresso-400',
-    'md:left-3 md:flex md:h-12 md:w-auto md:items-center md:justify-between md:rounded-[2px] md:bg-ink/95 md:px-5 md:disabled:bg-espresso-500/90',
-    'md:translate-y-[calc(100%+16px)] md:duration-500 md:ease-silk md:group-hover:translate-y-0 md:focus-visible:translate-y-0',
+    'absolute bottom-3 right-3 z-[2] flex h-10 items-center gap-1.5 rounded-full bg-paper px-3.5 text-[14px] font-medium text-ink shadow-soft transition-colors hover:bg-ink hover:text-paper active:translate-y-px disabled:cursor-not-allowed disabled:bg-paper/80 disabled:text-stone-400 disabled:hover:bg-paper/80',
   );
+  void price;
   const content = (
     <>
-      <span className="flex items-center gap-2">
-        <span className="md:hidden">{icon}</span>
-        <span className="hidden text-[11px] font-semibold uppercase tracking-[0.16em] md:inline">{label}</span>
-      </span>
-      {price !== undefined && <span className="hidden text-[12px] font-semibold tabular-nums md:inline">{formatPrice(price)}</span>}
+      {icon}
+      <span className="hidden sm:inline">{label}</span>
     </>
   );
   if (href) {
@@ -143,21 +138,21 @@ export function CardMeta({
   return (
     <div className="mt-4 flex items-start justify-between gap-4">
       <div className="min-w-0">
-        <p className={cn('text-[10px] font-semibold uppercase tracking-[0.2em]', dark ? 'text-champagne-light' : 'text-espresso-500')}>{eyebrow}</p>
-        <h3 className={cn('mt-1 font-display text-[1.1rem] font-semibold leading-snug sm:text-[1.2rem]', dark ? 'text-white' : 'text-ink')}>
+        <p className={cn('text-[13px]', dark ? 'text-iris-light' : 'text-sage-dark')}>{eyebrow}</p>
+        <h3 className={cn('mt-0.5 text-[17px] font-medium leading-snug tracking-[-0.01em]', dark ? 'text-white' : 'text-ink')}>
           {href ? (
-            <Link href={href} className="bg-[linear-gradient(currentColor,currentColor)] bg-[length:0%_1px] bg-left-bottom bg-no-repeat transition-[background-size] duration-500 ease-silk hover:bg-[length:100%_1px]">
+            <Link href={href} className="underline decoration-transparent underline-offset-4 transition-colors hover:decoration-current">
               {title}
             </Link>
           ) : (
             title
           )}
         </h3>
-        {detail && <p className={cn('mt-1 text-[12.5px]', dark ? 'text-white/55' : 'text-espresso-500')}>{detail}</p>}
+        {detail && <p className={cn('mt-0.5 text-[14px]', dark ? 'text-white/55' : 'text-stone-500')}>{detail}</p>}
       </div>
-      <p className={cn('shrink-0 pt-4 text-right text-[15px] font-semibold tabular-nums', dark ? 'text-white' : 'text-ink')}>
+      <p className={cn('shrink-0 pt-[1.15rem] text-right text-[16px] font-medium tabular-nums', dark ? 'text-white' : 'text-ink')}>
         {compareAt && compareAt > price && (
-          <span className={cn('mr-2 text-[13px] font-medium line-through', dark ? 'text-white/45' : 'text-espresso-400')}>
+          <span className={cn('mr-2 text-[13px] font-medium line-through', dark ? 'text-white/45' : 'text-stone-400')}>
             <span className="sr-only">Was </span>
             {formatPrice(compareAt)}
           </span>

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { AlertCircle, ArrowRight, Loader2, Lock, ShieldCheck } from 'lucide-react';
+import { AlertCircle, Loader2, Lock, ShieldCheck } from 'lucide-react';
 import CartThumb from '@/components/shop/CartThumb';
 import { useCart } from '@/lib/cart';
 import { US_STATES, validateCustomer, type CheckoutCustomer, type CheckoutResult, type CustomerErrors, type Quote } from '@/lib/checkout';
@@ -44,9 +44,9 @@ function Field({
 }) {
   return (
     <div className={className}>
-      <label htmlFor={id} className="mb-2 flex items-baseline justify-between text-[11px] font-semibold uppercase tracking-[0.16em] text-ink">
+      <label htmlFor={id} className="mb-2 flex items-baseline justify-between text-[13px] font-semibold text-ink">
         {label}
-        {optional && <span className="text-[10px] font-medium tracking-[0.14em] text-espresso-400">Optional</span>}
+        {optional && <span className="text-[10px] font-medium tracking-[0.14em] text-stone-400">Optional</span>}
       </label>
       {children}
       {error && (
@@ -167,7 +167,7 @@ export default function CheckoutForm() {
     return (
       <div className="card mx-auto max-w-xl p-12 text-center shadow-soft">
         <p className="font-display text-[2rem] font-semibold">Your bag is empty</p>
-        <p className="mt-3 text-espresso-700">Add something beautiful, then come back to check out.</p>
+        <p className="mt-3 text-stone-700">Add something beautiful, then come back to check out.</p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Link href="/products/hair-care" className="btn-dark">
             Shop hair care
@@ -196,7 +196,7 @@ export default function CheckoutForm() {
               initial={{ opacity: 0, y: -6 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
-              className="flex items-start gap-3 rounded-[3px] border border-[#E7C2B6] bg-[#F6E4DE] px-5 py-4 text-sm text-[#7A3322]"
+              className="flex items-start gap-3 rounded-[8px] border border-[#E7C2B6] bg-[#F6E4DE] px-5 py-4 text-sm text-[#7A3322]"
             >
               <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" /> {banner}
             </motion.div>
@@ -206,7 +206,7 @@ export default function CheckoutForm() {
         <fieldset className="card p-6 shadow-soft sm:p-9" disabled={busy}>
           <legend className="sr-only">Contact</legend>
           <div className="flex items-baseline gap-3 border-b border-ink pb-3">
-            <span className="font-display text-lg italic text-champagne">01</span>
+            <span className="font-display text-lg text-iris">01</span>
             <h2 className="font-display text-[1.6rem] font-semibold">Contact</h2>
           </div>
           <div className="mt-7 grid gap-5 sm:grid-cols-2">
@@ -222,7 +222,7 @@ export default function CheckoutForm() {
         <fieldset className="card p-6 shadow-soft sm:p-9" disabled={busy}>
           <legend className="sr-only">Shipping address</legend>
           <div className="flex items-baseline gap-3 border-b border-ink pb-3">
-            <span className="font-display text-lg italic text-champagne">02</span>
+            <span className="font-display text-lg text-iris">02</span>
             <h2 className="font-display text-[1.6rem] font-semibold">Shipping</h2>
           </div>
           <div className="mt-7 grid gap-5 sm:grid-cols-2">
@@ -256,7 +256,7 @@ export default function CheckoutForm() {
                 <input id="postcode" inputMode="numeric" autoComplete="postal-code" value={customer.postcode} onChange={(e) => set('postcode', e.target.value)} className="input" {...a11y('postcode')} />
               </Field>
             </div>
-            <p className="text-[12px] text-espresso-500 sm:col-span-2">We currently ship within the United States.</p>
+            <p className="text-[12px] text-stone-500 sm:col-span-2">We currently ship within the United States.</p>
             <Field id="note" label="Order note" optional error={errors.note} className="sm:col-span-2">
               <textarea id="note" rows={3} value={customer.note} onChange={(e) => set('note', e.target.value)} className="input resize-y" placeholder="Gift message, delivery notes…" />
             </Field>
@@ -272,11 +272,11 @@ export default function CheckoutForm() {
       {/* Summary */}
       <aside className="lg:col-span-5">
         <div className="lg:sticky lg:top-32">
-          <div className="rounded-[6px] bg-paper p-2.5 shadow-lift ring-1 ring-ink/[0.06]">
-            <div className="rounded-[3px] border border-champagne/40 p-6 sm:p-8">
+          <div className="rounded-media bg-paper p-2.5 shadow-lift ring-1 ring-ink/[0.06]">
+            <div className="rounded-[8px] border border-iris/40 p-6 sm:p-8">
               <div className="flex items-baseline justify-between border-b border-ink pb-3">
                 <h2 className="font-display text-[1.6rem] font-semibold">Your order</h2>
-                <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-espresso-500">
+                <span className="text-[13px] font-semibold text-stone-500">
                   {items.reduce((n, i) => n + i.qty, 0)} items
                 </span>
               </div>
@@ -292,11 +292,11 @@ export default function CheckoutForm() {
                         <div className="flex justify-between gap-3">
                           <p className="font-display text-[1.05rem] font-semibold leading-tight">{ql?.name ?? item.name}</p>
                           <p className="text-sm font-semibold tabular-nums">
-                            {quoteState === 'loading' && !ql ? <span className="inline-block h-4 w-12 animate-pulse rounded bg-cream-200" /> : formatPrice((ql?.unitPrice ?? item.price) * item.qty)}
+                            {quoteState === 'loading' && !ql ? <span className="inline-block h-4 w-12 animate-pulse rounded bg-mineral-200" /> : formatPrice((ql?.unitPrice ?? item.price) * item.qty)}
                           </p>
                         </div>
-                        <p className="mt-1 text-xs text-espresso-500">
-                          {item.subtitle} · Qty {item.qty}
+                        <p className="mt-1 text-xs text-stone-500">
+                          {item.subtitle}, qty {item.qty}
                         </p>
                         {issue && (
                           <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
@@ -335,21 +335,21 @@ export default function CheckoutForm() {
 
               <dl className="space-y-2.5 border-t border-ink pt-5 text-[14px]">
                 <div className="flex justify-between">
-                  <dt className="text-espresso-700">Subtotal</dt>
+                  <dt className="text-stone-700">Subtotal</dt>
                   <dd className="font-semibold tabular-nums">{quote ? formatPrice(quote.subtotal) : '—'}</dd>
                 </div>
                 {quote?.shipping && (
                   <div className="flex justify-between">
-                    <dt className="text-espresso-700">{quote.shipping.title}</dt>
+                    <dt className="text-stone-700">{quote.shipping.title}</dt>
                     <dd className="font-semibold tabular-nums">{quote.shipping.total === 0 ? 'Free' : formatPrice(quote.shipping.total)}</dd>
                   </div>
                 )}
-                <div className="flex justify-between text-espresso-500">
+                <div className="flex justify-between text-stone-500">
                   <dt>Taxes</dt>
                   <dd>Calculated at payment</dd>
                 </div>
                 <div className="flex items-baseline justify-between border-t border-line pt-4">
-                  <dt className="text-[11px] font-semibold uppercase tracking-[0.18em]">Estimated total</dt>
+                  <dt className="text-[13px] font-semibold">Estimated total</dt>
                   <dd className="text-[1.5rem] font-semibold tabular-nums">{quote ? formatPrice(quote.estimatedTotal) : '—'}</dd>
                 </div>
               </dl>
@@ -369,11 +369,11 @@ export default function CheckoutForm() {
                   </>
                 ) : (
                   <>
-                    <Lock className="h-3.5 w-3.5" /> Continue to secure payment <ArrowRight className="h-4 w-4" />
+                    <Lock className="h-3.5 w-3.5" /> Continue to secure payment
                   </>
                 )}
               </button>
-              <p className={cn('mt-4 flex items-start gap-2 text-[12px] leading-relaxed text-espresso-500')}>
+              <p className={cn('mt-4 flex items-start gap-2 text-[12px] leading-relaxed text-stone-500')}>
                 <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-sage-dark" />
                 You’ll complete payment on the Synergy 44 store’s secure checkout. Card details are never handled by this site.
               </p>
@@ -389,11 +389,11 @@ export default function CheckoutForm() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4, ease }}
-            className="fixed inset-0 z-[100] grid place-items-center bg-cream/90 backdrop-blur-md"
+            className="fixed inset-0 z-[100] grid place-items-center bg-mineral/90 backdrop-blur-md"
             role="status"
           >
             <div className="text-center">
-              <Loader2 className="mx-auto h-8 w-8 animate-spin text-champagne" />
+              <Loader2 className="mx-auto h-8 w-8 animate-spin text-iris" />
               <p className="mt-5 font-display text-2xl font-semibold">Taking you to secure payment…</p>
             </div>
           </motion.div>

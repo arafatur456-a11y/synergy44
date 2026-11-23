@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import BookPackageButton from '@/components/concierge/BookPackageButton';
-import { ArrowRight, CalendarHeart, MessageCircle, Sparkles } from 'lucide-react';
+import { CalendarHeart, MessageCircle, Sparkles } from 'lucide-react';
 import PageHeader from '@/components/ui/PageHeader';
 import StudioScene from '@/components/ui/StudioScene';
 import SectionHeader from '@/components/ui/SectionHeader';
@@ -26,15 +26,15 @@ export default function HairStylingPage() {
     <>
       <PageHeader
         eyebrow="Salon services · Michigan & California"
-        crumbs={[{ label: 'Hair Styling' }]}
+        crumbs={[{ label: 'Salon' }]}
         title={
           <>
-            Hair styling with <em className="accent">healing</em> hands.
+            Cuts and color that put your hair’s health first
           </>
         }
-        intro="Cuts, hi-lights, glazes and root color from a licensed cosmetologist who puts the long-term health of your hair first."
+        intro="Cuts, hi-lights, glazes and root color with Cynthia Reedy, a licensed cosmetologist, in Michigan and California."
         scene={
-          <StudioScene tone="espresso" plinthWidth="58%" className="h-full w-full" objectsClassName="gap-4">
+          <StudioScene tone="umber" plinthWidth="58%" className="h-full w-full" objectsClassName="gap-4">
             <ProductVisual shape="dryer" colors={['#3A3733', '#1E1D1B']} cap="#B8975E" label="Gama" className="h-[170px] sm:h-[220px]" />
             <ProductVisual shape="wand" colors={['#E8D3D8', '#B88E98']} cap="#D9C29A" label="Sutra" className="h-[200px] sm:h-[260px]" />
           </StudioScene>
@@ -42,7 +42,7 @@ export default function HairStylingPage() {
       >
         <div className="mt-10 flex flex-wrap gap-3">
           <Link href="/contact?topic=salon" className="btn-dark">
-            Book an appointment <ArrowRight className="h-4 w-4" />
+            Book an appointment
           </Link>
           <BookPackageButton />
           <a href="#menu" className="btn-outline">
@@ -51,32 +51,25 @@ export default function HairStylingPage() {
         </div>
       </PageHeader>
 
-      <section className="container-x py-20">
-        <ol className="grid border-t border-ink md:grid-cols-3">
-          {steps.map(({ icon: Icon, title, body }, i) => (
-            <Reveal as="li" key={title} delay={i * 0.08} className="border-b border-line py-9 md:border-b-0 md:border-r md:px-8 md:first:pl-0 md:last:border-r-0">
-              <div className="flex items-center justify-between">
-                <span className="font-display text-[2.4rem] font-semibold italic leading-none text-champagne">0{i + 1}</span>
-                <Icon className="h-5 w-5 text-sage-dark" strokeWidth={1.4} />
-              </div>
-              <h2 className="mt-6 font-display text-[1.8rem] font-semibold">{title}</h2>
-              <p className="mt-2 text-[15px] leading-relaxed text-espresso-700">{body}</p>
-            </Reveal>
+      <section className="container-x pb-20 pt-6">
+        <h2 className="text-[15px] font-medium text-sage-dark">What happens at a visit</h2>
+        <ol className="mt-6 grid gap-10 md:grid-cols-3 md:gap-8">
+          {steps.map(({ title, body }, i) => (
+            <li key={title} className="border-t border-ink/20 pt-6">
+              <p className="flex items-baseline gap-3">
+                <span className="text-[15px] tabular-nums text-iris">{i + 1}.</span>
+                <span className="text-[1.5rem] font-semibold tracking-[-0.02em]">{title}</span>
+              </p>
+              <p className="body-serif mt-2 max-w-[34ch]">{body}</p>
+            </li>
           ))}
         </ol>
       </section>
 
-      <section id="menu" className="relative scroll-mt-28 overflow-hidden border-y border-ink/10 bg-cream-100 py-24 sm:py-32">
-        <div aria-hidden className="absolute left-1/2 top-1/3 h-[600px] w-[900px] -translate-x-1/2 bg-[radial-gradient(closest-side,rgba(241,230,207,0.75),transparent)]" />
+      <section id="menu" className="relative scroll-mt-28 overflow-hidden border-y border-ink/10 bg-mineral-100 py-24 sm:py-32">
         <div className="container-x relative">
           <SectionHeader
-            index="01"
-            label="The menu"
-            title={
-              <>
-                Services &amp; <em className="accent">pricing.</em>
-              </>
-            }
+            title="Services and prices"
             intro="Prices vary with hair length, density and the time your service needs. We’ll confirm everything at your consultation."
             className="mb-14"
           />
@@ -84,18 +77,17 @@ export default function HairStylingPage() {
         </div>
       </section>
 
-      <Testimonials index="02" label="From our salon chair" />
+      <Testimonials />
 
       <section className="container-x">
         <Reveal>
-          <div className="relative overflow-hidden rounded-[4px] bg-forest px-8 py-20 text-center text-white sm:px-16">
-            <div aria-hidden className="absolute -top-24 left-1/2 h-72 w-[700px] -translate-x-1/2 bg-[radial-gradient(closest-side,rgba(74,107,93,0.45),transparent)]" />
-            <h2 className="relative font-display text-[2.6rem] font-semibold leading-[1.02] sm:text-[3.8rem]">
-              Ready for <em className="font-medium text-champagne-light">healthier</em> hair?
+          <div className="relative overflow-hidden rounded-media bg-forest px-6 py-16 text-white sm:px-14 sm:py-20">
+            <h2 className="max-w-[18ch] font-display text-[2.4rem] font-semibold leading-[1] tracking-[-0.03em] sm:text-[3.4rem]">
+              Request an appointment time
             </h2>
-            <p className="relative mx-auto mt-5 max-w-md text-white/70">Request a time that suits you — we’ll confirm your appointment personally.</p>
+            <p className="mt-5 max-w-md font-serif text-[1.15rem] text-white/70">Tell us when suits you and Cynthia will confirm your appointment personally.</p>
             <Link href="/contact?topic=salon" className="btn-light relative mt-10">
-              Request an appointment <ArrowRight className="h-4 w-4" />
+              Request an appointment
             </Link>
           </div>
         </Reveal>

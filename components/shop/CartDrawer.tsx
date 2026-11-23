@@ -47,11 +47,11 @@ export default function CartDrawer() {
             transition={{ duration: 0.6, ease }}
             className="absolute right-0 top-0 flex h-full w-full max-w-[460px] flex-col bg-paper shadow-float"
           >
-            <div className="flex items-center justify-between border-b border-espresso/[0.08] px-6 py-5">
+            <div className="flex items-center justify-between border-b border-stone/[0.08] px-6 py-5">
               <p className="font-display text-[1.9rem] font-semibold">
-                Your bag <span className="text-espresso-400">({count})</span>
+                Your bag <span className="text-stone-400">({count})</span>
               </p>
-              <button ref={closeRef} onClick={() => setOpen(false)} aria-label="Close bag" className="grid h-10 w-10 place-items-center rounded-full hover:bg-espresso/5">
+              <button ref={closeRef} onClick={() => setOpen(false)} aria-label="Close bag" className="grid h-10 w-10 place-items-center rounded-full hover:bg-stone/5">
                 <X className="h-5 w-5" strokeWidth={1.6} />
               </button>
             </div>
@@ -62,7 +62,7 @@ export default function CartDrawer() {
                   <ShoppingBag className="h-6 w-6 text-white" strokeWidth={1.5} />
                 </div>
                 <p className="mt-5 font-display text-[1.9rem] font-semibold">Your bag is empty</p>
-                <p className="mt-2 text-sm text-espresso-500">Discover clean hair care and one-of-a-kind glass.</p>
+                <p className="mt-2 text-sm text-stone-500">Discover clean hair care and one-of-a-kind glass.</p>
                 <div className="mt-7 flex flex-col gap-3">
                   <Link href="/products/hair-care" onClick={() => setOpen(false)} className="btn-dark">
                     Shop hair care
@@ -74,7 +74,7 @@ export default function CartDrawer() {
               </div>
             ) : (
               <>
-                <ul className="flex-1 divide-y divide-espresso/[0.07] overflow-y-auto px-6">
+                <ul className="flex-1 divide-y divide-stone/[0.07] overflow-y-auto px-6">
                   <AnimatePresence initial={false}>
                     {items.map((item) => (
                       <motion.li
@@ -99,7 +99,7 @@ export default function CartDrawer() {
                                   item.name
                                 )}
                               </p>
-                              <p className="mt-0.5 truncate text-xs text-espresso-400">{item.subtitle}</p>
+                              <p className="mt-0.5 truncate text-xs text-stone-400">{item.subtitle}</p>
                             </div>
                             <p className="text-sm font-semibold">{formatPrice(item.price * item.qty)}</p>
                           </div>
@@ -107,7 +107,7 @@ export default function CartDrawer() {
                             {item.unique ? (
                               <span className="text-xs text-sage">One of a kind</span>
                             ) : (
-                              <div className="flex items-center rounded-[2px] border border-line">
+                              <div className="flex items-center rounded-[8px] border border-line">
                                 <button onClick={() => setQty(item.id, item.qty - 1)} aria-label={`Decrease ${item.name}`} className="grid h-8 w-8 place-items-center">
                                   <Minus className="h-3 w-3" />
                                 </button>
@@ -122,7 +122,7 @@ export default function CartDrawer() {
                                 </button>
                               </div>
                             )}
-                            <button onClick={() => remove(item.id)} className="text-xs text-espresso-400 underline-offset-4 hover:text-espresso hover:underline">
+                            <button onClick={() => remove(item.id)} className="text-xs text-stone-400 underline-offset-4 hover:text-stone hover:underline">
                               Remove
                             </button>
                           </div>
@@ -132,12 +132,12 @@ export default function CartDrawer() {
                   </AnimatePresence>
                 </ul>
 
-                <div className="border-t border-ink/10 bg-cream px-6 py-6">
+                <div className="border-t border-ink/10 bg-mineral px-6 py-6">
                   <div className="flex items-baseline justify-between">
-                    <span className="text-sm text-espresso-500">Subtotal</span>
+                    <span className="text-sm text-stone-500">Subtotal</span>
                     <span className="text-xl font-semibold tabular-nums">{formatPrice(subtotal)}</span>
                   </div>
-                  <p className="mt-1 text-xs text-espresso-400">Shipping and taxes calculated at checkout.</p>
+                  <p className="mt-1 text-xs text-stone-400">Shipping and taxes calculated at checkout.</p>
                   {onlineReady ? (
                     <>
                       <Link href="/checkout" onClick={() => setOpen(false)} className="btn-dark mt-5 w-full">
@@ -154,10 +154,10 @@ export default function CartDrawer() {
                       <Link href="/contact?topic=product" onClick={() => setOpen(false)} className="btn-dark mt-5 w-full">
                         Request this order
                       </Link>
-                      <p className="mt-2 text-center text-[11px] text-espresso-400">Online checkout is being connected — we’ll confirm your order personally.</p>
+                      <p className="mt-2 text-center text-[11px] text-stone-400">Online checkout is being connected — we’ll confirm your order personally.</p>
                     </>
                   )}
-                  <button onClick={() => setOpen(false)} className="mt-3 w-full text-center text-sm text-espresso-500 hover:text-espresso">
+                  <button onClick={() => setOpen(false)} className="mt-3 w-full text-center text-sm text-stone-500 hover:text-stone">
                     Continue shopping
                   </button>
                 </div>

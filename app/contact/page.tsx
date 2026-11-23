@@ -28,15 +28,15 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
         crumbs={[{ label: 'Contact' }]}
         title={
           <>
-            Let’s begin a <em className="accent">conversation.</em>
+            Book, ask, or start a commission
           </>
         }
-        intro="Request an appointment, book a consultation, ask about a product, or start a custom jewelry commission. Every message is read personally."
+        intro="Request an appointment or consultation, ask about a product, or describe a custom pendant. Cynthia reads and answers every message herself."
         scene={
           <StudioScene tone="forest" plinth={false} className="h-full w-full">
             <div className="glass absolute bottom-8 left-8 right-8 max-w-sm p-6 sm:bottom-12 sm:left-12">
-              <p className="font-display text-[1.45rem] font-medium italic leading-snug">“Every great service starts with a conversation about your hair’s health.”</p>
-              <p className="mt-3 text-[10.5px] font-semibold uppercase tracking-[0.2em] text-espresso-500">The Synergy 44 approach</p>
+              <p className="font-display text-[1.45rem] font-medium leading-snug">“Every great service starts with a conversation about your hair’s health.”</p>
+              <p className="mt-3 text-[13px] font-semibold text-stone-500">The Synergy 44 approach</p>
             </div>
           </StudioScene>
         }
@@ -50,7 +50,7 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
                 <Icon className="mt-1 h-5 w-5 shrink-0 text-sage-dark" strokeWidth={1.4} />
                 <div>
                   <h2 className="font-display text-[1.5rem] font-semibold">{title}</h2>
-                  <p className="mt-1.5 text-[15px] leading-relaxed text-espresso-700">{body}</p>
+                  <p className="mt-1.5 text-[15px] leading-relaxed text-stone-700">{body}</p>
                 </div>
               </li>
             ))}

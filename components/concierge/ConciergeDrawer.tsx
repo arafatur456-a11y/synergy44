@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowRight, ArrowUp, CalendarHeart, Mail, MessageCircle, RotateCcw, X } from 'lucide-react';
+import { ArrowUp, CalendarHeart, Mail, MessageCircle, RotateCcw, X } from 'lucide-react';
 import BookingFlow from './BookingFlow';
 import { CHAT_LIMITS, parseReply, starterPrompts, type ChatTurn, type ConciergeItem, type ConciergeOpen } from '@/lib/concierge';
 import { openNewsletter } from '@/lib/newsletter';
@@ -165,21 +165,19 @@ export default function ConciergeDrawer({ open, onClose, request }: { open: bool
             className="absolute right-0 top-0 flex h-full w-full max-w-[460px] flex-col bg-paper shadow-float"
           >
             {/* Header */}
-            <div className="relative overflow-hidden border-b border-line bg-cream px-6 pb-4 pt-6">
-              <div aria-hidden className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 bg-[radial-gradient(closest-side,rgba(216,188,132,0.45),transparent)]" />
+            <div className="relative overflow-hidden border-b border-line bg-mineral px-6 pb-4 pt-6">
               <div className="relative flex items-start justify-between gap-4">
                 <div>
-                  <p className="eyebrow">Synergy 44</p>
-                  <h2 id="concierge-title" className="mt-3 font-display text-[2rem] font-semibold leading-none tracking-[-0.02em]">
-                    The <em className="font-medium text-champagne">Concierge</em>
+                  <h2 id="concierge-title" className="font-display text-[1.75rem] font-semibold leading-none tracking-[-0.03em]">
+                    Ask the concierge
                   </h2>
-                  <p className="mt-2 text-[13px] text-espresso-500">Hair rituals, dichroic glass &amp; haircut booking.</p>
+                  <p className="mt-2 font-serif text-[15px] text-stone-500">Hair routines, glass and gift ideas, and haircut booking.</p>
                 </div>
                 <button ref={closeRef} onClick={onClose} aria-label="Close concierge" className="grid h-10 w-10 shrink-0 place-items-center rounded-full transition hover:bg-ink/5">
                   <X className="h-5 w-5" strokeWidth={1.6} />
                 </button>
               </div>
-              <div role="tablist" aria-label="Concierge" className="relative mt-5 grid grid-cols-2 gap-1 rounded-[3px] border border-line bg-paper p-1">
+              <div role="tablist" aria-label="Concierge" className="relative mt-5 grid grid-cols-2 gap-1 rounded-full border border-line bg-paper p-1">
                 {(
                   [
                     ['chat', 'Ask', MessageCircle],
@@ -192,8 +190,8 @@ export default function ConciergeDrawer({ open, onClose, request }: { open: bool
                     aria-selected={tab === id}
                     onClick={() => setTab(id)}
                     className={cn(
-                      'flex h-10 items-center justify-center gap-2 rounded-[2px] text-[12px] font-semibold uppercase tracking-[0.14em] transition-colors duration-300',
-                      tab === id ? 'bg-ink text-white' : 'text-espresso-500 hover:text-ink',
+                      'flex h-10 items-center justify-center gap-2 rounded-full text-[14px] font-medium transition-colors duration-200',
+                      tab === id ? 'bg-ink text-white' : 'text-stone-500 hover:text-ink',
                     )}
                   >
                     <Icon className="h-3.5 w-3.5" strokeWidth={1.8} /> {label}
@@ -219,7 +217,7 @@ export default function ConciergeDrawer({ open, onClose, request }: { open: bool
                         <button
                           key={p}
                           onClick={() => (p.startsWith('Book') ? setTab('book') : send(p))}
-                          className="rounded-full border border-line bg-paper px-4 py-2 text-left text-[13px] text-espresso-700 transition hover:border-champagne hover:text-ink"
+                          className="rounded-full border border-line bg-paper px-4 py-2 text-left text-[13px] text-stone-700 transition hover:border-iris hover:text-ink"
                         >
                           {p}
                         </button>
@@ -239,7 +237,7 @@ export default function ConciergeDrawer({ open, onClose, request }: { open: bool
                         ) : (
                           <span className="flex items-center gap-1.5 py-1" aria-label="Concierge is thinking">
                             {[0, 1, 2].map((d) => (
-                              <span key={d} className="h-1.5 w-1.5 animate-pulse rounded-full bg-champagne" style={{ animationDelay: `${d * 160}ms` }} />
+                              <span key={d} className="h-1.5 w-1.5 animate-pulse rounded-full bg-iris" style={{ animationDelay: `${d * 160}ms` }} />
                             ))}
                           </span>
                         )}
@@ -255,13 +253,13 @@ export default function ConciergeDrawer({ open, onClose, request }: { open: bool
                 </div>
 
                 <form
-                  className="border-t border-line bg-cream px-5 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4"
+                  className="border-t border-line bg-mineral px-5 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4"
                   onSubmit={(e) => {
                     e.preventDefault();
                     void send(draft);
                   }}
                 >
-                  <div className="flex items-end gap-2 rounded-[3px] border border-line bg-paper p-2 transition focus-within:border-ink">
+                  <div className="flex items-end gap-2 rounded-[8px] border border-line bg-paper p-2 transition focus-within:border-ink">
                     <label htmlFor="concierge-input" className="sr-only">
                       Ask the concierge
                     </label>
@@ -279,13 +277,13 @@ export default function ConciergeDrawer({ open, onClose, request }: { open: bool
                         }
                       }}
                       placeholder="Ask about hair, glass or booking…"
-                      className="max-h-32 min-h-[40px] flex-1 resize-none bg-transparent px-2 py-2 text-[15px] leading-snug text-ink placeholder:text-espresso-400 focus:outline-none"
+                      className="max-h-32 min-h-[40px] flex-1 resize-none bg-transparent px-2 py-2 text-[15px] leading-snug text-ink placeholder:text-stone-400 focus:outline-none"
                     />
-                    <button type="submit" disabled={busy || !draft.trim()} aria-label="Send" className="grid h-10 w-10 shrink-0 place-items-center rounded-[2px] bg-ink text-white transition disabled:opacity-30">
+                    <button type="submit" disabled={busy || !draft.trim()} aria-label="Send" className="grid h-10 w-10 shrink-0 place-items-center rounded-[8px] bg-ink text-white transition disabled:opacity-30">
                       <ArrowUp className="h-4 w-4" />
                     </button>
                   </div>
-                  <div className="mt-2.5 flex items-center justify-between text-[11px] text-espresso-400">
+                  <div className="mt-2.5 flex items-center justify-between text-[11px] text-stone-400">
                     <span>{mode === 'guide' ? 'Guided suggestions from our catalog' : 'AI suggestions. Your stylist has the final word.'}</span>
                     {turns.length > 0 && (
                       <button type="button" onClick={reset} className="flex items-center gap-1 hover:text-ink">
@@ -305,10 +303,10 @@ export default function ConciergeDrawer({ open, onClose, request }: { open: bool
 
 function Bubble({ role, children }: { role: ChatTurn['role']; children: React.ReactNode }) {
   return role === 'user' ? (
-    <div className="ml-auto max-w-[85%] rounded-[3px] bg-ink px-4 py-3 text-[14.5px] leading-relaxed text-white">{children}</div>
+    <div className="ml-auto max-w-[85%] rounded-[8px] bg-ink px-4 py-3 text-[14.5px] leading-relaxed text-white">{children}</div>
   ) : (
-    <div className="max-w-[94%] text-[14.5px] leading-relaxed text-espresso-700">
-      <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-champagne">Concierge</p>
+    <div className="max-w-[94%] text-[14.5px] leading-relaxed text-stone-700">
+      <p className="mb-1.5 text-[13px] font-medium text-sage-dark">Concierge</p>
       {children}
     </div>
   );
@@ -365,7 +363,7 @@ function Prose({ text }: { text: string }) {
                 <ul key={j} className="space-y-1.5">
                   {g.lines.map((l, k) => (
                     <li key={k} className="flex gap-2.5">
-                      <span aria-hidden className="mt-[0.75em] h-px w-3 shrink-0 bg-champagne" />
+                      <span aria-hidden className="mt-[0.75em] h-px w-3 shrink-0 bg-iris" />
                       <span>{clean(l)}</span>
                     </li>
                   ))}
@@ -393,10 +391,10 @@ function ItemCard({ item, onClose }: { item: ConciergeItem; onClose: () => void 
     <Link
       href={item.href}
       onClick={onClose}
-      className="group flex items-center gap-4 rounded-[4px] border border-line bg-paper p-2.5 pr-4 transition-colors duration-300 hover:border-champagne"
+      className="group flex items-center gap-4 rounded-media border border-line bg-paper p-2.5 pr-4 transition-colors duration-300 hover:border-iris"
     >
       <div
-        className="relative h-16 w-14 shrink-0 overflow-hidden rounded-[3px]"
+        className="relative h-16 w-14 shrink-0 overflow-hidden rounded-[8px]"
         style={{
           background:
             item.kind === 'glass'
@@ -407,14 +405,13 @@ function ItemCard({ item, onClose }: { item: ConciergeItem; onClose: () => void 
         {item.image && <Image src={item.image} alt="" fill sizes="56px" className="object-cover transition-transform duration-700 ease-silk group-hover:scale-105" />}
       </div>
       <div className="min-w-0 flex-1">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-espresso-400">{item.kind === 'glass' ? `Glass · ${item.subtitle}` : item.subtitle}</p>
+        <p className="text-[13px] font-semibold text-stone-400">{item.kind === 'glass' ? `Glass, ${item.subtitle}` : item.subtitle}</p>
         <p className="truncate font-display text-[1.08rem] font-semibold leading-tight text-ink">{item.name}</p>
-        <p className="mt-0.5 text-[13px] tabular-nums text-espresso-500">
+        <p className="mt-0.5 text-[13px] tabular-nums text-stone-500">
           {formatPrice(item.price)}
           {!item.inStock && <span className="ml-2 text-[#A4452F]">{item.kind === 'glass' ? 'Sold' : 'Sold out'}</span>}
         </p>
       </div>
-      <ArrowRight className="h-4 w-4 shrink-0 text-espresso-400 transition-transform duration-500 group-hover:translate-x-1 group-hover:text-ink" />
     </Link>
   );
 }

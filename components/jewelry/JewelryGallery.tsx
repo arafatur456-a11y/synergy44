@@ -34,7 +34,7 @@ export default function JewelryGallery({ pendants }: { pendants: Pendant[] }) {
             </button>
           ))}
         </div>
-        <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-white/60" aria-live="polite">
+        <p className="text-[13px] font-semibold text-white/60" aria-live="polite">
           {list.length} {list.length === 1 ? 'piece' : 'pieces'}
         </p>
       </div>

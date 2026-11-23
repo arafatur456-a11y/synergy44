@@ -42,16 +42,18 @@ export default function ConciergeLauncher() {
         aria-haspopup="dialog"
         aria-expanded={open}
         className={cn(
-          'group fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-4 z-[70] flex h-14 items-center gap-3 rounded-full border border-champagne/40 bg-ink pl-4 pr-4 text-white shadow-float transition-[opacity,transform] duration-500 ease-silk hover:-translate-y-0.5 sm:right-6 sm:pr-6',
+          'group fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-4 z-[70] flex h-14 items-center gap-3 rounded-full bg-ink pl-3 pr-4 text-white shadow-float transition-[opacity,transform] duration-500 ease-silk hover:-translate-y-0.5 sm:right-6 sm:pr-6',
           (open || cartOpen) && 'pointer-events-none translate-y-3 opacity-0',
         )}
       >
-        <span className="grid h-8 w-8 place-items-center rounded-full bg-[radial-gradient(circle_at_30%_30%,#F1E6CF,#A27D42_70%)] text-ink">
-          <Sparkles className="h-4 w-4" strokeWidth={1.7} />
+        <span className="film cabochon grid h-9 w-8 place-items-center p-[2px]">
+          <span className="cabochon grid h-full w-full place-items-center bg-ink text-white">
+          <Sparkles className="h-3.5 w-3.5" strokeWidth={1.7} />
+          </span>
         </span>
         <span className="hidden text-left leading-tight sm:block">
-          <span className="block font-display text-[1.02rem] font-semibold italic">Concierge</span>
-          <span className="block text-[10px] font-semibold uppercase tracking-[0.2em] text-white/55">Hair · Glass · Booking</span>
+          <span className="block text-[15px] font-medium">Ask the concierge</span>
+          <span className="block text-[13px] text-white/55">Hair, glass and booking</span>
         </span>
       </button>
       {loaded && <ConciergeDrawer open={open} onClose={close} request={request} />}
